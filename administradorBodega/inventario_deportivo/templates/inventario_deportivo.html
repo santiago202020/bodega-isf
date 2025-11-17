@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventario Deportivo</title>
+    <style>
+        /* Variables CSS para colores y dimensiones */
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #e67e22;
+            --accent-color: #c0392b;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 20px;
+            --border-radius: 5px;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Barra lateral de navegación */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .nav-menu a {
+            color: var(--light-color);
+            text-decoration: none;
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: var(--spacing-lg);
+        }
+
+        /* Encabezado de navegación */
+        .nav-header {
+            background-color: var(--light-color);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-header strong {
+            color: var(--dark-color);
+        }
+
+        .nav-header a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenedor principal de contenido */
+        .content-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Formularios */
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-section h2 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-section input[type="text"],
+        .form-section input[type="number"],
+        .form-section textarea,
+        .form-section select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+        }
+
+        .form-section textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #d35400;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #a93226;
+        }
+
+        .form-section a.btn {
+            margin-left: var(--spacing-sm);
+        }
+
+        /* Tabla */
+        .table-section {
+            flex: 2;
+            min-width: 500px;
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .table-section h2 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+
+        .actions-cell .btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Estados con colores */
+        .estado-activo {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .estado-inactivo {
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        .estado-mantenimiento {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .devolucion-si {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .devolucion-no {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .content-container {
+                flex-direction: column;
+            }
+            
+            .form-section, .table-section {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-menu li {
+                margin: 5px;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .main-content {
+                padding: var(--spacing-md);
+            }
+            
+            .form-section, .table-section {
+                padding: var(--spacing-md);
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            table th, table td {
+                padding: 8px 10px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Barra lateral de navegación -->
+<div class="sidebar">
+    <h1>Inventario Deportivo</h1>
+    <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+    </ul>
+</div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+    <div class="nav-header">
+        <strong>Navegación: </strong>
+        <a href="{% url 'menu' %}">Inicio</a>
+        <a href="{% url 'gestion_articulos' %}">Deportivo</a> | 
+        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+        <a href="{% url 'inventario_hardware' %}">Hardware</a>
+    </div>
+    
+    <div class="content-container">
+        <!-- Formulario Crear/Editar -->
+        <div class="form-section">
+            <h2>{{ articulo_editar|yesno:"Editar artículo,Crear artículo" }}</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="articulo_id" value="{{ articulo_editar.id_deportivo }}">
+                
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" value="{{ articulo_editar.nombre|default:'' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <textarea name="descripcion" required>{{ articulo_editar.descripcion|default:'' }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cantidad total:</label>
+                    <input type="number" name="cantidad_total" value="{{ articulo_editar.cantidad_total|default:'0' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select name="estado" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="A" {% if articulo_editar.estado == 'A' %}selected{% endif %}>Activo</option>
+                        <option value="I" {% if articulo_editar.estado == 'I' %}selected{% endif %}>Inactivo</option>
+                        <option value="M" {% if articulo_editar.estado == 'M' %}selected{% endif %}>Mantenimiento</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Devolución:</label>
+                    <select name="devolucion" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="S" {% if articulo_editar.devolucion == 'S' %}selected{% endif %}>Sí</option>
+                        <option value="N" {% if articulo_editar.devolucion == 'N' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    {{ articulo_editar|yesno:"Actualizar,Guardar" }}
+                </button>
+                
+                {% if articulo_editar %}
+                <a href="{% url 'gestion_articulos' %}" class="btn btn-warning">Cancelar</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Lista de artículos -->
+        <div class="table-section">
+            <h2>Lista de artículos deportivos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                        <th>Estado</th>
+                        <th>Devolución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for articulo in articulos %}
+                    <tr>
+                        <td>{{ articulo.id_deportivo }}</td>
+                        <td>{{ articulo.nombre }}</td>
+                        <td>{{ articulo.descripcion }}</td>
+                        <td>{{ articulo.cantidad_total }}</td>
+                        <td class="
+                            {% if articulo.estado == 'A' %}estado-activo
+                            {% elif articulo.estado == 'I' %}estado-inactivo
+                            {% elif articulo.estado == 'M' %}estado-mantenimiento
+                            {% endif %}">
+                            {{ articulo.get_estado_display|default:articulo.estado }}
+                        </td>
+                        <td class="{% if articulo.devolucion == 'S' %}devolucion-si{% else %}devolucion-no{% endif %}">
+                            {{ articulo.devolucion|yesno:"Sí,No" }}
+                        </td>
+                        <td class="actions-cell">
+                            <a href="?editar={{ articulo.id_deportivo }}" class="btn btn-warning">Editar</a>
+                            <a href="{% url 'eliminar_articulo' articulo.id_deportivo %}" class="btn btn-danger" 
+                               onclick="return confirm('¿Estás seguro de eliminar este artículo?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No hay artículos registrados</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

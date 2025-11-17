@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario Hardware</title>
+    <style>
+        /* Variables CSS para colores y dimensiones */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 20px;
+            --border-radius: 5px;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Barra lateral de navegación */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .nav-menu a {
+            color: var(--light-color);
+            text-decoration: none;
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: var(--spacing-lg);
+        }
+
+        /* Encabezado de navegación */
+        .nav-header {
+            background-color: var(--light-color);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-header strong {
+            color: var(--dark-color);
+        }
+
+        .nav-header a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenedor principal de contenido */
+        .content-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Formularios */
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-section h2 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-section input[type="text"],
+        .form-section input[type="number"],
+        .form-section textarea,
+        .form-section select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+            font-family: inherit;
+        }
+
+        .form-section textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-section button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .form-section button:hover {
+            background-color: #2980b9;
+        }
+
+        .form-section a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: var(--spacing-md);
+        }
+
+        .form-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Tabla */
+        .table-section {
+            flex: 2;
+            min-width: 500px;
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .table-section h2 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        table a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos para el modo eliminar */
+        .form-section h2:first-child {
+            color: var(--accent-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .content-container {
+                flex-direction: column;
+            }
+            
+            .form-section, .table-section {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-menu li {
+                margin: 5px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .main-content {
+                padding: var(--spacing-md);
+            }
+            
+            .form-section, .table-section {
+                padding: var(--spacing-md);
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            table th, table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Barra lateral de navegación -->
+<div class="sidebar">
+    <h1>Inventario Hardware</h1>
+    <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+    </ul>
+</div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+    <div class="nav-header">
+        <strong>Navegación: </strong>
+        <a href="{% url 'menu' %}">Inicio</a>
+        <a href="{% url 'gestion_articulos' %}">Deportivo</a> | 
+        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+        <a href="{% url 'inventario_hardware' %}">Hardware</a>
+    </div>
+    
+    <div class="content-container">
+        <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
+        <div class="form-section">
+            {% if modo == "lista" %}
+                <h2>Crear artículo</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="accion" value="crear">
+
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre">
+
+                    <label>Descripción:</label>
+                    <textarea name="descripcion"></textarea>
+
+                    <label>Marca:</label>
+                    <input type="text" name="marca">
+
+                    <label>Modelo:</label>
+                    <input type="text" name="modelo">
+
+                    <label>Serial:</label>
+                    <input type="text" name="serial">
+
+                    <label>Cantidad total:</label>
+                    <input type="number" name="cantidad_total">
+
+                    <label>Estado:</label>
+                    <input type="text" name="estado">
+
+                    <label>Devolución:</label>
+                    <select name="devolucion">
+                        <option value="obligatorio">Obligatorio</option>
+                        <option value="no obligatorio">No obligatorio</option>
+                    </select>
+
+                    <button type="submit">Guardar</button>
+                </form>
+            {% endif %}
+
+            {% if modo == "editar" %}
+                <h2>Editar artículo</h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="accion" value="editar">
+
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" value="{{ item.nombre }}">
+
+                    <label>Descripción:</label>
+                    <textarea name="descripcion">{{ item.descripcion }}</textarea>
+
+                    <label>Marca:</label>
+                    <input type="text" name="marca" value="{{ item.marca }}">
+
+                    <label>Modelo:</label>
+                    <input type="text" name="modelo" value="{{ item.modelo }}">
+
+                    <label>Serial:</label>
+                    <input type="text" name="serial" value="{{ item.serial }}">
+
+                    <label>Cantidad total:</label>
+                    <input type="number" name="cantidad_total" value="{{ item.cantidad_total }}">
+
+                    <label>Estado:</label>
+                    <input type="text" name="estado" value="{{ item.estado }}">
+
+                    <label>Devolución:</label>
+                    <select name="devolucion">
+                        <option value="obligatorio" {% if item.devolucion == "obligatorio" %}selected{% endif %}>Obligatorio</option>
+                        <option value="no obligatorio" {% if item.devolucion == "no obligatorio" %}selected{% endif %}>No obligatorio</option>
+                    </select>
+
+                    <button type="submit">Actualizar</button>
+                </form>
+
+                <a href="/hardware/">Cancelar edición</a>
+            {% endif %}
+
+            {% if modo == "eliminar" %}
+                <h2>¿Eliminar artículo?</h2>
+                <p><b>{{ item.nombre }}</b></p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="accion" value="eliminar">
+                    <button type="submit">Eliminar</button>
+                </form>
+
+                <a href="/hardware/">Cancelar</a>
+            {% endif %}
+        </div>
+
+        <!-- ================= TABLA A LA DERECHA ================= -->
+        <div class="table-section">
+            <h2>Lista de artículos</h2>
+
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Serial</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Devolución</th>
+                    <th>Acciones</th>
+                </tr>
+
+                {% for d in datos %}
+                <tr>
+                    <td>{{ d.id_hardware }}</td>
+                    <td>{{ d.nombre }}</td>
+                    <td>{{ d.marca }}</td>
+                    <td>{{ d.modelo }}</td>
+                    <td>{{ d.serial }}</td>
+                    <td>{{ d.cantidad_total }}</td>
+                    <td>{{ d.estado }}</td>
+                    <td>{{ d.devolucion }}</td>
+                    <td>
+                        <a href="/hardware/?modo=editar&id={{ d.id_hardware }}">Editar</a>
+                        <a href="/hardware/?modo=eliminar&id={{ d.id_hardware }}">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
