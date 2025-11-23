@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mi Bolsa</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background: #333;
+        color: white;
+      }
+      tr:hover {
+        background: #f2f2f2;
+      }
+      .btn-delete {
+        padding: 5px 10px;
+        background: red;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .btn-delete:hover {
+        background: darkred;
+      }
+      .top-link {
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="{% url 'elegir_articulo' %}" class="top-link"
+      >← Seguir eligiendo</a
+    >
+
+    <h1>Mi Bolsa</h1>
+
+    {% if articulos %}
+    <table>
+      <thead>
+        <tr>
+          <th>Artículo</th>
+          <th>Categoría</th>
+          <th>Cantidad Disponible</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in articulos %}
+        <tr>
+          <td>{{ a.obj.nombre }}</td>
+          <td>{{ a.tipo }}</td>
+          <td>{{ a.obj.cantidad_total }}</td>
+          <td>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="eliminar_uid" value="{{ a.uid }}" />
+              <button class="btn-delete" type="submit">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No hay artículos en la bolsa.</p>
+    {% endif %}
+  </body>
+</html>

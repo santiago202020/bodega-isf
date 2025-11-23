@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'administradorBodega.inventario_deportivo',
     'administradorBodega.inventario_papeleria',
     'administradorBodega.menu',
+    'docente.prestamo',
+    'docente.elegirArticulo',
 ]
 
 MIDDLEWARE = [

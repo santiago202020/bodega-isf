@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Seleccionar Artículos</title>
+  </head>
+  <body>
+    <a href="{% url 'ver_bolsa' %}">Ver Bolsa</a>
+
+    <h1>Seleccionar Artículos</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Artículo</th>
+          <th>Descripción</th>
+          <th>Cantidad</th>
+          <th>Categoría</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in articulos %}
+        <tr>
+          <td>{{ a.nombre }}</td>
+          <td>{{ a.descripcion }}</td>
+          <td>{{ a.cantidad }}</td>
+          <td>{{ a.tipo }}</td>
+
+          <td>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="articulo_uid" value="{{ a.uid }}" />
+              <button type="submit">Agregar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
