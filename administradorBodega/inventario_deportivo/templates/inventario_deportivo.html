@@ -396,9 +396,9 @@
                     <label>Estado:</label>
                     <select name="estado" required>
                         <option value="">Seleccionar...</option>
-                        <option value="A" {% if articulo_editar.estado == 'A' %}selected{% endif %}>Activo</option>
-                        <option value="I" {% if articulo_editar.estado == 'I' %}selected{% endif %}>Inactivo</option>
-                        <option value="M" {% if articulo_editar.estado == 'M' %}selected{% endif %}>Mantenimiento</option>
+                        <option value="Activo" {% if articulo_editar.estado == 'Activo' %}selected{% endif %}>Activo</option>
+                        <option value="Inactivo" {% if articulo_editar.estado == 'Inactivo' %}selected{% endif %}>Inactivo</option>
+                        <option value="Mantenimiento" {% if articulo_editar.estado == 'Mantenimiento' %}selected{% endif %}>Mantenimiento</option>
                     </select>
                 </div>
                 
@@ -406,8 +406,8 @@
                     <label>Devolución:</label>
                     <select name="devolucion" required>
                         <option value="">Seleccionar...</option>
-                        <option value="S" {% if articulo_editar.devolucion == 'S' %}selected{% endif %}>Sí</option>
-                        <option value="N" {% if articulo_editar.devolucion == 'N' %}selected{% endif %}>No</option>
+                        <option value="Si" {% if articulo_editar.devolucion == 'Si' %}selected{% endif %}>Sí</option>
+                        <option value="No" {% if articulo_editar.devolucion == 'No' %}selected{% endif %}>No</option>
                     </select>
                 </div>
                 
@@ -444,9 +444,9 @@
                         <td>{{ articulo.descripcion }}</td>
                         <td>{{ articulo.cantidad_total }}</td>
                         <td class="
-                            {% if articulo.estado == 'A' %}estado-activo
-                            {% elif articulo.estado == 'I' %}estado-inactivo
-                            {% elif articulo.estado == 'M' %}estado-mantenimiento
+                            {% if articulo.estado == 'Activo' %}estado-activo
+                            {% elif articulo.estado == 'Inactivo' %}estado-inactivo
+                            {% elif articulo.estado == 'Mantenimiento' %}estado-mantenimiento
                             {% endif %}">
                             {{ articulo.get_estado_display|default:articulo.estado }}
                         </td>

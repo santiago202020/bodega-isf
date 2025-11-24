@@ -350,7 +350,30 @@
                 
                 <div class="form-group">
                     <label>Unidad de medida:</label>
-                    <input type="text" name="unidad_medida" value="{{ articulo_editar.unidad_medida|default:'' }}" required>
+                    <select name="unidad_medida" required>
+                        <option value="">Seleccionar unidad...</option>
+                        <option value="Unidad" {% if articulo_editar.unidad_medida == 'Unidad' %}selected{% endif %}>Unidad</option>
+                        <option value="Paquete" {% if articulo_editar.unidad_medida == 'Paquete' %}selected{% endif %}>Paquete</option>
+                        <option value="Caja" {% if articulo_editar.unidad_medida == 'Caja' %}selected{% endif %}>Caja</option>
+                        <option value="Resma" {% if articulo_editar.unidad_medida == 'Resma' %}selected{% endif %}>Resma</option>
+                        <option value="Juego" {% if articulo_editar.unidad_medida == 'Juego' %}selected{% endif %}>Juego</option>
+                        <option value="Lote" {% if articulo_editar.unidad_medida == 'Lote' %}selected{% endif %}>Lote</option>
+                        <option value="Docena" {% if articulo_editar.unidad_medida == 'Docena' %}selected{% endif %}>Docena</option>
+                        <option value="Centena" {% if articulo_editar.unidad_medida == 'Centena' %}selected{% endif %}>Centena</option>
+                        <option value="Metro" {% if articulo_editar.unidad_medida == 'Metro' %}selected{% endif %}>Metro</option>
+                        <option value="Rollo" {% if articulo_editar.unidad_medida == 'Rollo' %}selected{% endif %}>Rollo</option>
+                        <option value="Tubo" {% if articulo_editar.unidad_medida == 'Tubo' %}selected{% endif %}>Tubo</option>
+                        <option value="Set" {% if articulo_editar.unidad_medida == 'Set' %}selected{% endif %}>Set</option>
+                        <option value="Kit" {% if articulo_editar.unidad_medida == 'Kit' %}selected{% endif %}>Kit</option>
+                        <option value="Cartucho" {% if articulo_editar.unidad_medida == 'Cartucho' %}selected{% endif %}>Cartucho</option>
+                        <option value="Carga" {% if articulo_editar.unidad_medida == 'Carga' %}selected{% endif %}>Carga</option>
+                        <option value="Bote" {% if articulo_editar.unidad_medida == 'Bote' %}selected{% endif %}>Bote</option>
+                        <option value="Frasco" {% if articulo_editar.unidad_medida == 'Frasco' %}selected{% endif %}>Frasco</option>
+                        <option value="Tinta" {% if articulo_editar.unidad_medida == 'Tinta' %}selected{% endif %}>Tinta</option>
+                        <option value="Litro" {% if articulo_editar.unidad_medida == 'Litro' %}selected{% endif %}>Litro</option>
+                        <option value="Gramo" {% if articulo_editar.unidad_medida == 'Gramo' %}selected{% endif %}>Gramo</option>
+                        <option value="Pulgada" {% if articulo_editar.unidad_medida == 'Pulgada' %}selected{% endif %}>Pulgada</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">

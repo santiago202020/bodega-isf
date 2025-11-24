@@ -349,7 +349,12 @@
                     <input type="number" name="cantidad_total">
 
                     <label>Estado:</label>
-                    <input type="text" name="estado">
+                    <select name="estado" required>
+                        <option value="">Seleccionar estado...</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
 
                     <label>Devolución:</label>
                     <select name="devolucion">
@@ -387,7 +392,12 @@
                     <input type="number" name="cantidad_total" value="{{ item.cantidad_total }}">
 
                     <label>Estado:</label>
-                    <input type="text" name="estado" value="{{ item.estado }}">
+                    <select name="estado" required>
+                        <option value="">Seleccionar estado...</option>
+                        <option value="activo" {% if item.estado == "activo" %}selected{% endif %}>Activo</option>
+                        <option value="inactivo" {% if item.estado == "inactivo" %}selected{% endif %}>Inactivo</option>
+                        <option value="mantenimiento" {% if item.estado == "mantenimiento" %}selected{% endif %}>Mantenimiento</option>
+                    </select>
 
                     <label>Devolución:</label>
                     <select name="devolucion">
