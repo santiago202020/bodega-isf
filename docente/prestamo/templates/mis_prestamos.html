@@ -1,25 +1,317 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Mis Préstamos</title>
-  </head>
-  <body>
-    <h2>Mis Préstamos</h2>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Préstamos - Sistema de Préstamos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    {% if prestamos %}
-    <ul>
-      {% for p in prestamos %}
-      <li>
-        <a href="{% url 'prestamo:detalle_prestamo' p.pk %}">
-          Préstamo #{{ p.pk }} — {{ p.fecha_prestamo }} {{ p.hora_prestamo }}
-        </a>
-        — Estado: {{ p.estado }}
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No tienes préstamos registrados.</p>
-    {% endif %}
-  </body>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+        }
+
+        /* Barra lateral */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar-menu a.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .content-card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .loans-list {
+            list-style: none;
+        }
+
+        .loan-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .loan-item:hover {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+        }
+
+        .loan-info {
+            flex: 1;
+        }
+
+        .loan-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .loan-link:hover {
+            color: #3498db;
+        }
+
+        .loan-details {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .loan-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-activo {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .status-pendiente {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: #f39c12;
+        }
+
+        .status-completado {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #2980b9;
+        }
+
+        .status-cancelado {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar-header h2, .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 1.4rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+            
+            .loan-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .loan-status {
+                align-self: flex-start;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Sistema Docente</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/docente/"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
+            <li><a href="/docente/elegir/"><i class="fas fa-book"></i> <span>Elegir Artículos</span></a></li>
+            <li><a href="/docente/prestamo/mis_prestamos/" class="active"><i class="fas fa-list"></i> <span>Mis Préstamos</span></a></li>
+            <li><a href="{% url 'prestamo:confirmar_prestamo' %}"><i class="fas fa-check-circle"></i> <span>Confirmar Préstamo</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Mis Préstamos</h1>
+        </div>
+
+        <div class="content-card">
+            <h2>Historial de Préstamos</h2>
+            
+            {% if prestamos %}
+            <ul class="loans-list">
+                {% for p in prestamos %}
+                <li class="loan-item">
+                    <div class="loan-info">
+                        <a href="{% url 'prestamo:detalle_prestamo' p.pk %}" class="loan-link">
+                            Préstamo #{{ p.pk }}
+                        </a>
+                        <div class="loan-details">
+                            {{ p.fecha_prestamo }} {{ p.hora_prestamo }}
+                        </div>
+                    </div>
+                    <span class="loan-status status-{{ p.estado|lower }}">
+                        {{ p.estado }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <p>No tienes préstamos registrados.</p>
+                <a href="/docente/elegir/" class="btn">
+                    <i class="fas fa-book"></i> Solicitar Préstamo
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
 </html>

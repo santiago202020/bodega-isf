@@ -1,28 +1,384 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Confirmar préstamo</title>
-  </head>
-  <body>
-    <h2>Confirmar préstamo</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Préstamo - Sistema de Préstamos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    {% if items %}
-    <ul>
-      {% for item in items %}
-      <li>{{ item.tipo }} – {{ item.obj.nombre }}</li>
-      {% endfor %}
-    </ul>
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+        }
 
-    <form method="POST">
-      {% csrf_token %}
-      <label>Observaciones:</label><br />
-      <textarea name="observaciones"></textarea><br /><br />
+        /* Barra lateral */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
 
-      <button type="submit">Confirmar préstamo</button>
-    </form>
-    {% else %}
-    <p>No hay artículos en tu bolsa.</p>
-    {% endif %}
-  </body>
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar-menu a.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .content-card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .confirmation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .confirmation-header i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-right: 15px;
+        }
+
+        .confirmation-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .articles-section {
+            margin-bottom: 30px;
+        }
+
+        .articles-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .articles-list {
+            list-style: none;
+        }
+
+        .article-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .article-item:hover {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+        }
+
+        .article-info {
+            flex: 1;
+        }
+
+        .article-name {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .article-type {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e6ed;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e6ed;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-confirm {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-confirm:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-confirm i {
+            margin-right: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar-header h2, .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 1.4rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+            
+            .article-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Sistema Docente</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/docente/"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
+            <li><a href="/docente/elegir/"><i class="fas fa-book"></i> <span>Elegir Artículos</span></a></li>
+            <li><a href="/docente/prestamo/mis_prestamos/"><i class="fas fa-list"></i> <span>Mis Préstamos</span></a></li>
+            <li><a href="{% url 'prestamo:confirmar_prestamo' %}" class="active"><i class="fas fa-check-circle"></i> <span>Confirmar Préstamo</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Confirmar Préstamo</h1>
+        </div>
+
+        <div class="content-card">
+            {% if items %}
+            <div class="confirmation-header">
+                <i class="fas fa-clipboard-check"></i>
+                <h3>Revisa y confirma los artículos para tu préstamo</h3>
+            </div>
+
+            <div class="articles-section">
+                <h3>Artículos en tu bolsa</h3>
+                
+                <ul class="articles-list">
+                    {% for item in items %}
+                    <li class="article-item">
+                        <div class="article-info">
+                            <div class="article-name">{{ item.obj.nombre }}</div>
+                            <div class="article-type">{{ item.tipo }}</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="form-section">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones (opcional):</label>
+                        <textarea 
+                            name="observaciones" 
+                            id="observaciones" 
+                            placeholder="Agrega cualquier observación o comentario adicional sobre tu préstamo..."
+                        ></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-confirm">
+                        <i class="fas fa-check-circle"></i> Confirmar Préstamo
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                <p>No hay artículos en tu bolsa.</p>
+                <a href="/docente/elegir/" class="btn">
+                    <i class="fas fa-book"></i> Elegir Artículos
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
 </html>
