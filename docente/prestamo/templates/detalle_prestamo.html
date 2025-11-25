@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Detalle del Préstamo</title>
+  </head>
+  <body>
+    <h2>Detalle del Préstamo #{{ prestamo.pk }}</h2>
+
+    <p>
+      <strong>Fecha:</strong> {{ prestamo.fecha_prestamo }} {{
+      prestamo.hora_prestamo }}
+    </p>
+    <p><strong>Estado:</strong> {{ prestamo.estado }}</p>
+    <p>
+      <strong>Observaciones:</strong> {{
+      prestamo.observaciones|default:"Ninguna" }}
+    </p>
+
+    <h3>Artículos Solicitados</h3>
+
+    {% if detalles %}
+    <ul>
+      {% for d in detalles %}
+      <li>
+        <strong>{{ d.obj.nombre|default:"Artículo" }}</strong><br />
+        Tipo: {{ d.detalle.tipo_articulo }}<br />
+        Cantidad: {{ d.detalle.cantidad }}<br />
+        Estado: {{ d.detalle.estado_detalle }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No hay detalles para este préstamo.</p>
+    {% endif %}
+
+    <br />
+
+    <a href="{% url 'prestamo:mis_prestamos' %}">⬅ Volver a Mis Préstamos</a>
+  </body>
+</html>

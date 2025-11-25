@@ -1,0 +1,45 @@
+<!-- templates/gestion_prestamos/devolver.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Registrar devolución</title>
+  </head>
+  <body>
+    <h1>Registrar devolución - Préstamo #{{ prestamo.id_prestamo }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      <table border="1" cellpadding="6">
+        <thead>
+          <tr>
+            <th>Artículo</th>
+            <th>Tipo</th>
+            <th>Cantidad solicitada</th>
+            <th>Cantidad devuelta</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for it in detalles %}
+          <tr>
+            <td>{{ it.obj.nombre|default:"Artículo" }}</td>
+            <td>{{ it.detalle.tipo_articulo }}</td>
+            <td>{{ it.detalle.cantidad }}</td>
+            <td>
+              <input
+                type="number"
+                name="devolver_{{ it.detalle.id_detalle }}"
+                min="0"
+                value="{{ it.detalle.cantidad }}"
+              />
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p><button type="submit">Registrar devolución</button></p>
+    </form>
+
+    <p><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Volver</a></p>
+  </body>
+</html>

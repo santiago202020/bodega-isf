@@ -352,21 +352,26 @@
 <div class="sidebar">
     <h1>Inventario Deportivo</h1>
     <ul class="nav-menu">
-        <li><a href="{% url 'menu' %}">Inicio</a></li>
-        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
-        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
-        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
-    </ul>
+    <li><a href="{% url 'menu' %}">Inicio</a></li>
+    <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+    <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+    <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+    <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
+</ul>
+
 </div>
 
 <!-- Contenido principal -->
 <div class="main-content">
     <div class="nav-header">
         <strong>Navegación: </strong>
-        <a href="{% url 'menu' %}">Inicio</a>
-        <a href="{% url 'gestion_articulos' %}">Deportivo</a> | 
-        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-        <a href="{% url 'inventario_hardware' %}">Hardware</a>
+        
+<a href="{% url 'menu' %}">Inicio</a> |
+<a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+<a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+<a href="{% url 'inventario_hardware' %}">Hardware</a> |
+<a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+
     </div>
     
     <div class="content-container">

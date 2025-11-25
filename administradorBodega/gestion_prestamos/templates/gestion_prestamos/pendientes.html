@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel de Administrador de Bodega</title>
+    <meta charset="utf-8" />
+    <title>Préstamos pendientes</title>
     <style>
       /* Variables CSS para colores y dimensiones */
       :root {
         --primary-color: #2c3e50;
         --secondary-color: #3498db;
         --accent-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
         --light-color: #ecf0f1;
         --dark-color: #2c3e50;
         --sidebar-width: 250px;
-        --header-height: 70px;
         --spacing-sm: 10px;
         --spacing-md: 15px;
         --spacing-lg: 20px;
@@ -114,71 +114,118 @@
         color: var(--primary-color);
       }
 
-      /* Panel de bienvenida */
-      .welcome-panel {
-        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
-        color: white;
-        padding: var(--spacing-lg);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        margin-bottom: var(--spacing-lg);
-        text-align: center;
-      }
-
-      .welcome-panel h1 {
-        font-size: 2.5rem;
-        margin-bottom: var(--spacing-md);
-      }
-
-      .welcome-panel p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-      }
-
-      /* Acciones rápidas */
-      .quick-actions {
-        background-color: white;
-        padding: var(--spacing-lg);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-      }
-
-      .quick-actions h2 {
+      /* Título principal */
+      h1 {
         color: var(--dark-color);
         margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
         border-bottom: 2px solid var(--secondary-color);
-        padding-bottom: var(--spacing-sm);
       }
 
-      .action-buttons {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: var(--spacing-md);
+      /* Tabla de préstamos */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
       }
 
-      .action-btn {
+      thead {
+        background: var(--secondary-color);
+        color: white;
+      }
+
+      th {
+        padding: var(--spacing-md);
+        text-align: left;
+        font-weight: 600;
+        border: none;
+      }
+
+      td {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      tbody tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Estados */
+      td:nth-child(4) {
+        font-weight: 600;
+      }
+
+      /* Badges de estado */
+      .status-pendiente {
+        color: var(--warning-color);
+      }
+
+      .status-aprobado {
+        color: var(--success-color);
+      }
+
+      .status-rechazado {
+        color: var(--accent-color);
+      }
+
+      /* Acciones */
+      td:last-child a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        margin: 0 5px;
+        padding: 4px 8px;
+        border-radius: 3px;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+
+      td:last-child a:hover {
         background-color: var(--secondary-color);
         color: white;
-        text-decoration: none;
-        padding: var(--spacing-md);
-        border-radius: var(--border-radius);
+      }
+
+      td:last-child a:nth-child(2):hover {
+        background-color: var(--success-color);
+      }
+
+      td:last-child a:nth-child(3):hover {
+        background-color: var(--accent-color);
+      }
+
+      /* Estado vacío */
+      p {
         text-align: center;
-        transition: background-color 0.3s, transform 0.2s;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--spacing-sm);
-        border: none;
-        cursor: pointer;
+        padding: var(--spacing-lg);
+        background: white;
+        border-radius: var(--border-radius);
+        color: #7f8c8d;
+        font-size: 1.1em;
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
       }
 
-      .action-btn:hover {
-        background-color: #2980b9;
-        transform: translateY(-2px);
+      /* Enlace admin */
+      .admin-link {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        transition: background-color 0.3s;
       }
 
-      .action-btn i {
-        font-size: 1.5rem;
+      .admin-link:hover {
+        background: #34495e;
+        text-decoration: none;
       }
 
       /* Responsive */
@@ -209,8 +256,13 @@
           margin: 5px;
         }
 
-        .welcome-panel h1 {
-          font-size: 2rem;
+        table {
+          font-size: 0.9em;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
         }
 
         .nav-header {
@@ -218,7 +270,7 @@
         }
       }
 
-      @media (max-width: 576px) {
+      @media (max-width: 480px) {
         body {
           font-size: 14px;
         }
@@ -227,34 +279,41 @@
           padding: var(--spacing-md);
         }
 
-        .action-buttons {
-          grid-template-columns: 1fr;
-        }
-
         .nav-menu {
           flex-direction: column;
           align-items: center;
+        }
+
+        td:last-child a {
+          display: block;
+          margin: 2px 0;
+          text-align: center;
         }
       }
     </style>
   </head>
   <body>
     <!-- Barra lateral de navegación -->
-    <nav class="sidebar">
+    <div class="sidebar">
       <h1>Panel de Bodega</h1>
       <ul class="nav-menu">
-        <li><a href="{% url 'menu' %}" class="active">Inicio</a></li>
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
         <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
         <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
         <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
         <li>
-          <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+          <a
+            href="{% url 'gestion_prestamos:lista_pendientes' %}"
+            class="active"
+            >Préstamos</a
+          >
         </li>
       </ul>
-    </nav>
+    </div>
 
     <!-- Contenido principal -->
-    <main class="main-content">
+    <div class="main-content">
+      <!-- Encabezado de navegación -->
       <div class="nav-header">
         <strong>Navegación: </strong>
         <a href="{% url 'menu' %}">Inicio</a> |
@@ -264,50 +323,55 @@
         <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
       </div>
 
-      <!-- Panel de bienvenida -->
-      <section class="welcome-panel">
-        <h1>Panel de Administrador de Bodega</h1>
-        <p>Bienvenido al sistema de gestión de inventarios</p>
-      </section>
+      <h1>Préstamos pendientes</h1>
 
-      <!-- Acciones rápidas -->
-      <section class="quick-actions">
-        <h2>Acciones Rápidas</h2>
-        <div class="action-buttons">
-          <a href="{% url 'gestion_articulos' %}" class="action-btn">
-            <span>🏃‍♂️</span>
-            <span>Gestión Deportivo</span>
-          </a>
-          <a href="{% url 'gestion_articulos_papeleria' %}" class="action-btn">
-            <span>📝</span>
-            <span>Gestión Papelería</span>
-          </a>
-          <a href="{% url 'inventario_hardware' %}" class="action-btn">
-            <span>💻</span>
-            <span>Gestión Hardware</span>
-          </a>
-          <a href="#" class="action-btn">
-            <span>📊</span>
-            <span>Reportes</span>
-          </a>
-        </div>
-      </section>
-    </main>
+      {% if prestamos %}
+      <table border="1" cellpadding="6">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Docente</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in prestamos %}
+          <tr>
+            <td>{{ p.id_prestamo }}</td>
+            <td>{{ p.id_usuario.nombres }}</td>
+            <td>{{ p.fecha_prestamo }} {{ p.hora_prestamo }}</td>
+            <td class="status-{{ p.estado|lower }}">{{ p.estado }}</td>
+            <td>
+              <a
+                href="{% url 'gestion_prestamos:detalle_prestamo_admin' p.id_prestamo %}"
+                >Ver detalle</a
+              >
+              |
+              <a
+                href="{% url 'gestion_prestamos:aceptar_prestamo' p.id_prestamo %}"
+                >Aceptar</a
+              >
+              |
+              <a
+                href="{% url 'gestion_prestamos:rechazar_prestamo' p.id_prestamo %}"
+                >Rechazar</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No hay préstamos pendientes.</p>
+      {% endif %}
+      <br />
+    </div>
 
     <script>
-      // JavaScript para mejorar la navegación
+      // JavaScript para mejorar la experiencia en móviles
       document.addEventListener("DOMContentLoaded", function () {
-        // Marcar enlace activo en la barra lateral
-        const currentUrl = window.location.href;
-        const navLinks = document.querySelectorAll(".nav-menu a");
-
-        navLinks.forEach((link) => {
-          if (link.href === currentUrl) {
-            link.classList.add("active");
-          }
-        });
-
-        // Mejorar la experiencia en móviles
         const sidebar = document.querySelector(".sidebar");
         const mainContent = document.querySelector(".main-content");
 
@@ -321,7 +385,6 @@
           }
         }
 
-        // Ajustar layout al cargar y al redimensionar
         adjustLayout();
         window.addEventListener("resize", adjustLayout);
       });

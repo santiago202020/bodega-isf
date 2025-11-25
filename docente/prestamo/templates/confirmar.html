@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Confirmar préstamo</title>
+  </head>
+  <body>
+    <h2>Confirmar préstamo</h2>
+
+    {% if items %}
+    <ul>
+      {% for item in items %}
+      <li>{{ item.tipo }} – {{ item.obj.nombre }}</li>
+      {% endfor %}
+    </ul>
+
+    <form method="POST">
+      {% csrf_token %}
+      <label>Observaciones:</label><br />
+      <textarea name="observaciones"></textarea><br /><br />
+
+      <button type="submit">Confirmar préstamo</button>
+    </form>
+    {% else %}
+    <p>No hay artículos en tu bolsa.</p>
+    {% endif %}
+  </body>
+</html>

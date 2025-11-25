@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mis Préstamos</title>
+  </head>
+  <body>
+    <h2>Mis Préstamos</h2>
+
+    {% if prestamos %}
+    <ul>
+      {% for p in prestamos %}
+      <li>
+        <a href="{% url 'prestamo:detalle_prestamo' p.pk %}">
+          Préstamo #{{ p.pk }} — {{ p.fecha_prestamo }} {{ p.hora_prestamo }}
+        </a>
+        — Estado: {{ p.estado }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No tienes préstamos registrados.</p>
+    {% endif %}
+  </body>
+</html>

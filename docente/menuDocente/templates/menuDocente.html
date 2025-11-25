@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Docente</title>
+  </head>
+  <body>
+    <h1>Bienvenido Docente</h1>
+
+    <p>Selecciona una opción:</p>
+
+    <a href="/docente/elegir/">Elegir artículos</a><br />
+    <a href="/docente/prestamo/mis_prestamos/">Mis préstamos</a>
+    <a href="{% url 'prestamo:confirmar_prestamo' %}" class="btn btn-primary">
+      Confirmar préstamo
+    </a>
+  </body>
+</html>

@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'administradorBodega.menu',
     'docente.prestamo',
     'docente.elegirArticulo',
+    'docente.menuDocente',
+    'administradorBodega.gestion_prestamos',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +57,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/menu/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 ROOT_URLCONF = 'bodegaISF.urls'
 
