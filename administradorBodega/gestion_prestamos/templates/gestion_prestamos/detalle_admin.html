@@ -59,6 +59,7 @@
         margin-bottom: var(--spacing-lg);
         padding-bottom: var(--spacing-md);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
       }
 
       .nav-menu {
@@ -98,22 +99,53 @@
         border-radius: var(--border-radius);
         margin-bottom: var(--spacing-lg);
         box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
       }
 
-      .nav-header strong {
+      .nav-links {
+        flex: 1;
+      }
+
+      .nav-links strong {
         color: var(--dark-color);
       }
 
-      .nav-header a {
+      .nav-links a {
         color: var(--secondary-color);
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s;
       }
 
-      .nav-header a:hover {
+      .nav-links a:hover {
         text-decoration: underline;
         color: var(--primary-color);
+      }
+
+      /* Información del usuario en el header */
+      .user-info {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        min-width: 200px;
+      }
+
+      .user-info p {
+        margin: 2px 0;
+        font-size: 0.9rem;
+      }
+
+      .user-role {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       /* Panel de detalle de préstamo */
@@ -158,26 +190,29 @@
 
       .status-badge {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 6px 12px;
         border-radius: 20px;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         font-weight: 500;
         text-transform: uppercase;
       }
 
       .status-pendiente {
-        background-color: var(--warning-color);
-        color: white;
+        background-color: rgba(243, 156, 18, 0.2);
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
       }
 
       .status-aprobado {
-        background-color: var(--success-color);
-        color: white;
+        background-color: rgba(39, 174, 96, 0.2);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
       }
 
       .status-rechazado {
-        background-color: var(--accent-color);
-        color: white;
+        background-color: rgba(231, 76, 60, 0.2);
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
       }
 
       /* Lista de artículos */
@@ -206,6 +241,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: background-color 0.2s;
+      }
+
+      .articles-list li:hover {
+        background-color: #f8f9fa;
       }
 
       .articles-list li:last-child {
@@ -221,14 +261,23 @@
         gap: var(--spacing-md);
         font-size: 0.9rem;
         color: #666;
+        margin-top: var(--spacing-sm);
       }
 
       .article-type {
         background-color: #e8f4fd;
         color: var(--secondary-color);
-        padding: 2px 8px;
+        padding: 4px 8px;
         border-radius: var(--border-radius);
         font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-lg);
+        color: #7f8c8d;
+        font-style: italic;
       }
 
       /* Acciones */
@@ -248,7 +297,7 @@
       }
 
       .btn {
-        padding: var(--spacing-sm) var(--spacing-lg);
+        padding: var(--spacing-md) var(--spacing-lg);
         border-radius: var(--border-radius);
         text-decoration: none;
         font-weight: 500;
@@ -258,6 +307,8 @@
         display: inline-flex;
         align-items: center;
         gap: var(--spacing-sm);
+        min-width: 180px;
+        justify-content: center;
       }
 
       .btn-primary {
@@ -268,6 +319,7 @@
       .btn-primary:hover {
         background-color: #219653;
         transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
       }
 
       .btn-danger {
@@ -278,6 +330,7 @@
       .btn-danger:hover {
         background-color: #c0392b;
         transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
       }
 
       .btn-secondary {
@@ -288,6 +341,7 @@
       .btn-secondary:hover {
         background-color: #2980b9;
         transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
       }
 
       /* Responsive */
@@ -334,7 +388,13 @@
         }
 
         .nav-header {
+          flex-direction: column;
+          gap: var(--spacing-md);
           text-align: center;
+        }
+
+        .user-info {
+          width: 100%;
         }
       }
 
@@ -353,9 +413,23 @@
           gap: var(--spacing-sm);
         }
 
+        .article-meta {
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+
         .nav-menu {
           flex-direction: column;
           align-items: center;
+        }
+
+        .action-buttons {
+          gap: var(--spacing-sm);
+        }
+
+        .btn {
+          min-width: auto;
+          width: 100%;
         }
       }
     </style>
@@ -383,12 +457,19 @@
     <main class="main-content">
       <!-- Encabezado de navegación -->
       <div class="nav-header">
-        <strong>Navegación: </strong>
-        <a href="{% url 'menu' %}">Inicio</a> |
-        <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-        <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-        <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        <div class="nav-links">
+          <strong>Navegación: </strong>
+          <a href="{% url 'menu' %}">Inicio</a> |
+          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+          <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        </div>
+        <div class="user-info">
+          <p><strong>{{ request.session.nombre }}</strong></p>
+          <p>ID: {{ request.session.id_usuario }}</p>
+          <span class="user-role">{{ request.session.rol }}</span>
+        </div>
       </div>
 
       <!-- Panel de detalle del préstamo -->
@@ -426,7 +507,7 @@
 
       <!-- Lista de artículos -->
       <div class="articles-section">
-        <h3>📦 Artículos Solicitados</h3>
+        <h3>📦 Artículos Solicitados ({{ detalles|length }})</h3>
         <ul class="articles-list">
           {% for it in detalles %}
           <li>
@@ -444,7 +525,7 @@
             </div>
           </li>
           {% empty %}
-          <li>No hay artículos en este préstamo.</li>
+          <li class="empty-state">No hay artículos en este préstamo.</li>
           {% endfor %}
         </ul>
       </div>

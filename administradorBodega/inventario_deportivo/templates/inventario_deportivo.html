@@ -1,18 +1,19 @@
-# -*- coding: utf-8 -*-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="utf-8">
     <title>Inventario Deportivo</title>
     <style>
-        /* Variables CSS para colores y dimensiones */
+        /* Variables CSS para colores y dimensiones - CONSISTENTES */
         :root {
-            --primary-color: #e74c3c;
-            --secondary-color: #e67e22;
-            --accent-color: #c0392b;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
             --light-color: #ecf0f1;
             --dark-color: #2c3e50;
             --sidebar-width: 250px;
-            --header-height: 70px;
             --spacing-sm: 10px;
             --spacing-md: 15px;
             --spacing-lg: 20px;
@@ -56,6 +57,7 @@
             margin-bottom: var(--spacing-lg);
             padding-bottom: var(--spacing-md);
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
         }
 
         .nav-menu {
@@ -75,7 +77,8 @@
             transition: background-color 0.3s;
         }
 
-        .nav-menu a:hover {
+        .nav-menu a:hover,
+        .nav-menu a.active {
             background-color: rgba(255,255,255,0.1);
         }
 
@@ -84,29 +87,63 @@
             flex: 1;
             margin-left: var(--sidebar-width);
             padding: var(--spacing-lg);
+            min-height: 100vh;
         }
 
-        /* Encabezado de navegación */
+        /* Encabezado de navegación MEJORADO */
         .nav-header {
             background-color: var(--light-color);
             padding: var(--spacing-md);
             border-radius: var(--border-radius);
             margin-bottom: var(--spacing-lg);
             box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .nav-header strong {
+        .nav-links {
+            flex: 1;
+        }
+
+        .nav-links strong {
             color: var(--dark-color);
         }
 
-        .nav-header a {
+        .nav-links a {
             color: var(--secondary-color);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .nav-header a:hover {
+        .nav-links a:hover {
             text-decoration: underline;
+            color: var(--primary-color);
+        }
+
+        /* Información del usuario en el header */
+        .user-info {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .user-info p {
+            margin: 2px 0;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
         }
 
         /* Contenedor principal de contenido */
@@ -116,7 +153,7 @@
             flex-wrap: wrap;
         }
 
-        /* Formularios */
+        /* Formularios MEJORADOS */
         .form-section {
             flex: 1;
             min-width: 300px;
@@ -149,10 +186,18 @@
         .form-section textarea,
         .form-section select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
             font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-section input:focus,
+        .form-section textarea:focus,
+        .form-section select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
         }
 
         .form-section textarea {
@@ -161,32 +206,34 @@
         }
 
         .btn {
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 500;
             text-decoration: none;
             display: inline-block;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
         }
 
         .btn-primary {
-            background-color: var(--secondary-color);
+            background-color: var(--success-color);
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #d35400;
+            background-color: #219653;
+            transform: translateY(-1px);
         }
 
         .btn-warning {
-            background-color: #f39c12;
+            background-color: var(--warning-color);
             color: white;
         }
 
         .btn-warning:hover {
             background-color: #e67e22;
+            transform: translateY(-1px);
         }
 
         .btn-danger {
@@ -195,14 +242,17 @@
         }
 
         .btn-danger:hover {
-            background-color: #a93226;
+            background-color: #c0392b;
+            transform: translateY(-1px);
         }
 
-        .form-section a.btn {
-            margin-left: var(--spacing-sm);
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
         }
 
-        /* Tabla */
+        /* Tabla MEJORADA */
         .table-section {
             flex: 2;
             min-width: 500px;
@@ -223,31 +273,34 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
         }
 
-        table th {
-            background-color: var(--primary-color);
+        thead {
+            background: var(--secondary-color);
             color: white;
-            text-align: left;
+        }
+
+        th {
             padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
         }
 
-        table td {
+        td {
             padding: 10px 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ecf0f1;
         }
 
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
+        tbody tr:hover {
+            background-color: #f8f9fa;
         }
 
         .actions-cell {
             display: flex;
             gap: 5px;
+            flex-wrap: wrap;
         }
 
         .actions-cell .btn {
@@ -255,30 +308,63 @@
             font-size: 0.85rem;
         }
 
-        /* Estados con colores */
+        /* Estados con colores MEJORADOS */
         .estado-activo {
-            color: #27ae60;
-            font-weight: bold;
+            color: var(--success-color);
+            background-color: rgba(39, 174, 96, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
         }
 
         .estado-inactivo {
             color: #7f8c8d;
-            font-weight: bold;
+            background-color: rgba(127, 140, 141, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
         }
 
         .estado-mantenimiento {
-            color: #f39c12;
-            font-weight: bold;
+            color: var(--warning-color);
+            background-color: rgba(243, 156, 18, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
         }
 
         .devolucion-si {
-            color: #27ae60;
-            font-weight: bold;
+            color: var(--success-color);
+            background-color: rgba(39, 174, 96, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
         }
 
         .devolucion-no {
-            color: #e74c3c;
-            font-weight: bold;
+            color: var(--accent-color);
+            background-color: rgba(231, 76, 60, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: #7f8c8d;
+            font-style: italic;
         }
 
         /* Responsive */
@@ -294,14 +380,20 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
+                padding: var(--spacing-md);
             }
             
             .main-content {
                 margin-left: 0;
+                padding: var(--spacing-md);
             }
             
             .nav-menu {
@@ -316,6 +408,25 @@
             
             .actions-cell {
                 flex-direction: column;
+            }
+
+            .nav-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+
+            .user-info {
+                width: 100%;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
             }
         }
 
@@ -336,13 +447,18 @@
                 font-size: 12px;
             }
             
-            table th, table td {
+            th, td {
                 padding: 8px 10px;
             }
             
             .btn {
                 padding: 8px 12px;
                 font-size: 0.8rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -351,28 +467,33 @@
 
 <!-- Barra lateral de navegación -->
 <div class="sidebar">
-    <h1>Inventario Deportivo</h1>
+    <h1>Panel de Bodega</h1>
     <ul class="nav-menu">
-    <li><a href="{% url 'menu' %}">Inicio</a></li>
-    <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
-    <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
-    <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
-    <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
-</ul>
-
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}" class="active">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+        <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
+    </ul>
 </div>
 
 <!-- Contenido principal -->
 <div class="main-content">
+    <!-- Encabezado de navegación MEJORADO -->
     <div class="nav-header">
-        <strong>Navegación: </strong>
-        
-<a href="{% url 'menu' %}">Inicio</a> |
-<a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-<a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-<a href="{% url 'inventario_hardware' %}">Hardware</a> |
-<a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
-
+        <div class="nav-links">
+            <strong>Navegación: </strong>
+            <a href="{% url 'menu' %}">Inicio</a> |
+            <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+            <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+            <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+            <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        </div>
+        <div class="user-info">
+            <p><strong>{{ request.session.nombre }}</strong></p>
+            <p>ID: {{ request.session.id_usuario }}</p>
+            <span class="user-role">{{ request.session.rol }}</span>
+        </div>
     </div>
     
     <div class="content-container">
@@ -417,13 +538,15 @@
                     </select>
                 </div>
                 
-                <button type="submit" class="btn btn-primary">
-                    {{ articulo_editar|yesno:"Actualizar,Guardar" }}
-                </button>
-                
-                {% if articulo_editar %}
-                <a href="{% url 'gestion_articulos' %}" class="btn btn-warning">Cancelar</a>
-                {% endif %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        {{ articulo_editar|yesno:"Actualizar,Guardar" }}
+                    </button>
+                    
+                    {% if articulo_editar %}
+                    <a href="{% url 'gestion_articulos' %}" class="btn btn-warning">Cancelar</a>
+                    {% endif %}
+                </div>
             </form>
         </div>
 
@@ -449,15 +572,19 @@
                         <td>{{ articulo.nombre }}</td>
                         <td>{{ articulo.descripcion }}</td>
                         <td>{{ articulo.cantidad_total }}</td>
-                        <td class="
-                            {% if articulo.estado == 'Activo' %}estado-activo
-                            {% elif articulo.estado == 'Inactivo' %}estado-inactivo
-                            {% elif articulo.estado == 'Mantenimiento' %}estado-mantenimiento
-                            {% endif %}">
-                            {{ articulo.get_estado_display|default:articulo.estado }}
+                        <td>
+                            <span class="
+                                {% if articulo.estado == 'Activo' %}estado-activo
+                                {% elif articulo.estado == 'Inactivo' %}estado-inactivo
+                                {% elif articulo.estado == 'Mantenimiento' %}estado-mantenimiento
+                                {% endif %}">
+                                {{ articulo.get_estado_display|default:articulo.estado }}
+                            </span>
                         </td>
-                        <td class="{% if articulo.devolucion == 'S' %}devolucion-si{% else %}devolucion-no{% endif %}">
-                            {{ articulo.devolucion|yesno:"Sí,No" }}
+                        <td>
+                            <span class="{% if articulo.devolucion == 'S' or articulo.devolucion == 'Si' %}devolucion-si{% else %}devolucion-no{% endif %}">
+                                {{ articulo.devolucion|yesno:"Sí,No" }}
+                            </span>
                         </td>
                         <td class="actions-cell">
                             <a href="?editar={{ articulo.id_deportivo }}" class="btn btn-warning">Editar</a>
@@ -467,7 +594,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" style="text-align: center;">No hay artículos registrados</td>
+                        <td colspan="7" class="empty-state">No hay artículos registrados</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -475,6 +602,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    // JavaScript para mejorar la experiencia
+    document.addEventListener("DOMContentLoaded", function () {
+        // Mejorar la experiencia en móviles
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+
+        function adjustLayout() {
+            if (window.innerWidth <= 768) {
+                sidebar.style.position = "relative";
+                mainContent.style.marginLeft = "0";
+            } else {
+                sidebar.style.position = "fixed";
+                mainContent.style.marginLeft = "var(--sidebar-width)";
+            }
+        }
+
+        // Ajustar layout al cargar y al redimensionar
+        adjustLayout();
+        window.addEventListener("resize", adjustLayout);
+    });
+</script>
 
 </body>
 </html>

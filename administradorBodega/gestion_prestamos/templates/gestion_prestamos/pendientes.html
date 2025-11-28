@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <title>Préstamos pendientes</title>
@@ -57,6 +57,7 @@
         margin-bottom: var(--spacing-lg);
         padding-bottom: var(--spacing-md);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
       }
 
       .nav-menu {
@@ -96,22 +97,53 @@
         border-radius: var(--border-radius);
         margin-bottom: var(--spacing-lg);
         box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
       }
 
-      .nav-header strong {
+      .nav-links {
+        flex: 1;
+      }
+
+      .nav-links strong {
         color: var(--dark-color);
       }
 
-      .nav-header a {
+      .nav-links a {
         color: var(--secondary-color);
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s;
       }
 
-      .nav-header a:hover {
+      .nav-links a:hover {
         text-decoration: underline;
         color: var(--primary-color);
+      }
+
+      /* Información del usuario en el header */
+      .user-info {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        min-width: 200px;
+      }
+
+      .user-info p {
+        margin: 2px 0;
+        font-size: 0.9rem;
+      }
+
+      .user-role {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       /* Título principal */
@@ -120,6 +152,37 @@
         margin-bottom: var(--spacing-lg);
         padding-bottom: var(--spacing-md);
         border-bottom: 2px solid var(--secondary-color);
+      }
+
+      /* Panel de estadísticas */
+      .stats-panel {
+        background: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        display: block;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
       }
 
       /* Tabla de préstamos */
@@ -166,42 +229,69 @@
       /* Badges de estado */
       .status-pendiente {
         color: var(--warning-color);
+        background-color: rgba(243, 156, 18, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       .status-aprobado {
         color: var(--success-color);
+        background-color: rgba(39, 174, 96, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       .status-rechazado {
         color: var(--accent-color);
+        background-color: rgba(231, 76, 60, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       /* Acciones */
-      td:last-child a {
-        color: var(--secondary-color);
+      .action-buttons {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+      }
+
+      .action-btn {
+        color: white;
         text-decoration: none;
-        margin: 0 5px;
-        padding: 4px 8px;
-        border-radius: 3px;
+        padding: 6px 12px;
+        border-radius: var(--border-radius);
         transition: all 0.3s;
         font-weight: 500;
+        font-size: 0.85rem;
+        border: none;
+        cursor: pointer;
       }
 
-      td:last-child a:hover {
+      .btn-detail {
         background-color: var(--secondary-color);
-        color: white;
       }
 
-      td:last-child a:nth-child(2):hover {
+      .btn-accept {
         background-color: var(--success-color);
       }
 
-      td:last-child a:nth-child(3):hover {
+      .btn-reject {
         background-color: var(--accent-color);
       }
 
+      .action-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
       /* Estado vacío */
-      p {
+      .empty-state {
         text-align: center;
         padding: var(--spacing-lg);
         background: white;
@@ -210,6 +300,12 @@
         font-size: 1.1em;
         box-shadow: var(--shadow);
         margin-bottom: var(--spacing-lg);
+      }
+
+      .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: var(--spacing-md);
+        opacity: 0.5;
       }
 
       /* Enlace admin */
@@ -266,7 +362,21 @@
         }
 
         .nav-header {
+          flex-direction: column;
+          gap: var(--spacing-md);
           text-align: center;
+        }
+
+        .user-info {
+          width: 100%;
+        }
+
+        .action-buttons {
+          justify-content: center;
+        }
+
+        .stats-panel {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -284,9 +394,12 @@
           align-items: center;
         }
 
-        td:last-child a {
-          display: block;
-          margin: 2px 0;
+        .action-buttons {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .action-btn {
           text-align: center;
         }
       }
@@ -295,7 +408,7 @@
   <body>
     <!-- Barra lateral de navegación -->
     <div class="sidebar">
-      <h1>Panel de Bodega</h1>
+      <h1>gestion prestamos</h1>
       <ul class="nav-menu">
         <li><a href="{% url 'menu' %}">Inicio</a></li>
         <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
@@ -315,23 +428,46 @@
     <div class="main-content">
       <!-- Encabezado de navegación -->
       <div class="nav-header">
-        <strong>Navegación: </strong>
-        <a href="{% url 'menu' %}">Inicio</a> |
-        <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-        <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-        <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        <div class="nav-links">
+          <strong>Navegación: </strong>
+          <a href="{% url 'menu' %}">Inicio</a> |
+          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+          <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        </div>
+        <div class="user-info">
+          <p><strong>{{ request.session.nombre }}</strong></p>
+          <p>ID: {{ request.session.id_usuario }}</p>
+          <span class="user-role">{{ request.session.rol }}</span>
+        </div>
       </div>
 
       <h1>Préstamos pendientes</h1>
 
+      <!-- Panel de estadísticas -->
+      <div class="stats-panel">
+        <div class="stat-card">
+          <span class="stat-number">{{ prestamos|length }}</span>
+          <span class="stat-label">Total Pendientes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">
+            {% with prestamos_hoy=prestamos|dictsort:"fecha_prestamo" %}
+              {{ prestamos_hoy|length }}
+            {% endwith %}
+          </span>
+          <span class="stat-label">Solicitudes Hoy</span>
+        </div>
+      </div>
+
       {% if prestamos %}
-      <table border="1" cellpadding="6">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Docente</th>
-            <th>Fecha</th>
+            <th>Fecha y Hora</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -339,34 +475,44 @@
         <tbody>
           {% for p in prestamos %}
           <tr>
-            <td>{{ p.id_prestamo }}</td>
+            <td><strong>#{{ p.id_prestamo }}</strong></td>
             <td>{{ p.id_usuario.nombres }}</td>
             <td>{{ p.fecha_prestamo }} {{ p.hora_prestamo }}</td>
-            <td class="status-{{ p.estado|lower }}">{{ p.estado }}</td>
             <td>
-              <a
-                href="{% url 'gestion_prestamos:detalle_prestamo_admin' p.id_prestamo %}"
-                >Ver detalle</a
-              >
-              |
-              <a
-                href="{% url 'gestion_prestamos:aceptar_prestamo' p.id_prestamo %}"
-                >Aceptar</a
-              >
-              |
-              <a
-                href="{% url 'gestion_prestamos:rechazar_prestamo' p.id_prestamo %}"
-                >Rechazar</a
-              >
+              <span class="status-{{ p.estado|lower }}">{{ p.estado }}</span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <a
+                  href="{% url 'gestion_prestamos:detalle_prestamo_admin' p.id_prestamo %}"
+                  class="action-btn btn-detail"
+                  >👁️ Detalle</a
+                >
+                <a
+                  href="{% url 'gestion_prestamos:aceptar_prestamo' p.id_prestamo %}"
+                  class="action-btn btn-accept"
+                  >✅ Aceptar</a
+                >
+                <a
+                  href="{% url 'gestion_prestamos:rechazar_prestamo' p.id_prestamo %}"
+                  class="action-btn btn-reject"
+                  >❌ Rechazar</a
+                >
+              </div>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
       {% else %}
-      <p>No hay préstamos pendientes.</p>
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>No hay préstamos pendientes en este momento.</p>
+        <p style="font-size: 0.9em; margin-top: var(--spacing-sm); opacity: 0.7;">
+          Todos los préstamos han sido procesados.
+        </p>
+      </div>
       {% endif %}
-      <br />
     </div>
 
     <script>
@@ -387,6 +533,17 @@
 
         adjustLayout();
         window.addEventListener("resize", adjustLayout);
+
+        // Confirmación para acciones de aceptar/rechazar
+        const actionButtons = document.querySelectorAll('.btn-accept, .btn-reject');
+        actionButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            const action = this.classList.contains('btn-accept') ? 'aceptar' : 'rechazar';
+            if (!confirm(`¿Estás seguro que deseas ${action} este préstamo?`)) {
+              e.preventDefault();
+            }
+          });
+        });
       });
     </script>
   </body>

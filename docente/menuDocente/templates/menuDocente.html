@@ -250,6 +250,10 @@
             <h2>Sistema Docente</h2>
         </div>
         <ul class="sidebar-menu">
+                        <p>Usuario: {{ request.session.nombre }}</p>
+<p>ID: {{ request.session.id_usuario }}</p>
+<p>Rol: {{ request.session.rol }}</p>
+
             <li><a href="#" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
             <li><a href="/docente/elegir/"><i class="fas fa-book"></i> <span>Elegir Artículos</span></a></li>
             <li><a href="/docente/prestamo/mis_prestamos/"><i class="fas fa-list"></i> <span>Mis Préstamos</span></a></li>
@@ -262,7 +266,7 @@
     <div class="main-content">
         <div class="header">
             <h1>Bienvenido Docente</h1>
-            
+
         </div>
 
         <div class="welcome-section">
@@ -271,6 +275,7 @@
         </div>
 
         <div class="options-grid">
+            
             <a href="/docente/elegir/" class="option-card card-1">
                 <div class="card-icon">
                     <i class="fas fa-book"></i>

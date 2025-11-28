@@ -1,19 +1,19 @@
-# -*- coding: utf-8 -*-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Inventario Hardware</title>
     <style>
-        /* Variables CSS para colores y dimensiones */
+        /* Variables CSS para colores y dimensiones - CONSISTENTES */
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
             --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
             --light-color: #ecf0f1;
-            --dark-color: #34495e;
+            --dark-color: #2c3e50;
             --sidebar-width: 250px;
-            --header-height: 70px;
             --spacing-sm: 10px;
             --spacing-md: 15px;
             --spacing-lg: 20px;
@@ -57,6 +57,7 @@
             margin-bottom: var(--spacing-lg);
             padding-bottom: var(--spacing-md);
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
         }
 
         .nav-menu {
@@ -76,7 +77,8 @@
             transition: background-color 0.3s;
         }
 
-        .nav-menu a:hover {
+        .nav-menu a:hover,
+        .nav-menu a.active {
             background-color: rgba(255,255,255,0.1);
         }
 
@@ -85,29 +87,63 @@
             flex: 1;
             margin-left: var(--sidebar-width);
             padding: var(--spacing-lg);
+            min-height: 100vh;
         }
 
-        /* Encabezado de navegación */
+        /* Encabezado de navegación MEJORADO */
         .nav-header {
             background-color: var(--light-color);
             padding: var(--spacing-md);
             border-radius: var(--border-radius);
             margin-bottom: var(--spacing-lg);
             box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .nav-header strong {
+        .nav-links {
+            flex: 1;
+        }
+
+        .nav-links strong {
             color: var(--dark-color);
         }
 
-        .nav-header a {
+        .nav-links a {
             color: var(--secondary-color);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .nav-header a:hover {
+        .nav-links a:hover {
             text-decoration: underline;
+            color: var(--primary-color);
+        }
+
+        /* Información del usuario en el header */
+        .user-info {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .user-info p {
+            margin: 2px 0;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
         }
 
         /* Contenedor principal de contenido */
@@ -117,7 +153,7 @@
             flex-wrap: wrap;
         }
 
-        /* Formularios */
+        /* Formularios MEJORADOS */
         .form-section {
             flex: 1;
             min-width: 300px;
@@ -134,6 +170,10 @@
             padding-bottom: var(--spacing-sm);
         }
 
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
         .form-section label {
             display: block;
             margin-bottom: 5px;
@@ -146,11 +186,19 @@
         .form-section textarea,
         .form-section select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-md);
             font-family: inherit;
+            transition: border-color 0.3s;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-section input:focus,
+        .form-section textarea:focus,
+        .form-section select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
         }
 
         .form-section textarea {
@@ -158,33 +206,68 @@
             resize: vertical;
         }
 
-        .form-section button {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
+        .btn {
             padding: 10px 20px;
+            border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .form-section button:hover {
-            background-color: #2980b9;
-        }
-
-        .form-section a {
-            color: var(--secondary-color);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #219653;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
             margin-top: var(--spacing-md);
         }
 
-        .form-section a:hover {
-            text-decoration: underline;
-        }
-
-        /* Tabla */
+        /* Tabla MEJORADA */
         .table-section {
             flex: 2;
             min-width: 500px;
@@ -205,41 +288,112 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
         }
 
-        table th {
-            background-color: var(--primary-color);
+        thead {
+            background: var(--secondary-color);
             color: white;
-            text-align: left;
+        }
+
+        th {
             padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
         }
 
-        table td {
+        td {
             padding: 10px 15px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ecf0f1;
         }
 
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
+        tbody tr:hover {
+            background-color: #f8f9fa;
         }
 
-        table tr:hover {
-            background-color: #f1f1f1;
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
-        table a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            margin: 0 5px;
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
         }
 
-        table a:hover {
-            text-decoration: underline;
+        .actions-cell .btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
         }
 
-        /* Estilos para el modo eliminar */
-        .form-section h2:first-child {
+        /* Estados con colores MEJORADOS */
+        .estado-activo {
+            color: var(--success-color);
+            background-color: rgba(39, 174, 96, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .estado-inactivo {
+            color: #7f8c8d;
+            background-color: rgba(127, 140, 141, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .estado-mantenimiento {
+            color: var(--warning-color);
+            background-color: rgba(243, 156, 18, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .devolucion-obligatorio {
+            color: var(--success-color);
+            background-color: rgba(39, 174, 96, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .devolucion-no-obligatorio {
             color: var(--accent-color);
+            background-color: rgba(231, 76, 60, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* Modo eliminar */
+        .delete-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: #7f8c8d;
+            font-style: italic;
         }
 
         /* Responsive */
@@ -255,14 +409,20 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
+                padding: var(--spacing-md);
             }
             
             .main-content {
                 margin-left: 0;
+                padding: var(--spacing-md);
             }
             
             .nav-menu {
@@ -273,6 +433,29 @@
             
             .nav-menu li {
                 margin: 5px;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+
+            .nav-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+
+            .user-info {
+                width: 100%;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -293,8 +476,18 @@
                 font-size: 12px;
             }
             
-            table th, table td {
+            th, td {
                 padding: 8px 10px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -303,173 +496,272 @@
 
 <!-- Barra lateral de navegación -->
 <div class="sidebar">
-    <h1>Inventario Hardware</h1>
+    <h1>Panel de Bodega</h1>
     <ul class="nav-menu">
-        <ul class="nav-menu">
-    <li><a href="{% url 'menu' %}">Inicio</a></li>
-    <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
-    <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
-    <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
-    <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
-</ul>
-
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}" class="active">Hardware</a></li>
+        <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
     </ul>
 </div>
 
 <!-- Contenido principal -->
 <div class="main-content">
+    <!-- Encabezado de navegación MEJORADO -->
     <div class="nav-header">
-        <strong>Navegación: </strong>
-        
-<a href="{% url 'menu' %}">Inicio</a> |
-<a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-<a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-<a href="{% url 'inventario_hardware' %}">Hardware</a> |
-<a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
-
+        <div class="nav-links">
+            <strong>Navegación: </strong>
+            <a href="{% url 'menu' %}">Inicio</a> |
+            <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+            <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+            <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+            <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+        </div>
+        <div class="user-info">
+            <p><strong>{{ request.session.nombre }}</strong></p>
+            <p>ID: {{ request.session.id_usuario }}</p>
+            <span class="user-role">{{ request.session.rol }}</span>
+        </div>
     </div>
     
     <div class="content-container">
         <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
         <div class="form-section">
             {% if modo == "lista" %}
-                <h2>Crear artículo</h2>
+                <h2>💻 Crear Artículo de Hardware</h2>
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="accion" value="crear">
 
-                    <label>Nombre:</label>
-                    <input type="text" name="nombre">
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" placeholder="Ej: Laptop Dell" required>
+                    </div>
 
-                    <label>Descripción:</label>
-                    <textarea name="descripcion"></textarea>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea name="descripcion" placeholder="Descripción del equipo" required></textarea>
+                    </div>
 
-                    <label>Marca:</label>
-                    <input type="text" name="marca">
+                    <div class="form-group">
+                        <label>Marca:</label>
+                        <input type="text" name="marca" placeholder="Ej: Dell, HP, Lenovo" required>
+                    </div>
 
-                    <label>Modelo:</label>
-                    <input type="text" name="modelo">
+                    <div class="form-group">
+                        <label>Modelo:</label>
+                        <input type="text" name="modelo" placeholder="Ej: Latitude 5490" required>
+                    </div>
 
-                    <label>Serial:</label>
-                    <input type="text" name="serial">
+                    <div class="form-group">
+                        <label>Serial:</label>
+                        <input type="text" name="serial" placeholder="Número de serie" required>
+                    </div>
 
-                    <label>Cantidad total:</label>
-                    <input type="number" name="cantidad_total">
+                    <div class="form-group">
+                        <label>Cantidad total:</label>
+                        <input type="number" name="cantidad_total" min="0" value="1" required>
+                    </div>
 
-                    <label>Estado:</label>
-                    <select name="estado" required>
-                        <option value="">Seleccionar estado...</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                        <option value="mantenimiento">Mantenimiento</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select name="estado" required>
+                            <option value="">Seleccionar estado...</option>
+                            <option value="activo"> Activo</option>
+                            <option value="inactivo"> Inactivo</option>
+                            <option value="mantenimiento"> Mantenimiento</option>
+                        </select>
+                    </div>
 
-                    <label>Devolución:</label>
-                    <select name="devolucion">
-                        <option value="obligatorio">Obligatorio</option>
-                        <option value="no obligatorio">No obligatorio</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Devolución:</label>
+                        <select name="devolucion" required>
+                            <option value="obligatorio"> Obligatorio</option>
+                            <option value="no obligatorio"> No obligatorio</option>
+                        </select>
+                    </div>
 
-                    <button type="submit">Guardar</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary"> Guardar Artículo</button>
+                    </div>
                 </form>
             {% endif %}
 
             {% if modo == "editar" %}
-                <h2>Editar artículo</h2>
+                <h2> Editar Artículo</h2>
 
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="accion" value="editar">
 
-                    <label>Nombre:</label>
-                    <input type="text" name="nombre" value="{{ item.nombre }}">
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" value="{{ item.nombre }}" required>
+                    </div>
 
-                    <label>Descripción:</label>
-                    <textarea name="descripcion">{{ item.descripcion }}</textarea>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea name="descripcion" required>{{ item.descripcion }}</textarea>
+                    </div>
 
-                    <label>Marca:</label>
-                    <input type="text" name="marca" value="{{ item.marca }}">
+                    <div class="form-group">
+                        <label>Marca:</label>
+                        <input type="text" name="marca" value="{{ item.marca }}" required>
+                    </div>
 
-                    <label>Modelo:</label>
-                    <input type="text" name="modelo" value="{{ item.modelo }}">
+                    <div class="form-group">
+                        <label>Modelo:</label>
+                        <input type="text" name="modelo" value="{{ item.modelo }}" required>
+                    </div>
 
-                    <label>Serial:</label>
-                    <input type="text" name="serial" value="{{ item.serial }}">
+                    <div class="form-group">
+                        <label>Serial:</label>
+                        <input type="text" name="serial" value="{{ item.serial }}" required>
+                    </div>
 
-                    <label>Cantidad total:</label>
-                    <input type="number" name="cantidad_total" value="{{ item.cantidad_total }}">
+                    <div class="form-group">
+                        <label>Cantidad total:</label>
+                        <input type="number" name="cantidad_total" value="{{ item.cantidad_total }}" min="0" required>
+                    </div>
 
-                    <label>Estado:</label>
-                    <select name="estado" required>
-                        <option value="">Seleccionar estado...</option>
-                        <option value="activo" {% if item.estado == "activo" %}selected{% endif %}>Activo</option>
-                        <option value="inactivo" {% if item.estado == "inactivo" %}selected{% endif %}>Inactivo</option>
-                        <option value="mantenimiento" {% if item.estado == "mantenimiento" %}selected{% endif %}>Mantenimiento</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select name="estado" required>
+                            <option value="">Seleccionar estado...</option>
+                            <option value="activo" {% if item.estado == "activo" %}selected{% endif %}> Activo</option>
+                            <option value="inactivo" {% if item.estado == "inactivo" %}selected{% endif %}> Inactivo</option>
+                            <option value="mantenimiento" {% if item.estado == "mantenimiento" %}selected{% endif %}> Mantenimiento</option>
+                        </select>
+                    </div>
 
-                    <label>Devolución:</label>
-                    <select name="devolucion">
-                        <option value="obligatorio" {% if item.devolucion == "obligatorio" %}selected{% endif %}>Obligatorio</option>
-                        <option value="no obligatorio" {% if item.devolucion == "no obligatorio" %}selected{% endif %}>No obligatorio</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Devolución:</label>
+                        <select name="devolucion" required>
+                            <option value="obligatorio" {% if item.devolucion == "obligatorio" %}selected{% endif %}> Obligatorio</option>
+                            <option value="no obligatorio" {% if item.devolucion == "no obligatorio" %}selected{% endif %}> No obligatorio</option>
+                        </select>
+                    </div>
 
-                    <button type="submit">Actualizar</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                        <a href="/hardware/" class="btn btn-warning"> Cancelar</a>
+                    </div>
                 </form>
-
-                <a href="/hardware/">Cancelar edición</a>
             {% endif %}
 
             {% if modo == "eliminar" %}
-                <h2>¿Eliminar artículo?</h2>
-                <p><b>{{ item.nombre }}</b></p>
+                <h2>🗑️ Eliminar Artículo</h2>
+                
+                <div class="delete-warning">
+                    <strong>⚠️ ¿Está seguro de eliminar este artículo?</strong>
+                    <p style="margin-top: 5px;">Esta acción no se puede deshacer.</p>
+                </div>
+
+                <p><strong>Artículo:</strong> {{ item.nombre }}</p>
+                <p><strong>Marca/Modelo:</strong> {{ item.marca }} {{ item.modelo }}</p>
+                <p><strong>Serial:</strong> {{ item.serial }}</p>
 
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="accion" value="eliminar">
-                    <button type="submit">Eliminar</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-danger"> Confirmar Eliminación</button>
+                        <a href="/hardware/" class="btn btn-secondary">↩ Cancelar</a>
+                    </div>
                 </form>
-
-                <a href="/hardware/">Cancelar</a>
             {% endif %}
         </div>
 
         <!-- ================= TABLA A LA DERECHA ================= -->
         <div class="table-section">
-            <h2>Lista de artículos</h2>
+            <h2> Lista de Artículos de Hardware ({{ datos|length }})</h2>
 
             <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Serial</th>
-                    <th>Cantidad</th>
-                    <th>Estado</th>
-                    <th>Devolución</th>
-                    <th>Acciones</th>
-                </tr>
-
-                {% for d in datos %}
-                <tr>
-                    <td>{{ d.id_hardware }}</td>
-                    <td>{{ d.nombre }}</td>
-                    <td>{{ d.marca }}</td>
-                    <td>{{ d.modelo }}</td>
-                    <td>{{ d.serial }}</td>
-                    <td>{{ d.cantidad_total }}</td>
-                    <td>{{ d.estado }}</td>
-                    <td>{{ d.devolucion }}</td>
-                    <td>
-                        <a href="/hardware/?modo=editar&id={{ d.id_hardware }}">Editar</a>
-                        <a href="/hardware/?modo=eliminar&id={{ d.id_hardware }}">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Serial</th>
+                        <th>Cantidad</th>
+                        <th>Estado</th>
+                        <th>Devolución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in datos %}
+                    <tr>
+                        <td><strong>#{{ d.id_hardware }}</strong></td>
+                        <td>{{ d.nombre }}</td>
+                        <td>{{ d.marca }}</td>
+                        <td>{{ d.modelo }}</td>
+                        <td><code>{{ d.serial }}</code></td>
+                        <td><strong>{{ d.cantidad_total }}</strong></td>
+                        <td>
+                            <span class="
+                                {% if d.estado == 'activo' %}estado-activo
+                                {% elif d.estado == 'inactivo' %}estado-inactivo
+                                {% elif d.estado == 'mantenimiento' %}estado-mantenimiento
+                                {% endif %}">
+                                {{ d.estado|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="{% if d.devolucion == 'obligatorio' %}devolucion-obligatorio{% else %}devolucion-no-obligatorio{% endif %}">
+                                {{ d.devolucion|title }}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <a href="/hardware/?modo=editar&id={{ d.id_hardware }}" class="btn btn-warning"> Editar</a>
+                            <a href="/hardware/?modo=eliminar&id={{ d.id_hardware }}" class="btn btn-danger"> Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="empty-state">No hay artículos de hardware registrados</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+    // JavaScript para mejorar la experiencia
+    document.addEventListener("DOMContentLoaded", function () {
+        // Mejorar la experiencia en móviles
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+
+        function adjustLayout() {
+            if (window.innerWidth <= 768) {
+                sidebar.style.position = "relative";
+                mainContent.style.marginLeft = "0";
+            } else {
+                sidebar.style.position = "fixed";
+                mainContent.style.marginLeft = "var(--sidebar-width)";
+            }
+        }
+
+        // Ajustar layout al cargar y al redimensionar
+        adjustLayout();
+        window.addEventListener("resize", adjustLayout);
+
+        // Confirmación para eliminación
+        const deleteButtons = document.querySelectorAll('.btn-danger[href*="eliminar"]');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('¿Está seguro de que desea eliminar este artículo?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

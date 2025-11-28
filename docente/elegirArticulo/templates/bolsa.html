@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Bolsa - Sistema de Préstamos</title>
     <style>
+        /* Variables CSS para colores y dimensiones - CONSISTENTES */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 250px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 20px;
+            --border-radius: 5px;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,258 +35,361 @@
             background-color: #f5f7fa;
         }
 
-        /* Barra lateral */
+        /* Barra lateral MEJORADA */
         .sidebar {
-            width: 250px;
-            background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
             color: white;
-            padding: 20px 0;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
             height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
             overflow-y: auto;
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
             z-index: 1000;
         }
 
-        .sidebar-header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
         }
 
-        .sidebar-header h2 {
-            font-size: 1.4rem;
-            font-weight: 500;
-        }
-
-        .sidebar-menu {
+        .nav-menu {
             list-style: none;
         }
 
-        .sidebar-menu li {
-            margin-bottom: 5px;
+        .nav-menu li {
+            margin-bottom: var(--spacing-sm);
         }
 
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            color: #ecf0f1;
+        .nav-menu a {
+            color: var(--light-color);
             text-decoration: none;
-            padding: 12px 20px;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
         }
 
-        .sidebar-menu a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #3498db;
-        }
-
-        .sidebar-menu a.active {
-            background-color: rgba(52, 152, 219, 0.2);
-            border-left: 4px solid #3498db;
-        }
-
-        .sidebar-menu i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-            width: 20px;
-            text-align: center;
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background-color: rgba(255,255,255,0.1);
         }
 
         /* Contenido principal */
         .main-content {
             flex: 1;
-            margin-left: 250px;
-            padding: 30px;
+            margin-left: var(--sidebar-width);
+            padding: var(--spacing-lg);
+            min-height: 100vh;
         }
 
-        .header {
+        /* Encabezado de navegación MEJORADO */
+        .nav-header {
+            background-color: var(--light-color);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e6ed;
+            flex-wrap: wrap;
         }
 
-        .header h1 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-            font-weight: 600;
+        .nav-links {
+            flex: 1;
         }
 
+        .nav-links strong {
+            color: var(--dark-color);
+        }
+
+        .nav-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+            color: var(--primary-color);
+        }
+
+        /* Información del usuario en el header */
         .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #3498db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
             color: white;
-            font-weight: bold;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 200px;
         }
 
+        .user-info p {
+            margin: 2px 0;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        /* Título principal */
+        .page-title {
+            color: var(--dark-color);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        /* Enlace superior */
         .top-link {
             display: inline-flex;
             align-items: center;
-            color: #3498db;
+            color: var(--secondary-color);
             text-decoration: none;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-lg);
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: color 0.3s;
+            gap: var(--spacing-sm);
         }
 
         .top-link:hover {
-            color: #2980b9;
+            color: var(--primary-color);
         }
 
-        .top-link i {
-            margin-right: 8px;
-        }
-
+        /* Tarjeta de contenido */
         .content-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
         }
 
         .content-card h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: var(--spacing-sm);
         }
 
+        /* Tabla MEJORADA */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            background: white;
+            margin-bottom: var(--spacing-lg);
         }
 
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e6ed;
+        thead {
+            background: var(--secondary-color);
+            color: white;
         }
 
         th {
-            background-color: #f8f9fa;
-            color: #2c3e50;
+            padding: 12px 15px;
+            text-align: left;
             font-weight: 600;
+            border: none;
         }
 
-        tr:hover {
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tbody tr:hover {
             background-color: #f8f9fa;
         }
 
-        .btn-delete {
-            background-color: #e74c3c;
-            color: white;
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Botones MEJORADOS */
+        .btn {
+            padding: 10px 20px;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all 0.3s;
             font-size: 0.9rem;
-            transition: background-color 0.3s ease;
         }
 
-        .btn-delete:hover {
+        .btn-primary {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #219653;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
             background-color: #c0392b;
+            transform: translateY(-1px);
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #7f8c8d;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #bdc3c7;
-        }
-
-        .empty-state p {
-            font-size: 1.1rem;
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
         }
 
         .action-buttons {
             display: flex;
-            gap: 15px;
-            margin-top: 25px;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-lg);
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
+        /* Badges de categoría */
+        .categoria-badge {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
             font-weight: 500;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
         }
 
-        .btn:hover {
-            background-color: #2980b9;
+        .categoria-deportivo {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
         }
 
-        .btn-secondary {
-            background-color: #95a5a6;
+        .categoria-papeleria {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
         }
 
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
+        .categoria-hardware {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
         }
 
-        .btn i {
-            margin-right: 8px;
+        /* Estado vacío */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.5;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: var(--spacing-md);
             }
-            
-            .sidebar-header h2, .sidebar-menu span {
-                display: none;
-            }
-            
-            .sidebar-menu a {
-                justify-content: center;
-                padding: 15px 0;
-            }
-            
-            .sidebar-menu i {
-                margin-right: 0;
-                font-size: 1.4rem;
-            }
-            
+
             .main-content {
-                margin-left: 70px;
-                padding: 20px;
+                margin-left: 0;
+                padding: var(--spacing-md);
             }
-            
+
+            .nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-menu li {
+                margin: 5px;
+            }
+
+            .nav-header {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+
+            .user-info {
+                width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
             table {
-                display: block;
-                overflow-x: auto;
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px;
+            }
+
+            .main-content {
+                padding: var(--spacing-md);
+            }
+
+            .content-card {
+                padding: var(--spacing-md);
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-buttons {
+                gap: var(--spacing-sm);
             }
         }
     </style>
@@ -278,34 +398,42 @@
 <body>
     <!-- Barra lateral -->
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Sistema Docente</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/docente/"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
-            <li><a href="/docente/elegir/"><i class="fas fa-book"></i> <span>Elegir Artículos</span></a></li>
-            <li><a href="/docente/prestamo/mis_prestamos/"><i class="fas fa-list"></i> <span>Mis Préstamos</span></a></li>
-            <li><a href="{% url 'prestamo:confirmar_prestamo' %}"><i class="fas fa-check-circle"></i> <span>Confirmar Préstamo</span></a></li>
-            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a></li>
+        <h1>Panel Docente</h1>
+        <ul class="nav-menu">
+            <li><a href="/docente/"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="/docente/elegir/"><i class="fas fa-book"></i> Elegir Artículos</a></li>
+            <li><a href="/docente/prestamo/mis_prestamos/"><i class="fas fa-list"></i> Mis Préstamos</a></li>
+            <li><a href="{% url 'prestamo:confirmar_prestamo' %}" class="active"><i class="fas fa-check-circle"></i> Confirmar Préstamo</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
     </div>
 
     <!-- Contenido principal -->
     <div class="main-content">
-        <div class="header">
-            <h1>Mi Bolsa</h1>
+        <!-- Encabezado de navegación MEJORADO -->
+        <div class="nav-header">
+            <div class="nav-links">
+                <strong>Navegación: </strong>
+                <a href="/docente/">Inicio</a> |
+                <a href="/docente/elegir/">Elegir Artículos</a> |
+                <a href="/docente/prestamo/mis_prestamos/">Mis Préstamos</a> |
+                <a href="{% url 'prestamo:confirmar_prestamo' %}">Confirmar Préstamo</a>
+            </div>
             <div class="user-info">
-                <div class="user-avatar">JD</div>
-                <span>Juan Docente</span>
+                <p><strong>{{ request.session.nombre }}</strong></p>
+                <p>ID: {{ request.session.id_usuario }}</p>
+                <span class="user-role">{{ request.session.rol }}</span>
             </div>
         </div>
 
+        <h1 class="page-title"> Mi Bolsa de Préstamos</h1>
+
         <a href="{% url 'elegir_articulo' %}" class="top-link">
-            <i class="fas fa-arrow-left"></i> Seguir eligiendo
+            <i class="fas fa-arrow-left"></i> Seguir eligiendo artículos
         </a>
 
         <div class="content-card">
-            <h2>Artículos en mi bolsa</h2>
+            <h2> Artículos en mi Bolsa ({{ articulos|length }})</h2>
             
             {% if articulos %}
             <table>
@@ -320,14 +448,19 @@
                 <tbody>
                     {% for a in articulos %}
                     <tr>
-                        <td>{{ a.obj.nombre }}</td>
-                        <td>{{ a.tipo }}</td>
-                        <td>{{ a.obj.cantidad_total }}</td>
+                        <td><strong>{{ a.obj.nombre }}</strong></td>
                         <td>
-                            <form method="POST">
+                            <span class="categoria-badge categoria-{{ a.tipo|lower }}">
+                                {{ a.tipo }}
+                            </span>
+                        </td>
+                        <td><strong>{{ a.obj.cantidad_total }}</strong></td>
+                        <td>
+                            <form method="POST" style="display: inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="eliminar_uid" value="{{ a.uid }}" />
-                                <button class="btn-delete" type="submit">
+                                <button class="btn btn-danger btn-sm" type="submit" 
+                                        onclick="return confirm('¿Estás seguro de quitar este artículo de tu bolsa?')">
                                     <i class="fas fa-trash-alt"></i> Quitar
                                 </button>
                             </form>
@@ -338,8 +471,8 @@
             </table>
             
             <div class="action-buttons">
-                <a href="{% url 'prestamo:confirmar_prestamo' %}" class="btn">
-                    <i class="fas fa-check-circle"></i> Confirmar Préstamo
+                <a href="{% url 'prestamo:confirmar_prestamo' %}" class="btn btn-primary">
+                    <i class="fas fa-check-circle"></i>  Confirmar Préstamo
                 </a>
                 <a href="/docente/elegir/" class="btn btn-secondary">
                     <i class="fas fa-plus"></i> Agregar Más Artículos
@@ -347,14 +480,52 @@
             </div>
             {% else %}
             <div class="empty-state">
-                <i class="fas fa-shopping-bag"></i>
-                <p>No hay artículos en la bolsa.</p>
-                <a href="/docente/elegir/" class="btn" style="margin-top: 20px;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <p>No hay artículos en tu bolsa de préstamos.</p>
+                <p style="font-size: 0.9em; margin-top: var(--spacing-sm); opacity: 0.7;">
+                    Agrega algunos artículos para continuar con tu préstamo.
+                </p>
+                <a href="/docente/elegir/" class="btn btn-primary" style="margin-top: var(--spacing-md);">
                     <i class="fas fa-book"></i> Elegir Artículos
                 </a>
             </div>
             {% endif %}
         </div>
     </div>
+
+    <script>
+        // JavaScript para mejorar la experiencia
+        document.addEventListener("DOMContentLoaded", function () {
+            // Mejorar la experiencia en móviles
+            const sidebar = document.querySelector(".sidebar");
+            const mainContent = document.querySelector(".main-content");
+
+            function adjustLayout() {
+                if (window.innerWidth <= 768) {
+                    sidebar.style.position = "relative";
+                    mainContent.style.marginLeft = "0";
+                } else {
+                    sidebar.style.position = "fixed";
+                    mainContent.style.marginLeft = "var(--sidebar-width)";
+                }
+            }
+
+            // Ajustar layout al cargar y al redimensionar
+            adjustLayout();
+            window.addEventListener("resize", adjustLayout);
+
+            // Confirmación mejorada para eliminar artículos
+            const deleteForms = document.querySelectorAll('form[action*="eliminar"]');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!confirm('¿Está seguro de que desea quitar este artículo de su bolsa?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
