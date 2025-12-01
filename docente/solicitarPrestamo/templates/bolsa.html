@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Mi bolsa</title>
+  </head>
+  <body>
+    <h1>Mi bolsa</h1>
+
+    <!-- Lista de items: cada item tiene su propio formulario de ELIMINAR -->
+    <h2>Items agregados</h2>
+    <ul>
+      {% for it in items %}
+      <li>
+        {{ it.art.nombre }} ({{ it.cantidad }}) - {{ it.categoria }}
+
+        <!-- Formulario DE ELIMINAR (separado) -->
+        <form
+          method="post"
+          action="{% url 'solicitarPrestamo:bolsa_remove' %}"
+          style="display: inline; margin-left: 10px"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="categoria" value="{{ it.categoria }}" />
+          {% if it.categoria == 'papeleria' %}
+          <input
+            type="hidden"
+            name="art_id"
+            value="{{ it.art.id_papeleria }}"
+          />
+          {% elif it.categoria == 'hardware' %}
+          <input type="hidden" name="art_id" value="{{ it.art.id_hardware }}" />
+          {% else %}
+          <input
+            type="hidden"
+            name="art_id"
+            value="{{ it.art.id_deportivo }}"
+          />
+          {% endif %}
+          <button type="submit">Eliminar</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <hr />
+
+    <!-- FORMULARIO PRINCIPAL para CONFIRMAR la reserva -->
+    <form method="post" action="{% url 'solicitarPrestamo:confirmar' %}">
+      {% csrf_token %}
+      <label
+        >Fecha inicio: <input type="date" name="fecha_inicio" required
+      /></label>
+      <label
+        >Hora inicio: <input type="time" name="hora_inicio" required
+      /></label>
+
+      <label>Hora de fin:</label>
+      <input type="time" name="hora_fin" required />
+
+      <div>
+        <label>Observaciones: <input type="text" name="observaciones" /></label>
+      </div>
+
+      <br />
+      <button type="submit">Confirmar solicitud</button>
+    </form>
+
+    <p>
+      <a href="{% url 'solicitarPrestamo:seleccionar' %}">Seguir agregando</a>
+    </p>
+  </body>
+</html>

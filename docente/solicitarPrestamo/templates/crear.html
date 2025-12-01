@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Crear solicitud</title>
+  </head>
+  <body>
+    <h1>Crear nueva solicitud</h1>
+
+    <p><strong>Docente ID:</strong> {{ usuario_id }}</p>
+
+    <h2>Papelería</h2>
+    {% for art in papeleria %}
+    <div style="margin-bottom: 6px">
+      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
+        {% csrf_token %}
+        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
+        <input type="hidden" name="categoria" value="papeleria" />
+        <input type="hidden" name="art_id" value="{{ art.id_papeleria }}" />
+        <input
+          type="number"
+          name="cantidad"
+          min="1"
+          max="{{ art.cantidad_total }}"
+          value="1"
+        />
+        <button type="submit">Añadir</button>
+      </form>
+    </div>
+    {% endfor %}
+
+    <h2>Hardware</h2>
+    {% for art in hardware %}
+    <div style="margin-bottom: 6px">
+      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
+        {% csrf_token %}
+        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
+        <input type="hidden" name="categoria" value="hardware" />
+        <input type="hidden" name="art_id" value="{{ art.id_hardware }}" />
+        <input
+          type="number"
+          name="cantidad"
+          min="1"
+          max="{{ art.cantidad_total }}"
+          value="1"
+        />
+        <button type="submit">Añadir</button>
+      </form>
+    </div>
+    {% endfor %}
+
+    <h2>Deportivos</h2>
+    {% for art in deportivos %}
+    <div style="margin-bottom: 6px">
+      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
+        {% csrf_token %}
+        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
+        <input type="hidden" name="categoria" value="deportivo" />
+        <input type="hidden" name="art_id" value="{{ art.id_deportivo }}" />
+        <input
+          type="number"
+          name="cantidad"
+          min="1"
+          max="{{ art.cantidad_total }}"
+          value="1"
+        />
+        <button type="submit">Añadir</button>
+      </form>
+    </div>
+    {% endfor %}
+
+    <hr />
+    <p>
+      <a href="{% url 'solicitarPrestamo:bolsa_ver' %}"
+        >Ver bolsa y confirmar</a
+      >
+    </p>
+  </body>
+</html>

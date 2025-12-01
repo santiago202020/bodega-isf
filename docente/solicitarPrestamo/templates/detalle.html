@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Detalle</title>
+  </head>
+  <body>
+    <h1>Detalle solicitud #{{ prestamo.id_prestamo }}</h1>
+    <p>Estado: {{ prestamo.estado }}</p>
+    <p>Fecha inicio: {{ prestamo.fecha_inicio }} {{ prestamo.hora_inicio }}</p>
+    <p>Observaciones: {{ prestamo.observaciones }}</p>
+
+    <h2>Artículos</h2>
+    <table border="1">
+      <tr>
+        <th>Artículo</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Estado detalle</th>
+      </tr>
+      {% for row in detalles %}
+      <tr>
+        <td>{{ row.art.nombre|default:"Artículo eliminado" }}</td>
+        <td>{{ row.detalle.tipo_articulo }}</td>
+        <td>{{ row.detalle.cantidad }}</td>
+        <td>{{ row.detalle.estado_detalle }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

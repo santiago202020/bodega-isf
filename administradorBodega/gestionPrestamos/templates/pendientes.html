@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Préstamos Pendientes - Panel de Bodega</title>
+    <style>
+      /* Variables CSS para colores y dimensiones */
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --sidebar-width: 250px;
+        --header-height: 70px;
+        --spacing-sm: 10px;
+        --spacing-md: 15px;
+        --spacing-lg: 20px;
+        --border-radius: 5px;
+        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Reset y estilos base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f7fa;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Barra lateral de navegación */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+      }
+
+      .sidebar h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-menu li {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .nav-menu a {
+        color: var(--light-color);
+        text-decoration: none;
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        transition: background-color 0.3s;
+      }
+
+      .nav-menu a:hover,
+      .nav-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Contenido principal */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        min-height: 100vh;
+      }
+
+      /* Encabezado de navegación */
+      .nav-header {
+        background-color: var(--light-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-header strong {
+        color: var(--dark-color);
+      }
+
+      .nav-header a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-header a:hover {
+        text-decoration: underline;
+        color: var(--primary-color);
+      }
+
+      /* Panel de título */
+      .title-panel {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+      }
+
+      .title-panel h1 {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      /* Tarjetas de préstamos */
+      .prestamo-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .prestamo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid #eee;
+      }
+
+      .prestamo-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .info-item {
+        padding: var(--spacing-sm);
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .info-value {
+        color: #666;
+      }
+
+      /* Tabla de artículos */
+      .articulos-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: var(--spacing-md) 0;
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .articulos-table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: var(--spacing-md);
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .articulos-table td {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid #eee;
+      }
+
+      .articulos-table tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      /* Botones de acción */
+      .action-buttons {
+        display: flex;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #eee;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #219653;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background-color: var(--accent-color);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+      }
+
+      .btn-disabled {
+        background-color: #95a5a6;
+        color: white;
+        cursor: not-allowed;
+      }
+
+      .btn-disabled:hover {
+        transform: none;
+      }
+
+      /* Estados y badges */
+      .badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .badge-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .badge-danger {
+        background-color: var(--accent-color);
+        color: white;
+      }
+
+      /* Mensajes */
+      .alert {
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        border-left: 4px solid;
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        border-color: var(--success-color);
+        color: #155724;
+      }
+
+      .alert-error {
+        background-color: #f8d7da;
+        border-color: var(--accent-color);
+        color: #721c24;
+      }
+
+      /* Estado vacío */
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-lg);
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .empty-state h3 {
+        color: var(--dark-color);
+        margin-bottom: var(--spacing-md);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: var(--spacing-md);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: var(--spacing-md);
+        }
+
+        .prestamo-info {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .articulos-table {
+          font-size: 0.9rem;
+        }
+
+        .articulos-table th,
+        .articulos-table td {
+          padding: var(--spacing-sm);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Barra lateral de navegación -->
+    <nav class="sidebar">
+      <h1>Panel de Bodega</h1>
+      <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+        <li>
+          <a href="{% url 'gestionPrestamos:pendientes' %}" class="active"
+            >Préstamos Pendientes</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'gestionDevolucion:pendientes' %}"
+            >Gestión de Devoluciones</a
+          >
+        </li>
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Encabezado de navegación -->
+      <div class="nav-header">
+        <strong>Navegación: </strong>
+        <a href="{% url 'menu' %}">Inicio</a> |
+        <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+        <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+        <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+        <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
+      </div>
+
+      <!-- Panel de título -->
+      <section class="title-panel">
+        <h1>📋 Préstamos Pendientes</h1>
+        <p>Gestión de solicitudes de préstamo en espera de aprobación</p>
+      </section>
+
+      <!-- Mensajes del sistema -->
+      {% for message in messages %}
+      <div
+        class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+
+      <!-- Lista de préstamos -->
+      {% for item in prestamos_con_detalles %}
+      <div class="prestamo-card">
+        <div class="prestamo-header">
+          <h3>Préstamo #{{ item.prestamo.id_prestamo }}</h3>
+          <span
+            class="badge {% if item.prestamo.estado == 'PENDIENTE' %}badge-warning{% else %}badge-success{% endif %}"
+          >
+            {{ item.prestamo.estado }}
+          </span>
+        </div>
+
+        <div class="prestamo-info">
+          <div class="info-item">
+            <span class="info-label">Usuario ID</span>
+            <span class="info-value">{{ item.prestamo.id_usuario }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha Solicitud</span>
+            <span class="info-value"
+              >{{ item.prestamo.fecha_prestamo }} {{ item.prestamo.hora_prestamo
+              }}</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Uso</span>
+            <span class="info-value"
+              >{{ item.prestamo.fecha_inicio }} {{ item.prestamo.hora_inicio }}
+              - {{ item.prestamo.hora_fin }}</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Observaciones</span>
+            <span class="info-value">{{ item.prestamo.observaciones }}</span>
+          </div>
+        </div>
+
+        <h4>Artículos Solicitados</h4>
+        <table class="articulos-table">
+          <thead>
+            <tr>
+              <th>Artículo</th>
+              <th>Tipo</th>
+              <th>Cantidad</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Disponibilidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detalle_info in item.detalles %}
+            <tr>
+              <td><strong>{{ detalle_info.info_articulo.nombre }}</strong></td>
+              <td>{{ detalle_info.info_articulo.tipo }}</td>
+              <td>{{ detalle_info.detalle.cantidad }}</td>
+              <td>{{ detalle_info.info_articulo.cantidad_total }}</td>
+              <td>
+                <span
+                  class="badge {% if detalle_info.info_articulo.estado == 'disponible' %}badge-success{% else %}badge-danger{% endif %}"
+                >
+                  {{ detalle_info.info_articulo.estado }}
+                </span>
+              </td>
+              <td>{{ detalle_info.disponible.razon }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="action-buttons">
+          {% if item.puede_aprobar %}
+          <a
+            href="{% url 'gestionPrestamos:aprobar' item.prestamo.id_prestamo %}"
+            class="btn btn-success"
+            onclick="return confirm('¿Está seguro de APROBAR este préstamo?')"
+          >
+            ✅ Aprobar Préstamo
+          </a>
+          {% else %}
+          <span class="btn btn-disabled"> ❌ No se puede aprobar </span>
+          {% endif %}
+
+          <a
+            href="{% url 'gestionPrestamos:rechazar' item.prestamo.id_prestamo %}"
+            class="btn btn-danger"
+            onclick="return confirm('¿Está seguro de RECHAZAR este préstamo?')"
+          >
+            ❌ Rechazar Préstamo
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <h3>🎉 No hay préstamos pendientes</h3>
+        <p>
+          No hay solicitudes de préstamo en espera de aprobación en este
+          momento.
+        </p>
+      </div>
+      {% endfor %}
+    </main>
+
+    <script>
+      // JavaScript para mejorar la experiencia
+      document.addEventListener("DOMContentLoaded", function () {
+        // Marcar enlace activo en la barra lateral
+        const currentUrl = window.location.href;
+        const navLinks = document.querySelectorAll(".nav-menu a");
+
+        navLinks.forEach((link) => {
+          if (link.href === currentUrl) {
+            link.classList.add("active");
+          }
+        });
+
+        // Ajustar layout responsive
+        function adjustLayout() {
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (window.innerWidth <= 768) {
+            sidebar.style.position = "relative";
+            mainContent.style.marginLeft = "0";
+          } else {
+            sidebar.style.position = "fixed";
+            mainContent.style.marginLeft = "var(--sidebar-width)";
+          }
+        }
+
+        adjustLayout();
+        window.addEventListener("resize", adjustLayout);
+      });
+    </script>
+  </body>
+</html>

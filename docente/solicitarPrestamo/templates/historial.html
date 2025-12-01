@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Historial</title>
+  </head>
+  <body>
+    <h1>Historial de mis solicitudes</h1>
+    <table border="1">
+      <tr>
+        <th>ID</th>
+        <th>Fecha inicio</th>
+        <th>Hora inicio</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+      {% for p in prestamos %}
+      <tr>
+        <td>{{ p.id_prestamo }}</td>
+        <td>{{ p.fecha_inicio }}</td>
+        <td>{{ p.hora_inicio }}</td>
+        <td>{{ p.estado }}</td>
+        <td>
+          <a href="{% url 'solicitarPrestamo:detalle' p.id_prestamo %}">Ver</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
