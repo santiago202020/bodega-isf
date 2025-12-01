@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Devoluciones - Panel de Bodega</title>
+    <style>
+      /* Variables CSS para colores y dimensiones */
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --info-color: #17a2b8;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --sidebar-width: 250px;
+        --header-height: 70px;
+        --spacing-sm: 10px;
+        --spacing-md: 15px;
+        --spacing-lg: 20px;
+        --border-radius: 5px;
+        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Reset y estilos base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f7fa;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Barra lateral de navegación */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+      }
+
+      .sidebar h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-menu li {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .nav-menu a {
+        color: var(--light-color);
+        text-decoration: none;
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        transition: background-color 0.3s;
+      }
+
+      .nav-menu a:hover,
+      .nav-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Contenido principal */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        min-height: 100vh;
+      }
+
+      /* Encabezado de navegación */
+      .nav-header {
+        background-color: var(--light-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-header strong {
+        color: var(--dark-color);
+      }
+
+      .nav-header a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-header a:hover {
+        text-decoration: underline;
+        color: var(--primary-color);
+      }
+
+      /* Panel de título */
+      .title-panel {
+        background: linear-gradient(135deg, var(--info-color), #138496);
+        color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+      }
+
+      .title-panel h1 {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      /* Tarjetas de préstamos */
+      .prestamo-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+        border-left: 4px solid var(--info-color);
+      }
+
+      .prestamo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid #eee;
+      }
+
+      .prestamo-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .info-item {
+        padding: var(--spacing-sm);
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .info-value {
+        color: #666;
+      }
+
+      /* Tabla de artículos */
+      .articulos-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: var(--spacing-md) 0;
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .articulos-table th {
+        background-color: var(--primary-color);
+        color: white;
+        padding: var(--spacing-md);
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .articulos-table td {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid #eee;
+      }
+
+      .articulos-table tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      /* Formularios y controles */
+      .form-group {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: var(--spacing-sm);
+        font-weight: 600;
+        color: var(--dark-color);
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: var(--spacing-md);
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        resize: vertical;
+        font-family: inherit;
+        transition: border-color 0.3s;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+
+      .cantidad-input {
+        width: 80px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        text-align: center;
+        transition: border-color 0.3s;
+      }
+
+      .cantidad-input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+
+      /* Botones de acción */
+      .action-buttons {
+        display: flex;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #eee;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #219653;
+        transform: translateY(-2px);
+      }
+
+      .btn-info {
+        background-color: var(--info-color);
+        color: white;
+      }
+
+      .btn-info:hover {
+        background-color: #138496;
+        transform: translateY(-2px);
+      }
+
+      /* Estados y badges */
+      .badge {
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .badge-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .badge-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .badge-info {
+        background-color: var(--info-color);
+        color: white;
+      }
+
+      .badge-secondary {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      /* Mensajes */
+      .alert {
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        border-left: 4px solid;
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        border-color: var(--success-color);
+        color: #155724;
+      }
+
+      .alert-info {
+        background-color: #d1ecf1;
+        border-color: var(--info-color);
+        color: #0c5460;
+      }
+
+      .alert-error {
+        background-color: #f8d7da;
+        border-color: var(--accent-color);
+        color: #721c24;
+      }
+
+      /* Estado vacío */
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-lg);
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      /* Indicadores de estado */
+      .devolucion-requerida {
+        background-color: #fff3cd;
+      }
+
+      .devolucion-opcional {
+        background-color: #d1ecf1;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: var(--spacing-md);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: var(--spacing-md);
+        }
+
+        .prestamo-info {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .articulos-table {
+          font-size: 0.9rem;
+        }
+
+        .articulos-table th,
+        .articulos-table td {
+          padding: var(--spacing-sm);
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Barra lateral de navegación -->
+    <nav class="sidebar">
+      <h1>Panel de Bodega</h1>
+      <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}"> Deportivo</a></li>
+        <li>
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a>
+        </li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+        <li>
+          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a>
+        </li>
+        <li>
+          <a href="{% url 'gestionDevolucion:pendientes' %}" class="active"
+            >Devoluciones</a
+          >
+        </li>
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Encabezado de navegación -->
+      <div class="nav-header">
+        <strong>Navegación: </strong>
+        <a href="{% url 'menu' %}">Inicio</a> |
+        <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+        <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+        <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+        <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
+      </div>
+
+      <!-- Panel de título -->
+      <section class="title-panel">
+        <h1>📦 Gestión de Devoluciones</h1>
+        <p>Registro y control de devoluciones de artículos prestados</p>
+      </section>
+
+      <!-- Mensajes del sistema -->
+      {% for message in messages %}
+      <div
+        class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-info{% else %}alert-error{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+
+      <!-- Lista de préstamos para devolución -->
+      {% for item in prestamos_con_detalles %}
+      <div class="prestamo-card">
+        <div class="prestamo-header">
+          <h3>Préstamo #{{ item.prestamo.id_prestamo }}</h3>
+          <span class="badge badge-info"> Pendiente de Devolución </span>
+        </div>
+
+        <div class="prestamo-info">
+          <div class="info-item">
+            <span class="info-label">Usuario ID</span>
+            <span class="info-value">{{ item.prestamo.id_usuario }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Uso</span>
+            <span class="info-value">{{ item.prestamo.fecha_inicio }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Horario</span>
+            <span class="info-value"
+              >{{ item.prestamo.hora_inicio }} - {{ item.prestamo.hora_fin
+              }}</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Observaciones Originales</span>
+            <span class="info-value">{{ item.prestamo.observaciones }}</span>
+          </div>
+        </div>
+
+        <!-- Formulario para devolución PARCIAL -->
+        <form
+          action="{% url 'gestionDevolucion:parcial' item.prestamo.id_prestamo %}"
+          method="post"
+        >
+          {% csrf_token %}
+
+          <h4>Artículos del Préstamo</h4>
+          <table class="articulos-table">
+            <thead>
+              <tr>
+                <th>Artículo</th>
+                <th>Tipo</th>
+                <th>Cantidad Prestada</th>
+                <th>Cantidad a Devolver</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detalle_info in item.detalles %}
+              <tr>
+                <td>
+                  <strong
+                    >Artículo {{ detalle_info.detalle.id_articulo }}</strong
+                  >
+                </td>
+                <td>{{ detalle_info.detalle.tipo_articulo }}</td>
+                <td>{{ detalle_info.detalle.cantidad }}</td>
+                <td>
+                  <input
+                    type="number"
+                    name="cantidad_devuelta_{{ detalle_info.detalle.tipo_articulo }}_{{ detalle_info.detalle.id_articulo }}"
+                    class="cantidad-input"
+                    value="0"
+                    min="0"
+                    max="{{ detalle_info.detalle.cantidad }}"
+                    placeholder="0"
+                  />
+                </td>
+                <td>
+                  {% if detalle_info.ya_devuelto %}
+                  <span class="badge badge-success"> Devuelto</span>
+                  {% else %}
+                  <span class="badge badge-warning"> Pendiente</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <!-- Observaciones de la devolución -->
+          <div class="form-group" style="margin-top: var(--spacing-lg)">
+            <label class="form-label">Observaciones de la Devolución</label>
+            <textarea
+              name="observaciones"
+              class="form-textarea"
+              placeholder="Ingrese observaciones sobre el estado de los artículos devueltos..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-primary">
+              Registrar Devolución Parcial
+            </button>
+
+            <a
+              href="{% url 'gestionDevolucion:completa' item.prestamo.id_prestamo %}"
+              class="btn btn-success"
+              onclick="return confirm('¿Está seguro de registrar la devolución COMPLETA de todos los artículos? Se devolverá la cantidad máxima de cada artículo.')"
+            >
+              Devolución Completa
+            </a>
+          </div>
+        </form>
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <h3>🎉 No hay préstamos pendientes de devolución</h3>
+        <p>
+          Todos los préstamos han sido procesados o no hay préstamos aceptados
+          en este momento.
+        </p>
+      </div>
+      {% endfor %}
+    </main>
+
+    <script>
+      // JavaScript para mejorar la experiencia
+      document.addEventListener("DOMContentLoaded", function () {
+        // Marcar enlace activo en la barra lateral
+        const currentUrl = window.location.href;
+        const navLinks = document.querySelectorAll(".nav-menu a");
+
+        navLinks.forEach((link) => {
+          if (link.href === currentUrl) {
+            link.classList.add("active");
+          }
+        });
+
+        // Validación de formularios
+        const forms = document.querySelectorAll("form");
+        forms.forEach((form) => {
+          form.addEventListener("submit", function (e) {
+            const cantidadInputs = this.querySelectorAll(".cantidad-input");
+            let algunaCantidadIngresada = false;
+
+            cantidadInputs.forEach((input) => {
+              if (parseInt(input.value) > 0) {
+                algunaCantidadIngresada = true;
+              }
+            });
+
+            if (!algunaCantidadIngresada) {
+              e.preventDefault();
+              alert("Por favor, ingrese al menos una cantidad a devolver.");
+            }
+          });
+        });
+
+        // Ajustar layout responsive
+        function adjustLayout() {
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (window.innerWidth <= 768) {
+            sidebar.style.position = "relative";
+            mainContent.style.marginLeft = "0";
+          } else {
+            sidebar.style.position = "fixed";
+            mainContent.style.marginLeft = "var(--sidebar-width)";
+          }
+        }
+
+        adjustLayout();
+        window.addEventListener("resize", adjustLayout);
+      });
+    </script>
+  </body>
+</html>
