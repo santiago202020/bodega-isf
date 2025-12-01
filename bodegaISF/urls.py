@@ -30,12 +30,8 @@ urlpatterns = [
     path('papeleria/', include('administradorBodega.inventario_papeleria.urls')),
     path('login/', include('login.urls')),
     path('menu/', include('administradorBodega.menu.urls')),
-    path('docente/elegir/', include('docente.elegirArticulo.urls')),
-    path('docente/prestamo/', include('docente.prestamo.urls')),
     path('docente/', include('docente.menuDocente.urls')),
-    path('docente/elegir/', include('docente.elegirArticulo.urls')),
-    path('docente/prestamo/', include('docente.prestamo.urls')),
-    path('bodega/prestamos/', include('administradorBodega.gestion_prestamos.urls')),
-    
-
+    path('docente/solicitar/', include('docente.solicitarPrestamo.urls')), 
+    path('administradorBodega/prestamos/', include('administradorBodega.gestionPrestamos.urls')),
+    path('administradorBodega/devoluciones/', include('administradorBodega.gestionDevolucion.urls')),
 ]

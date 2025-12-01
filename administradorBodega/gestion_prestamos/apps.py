@@ -1,5 +1,0 @@
-from django.apps import AppConfig
-
-class GestionPrestamosConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "administradorBodega.gestion_prestamos"

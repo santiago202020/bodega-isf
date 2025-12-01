@@ -1,305 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docente - Sistema de Préstamos</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menú Docente</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --spacing-lg: 20px;
+        --border-radius: 5px;
+        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
 
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f5f7fa;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        /* Barra lateral */
-        .sidebar {
-            width: 250px;
-            background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+      }
 
-        .sidebar-header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--spacing-lg);
+      }
 
-        .sidebar-header h2 {
-            font-size: 1.4rem;
-            font-weight: 500;
-        }
+      .header {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+      }
 
-        .sidebar-menu {
-            list-style: none;
-        }
+      .header h1 {
+        margin-bottom: 10px;
+      }
 
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
+      .user-info {
+        background-color: white;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+      }
 
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            color: #ecf0f1;
-            text-decoration: none;
-            padding: 12px 20px;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
+      .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+      }
 
-        .sidebar-menu a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #3498db;
-        }
+      .action-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-left: 4px solid var(--secondary-color);
+      }
 
-        .sidebar-menu a.active {
-            background-color: rgba(52, 152, 219, 0.2);
-            border-left: 4px solid #3498db;
-        }
+      .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
 
-        .sidebar-menu i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-            width: 20px;
-            text-align: center;
-        }
+      .action-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+      }
 
-        /* Contenido principal */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 30px;
-        }
+      .action-card h3 {
+        margin-bottom: 10px;
+        color: var(--dark-color);
+      }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e6ed;
-        }
+      .logout-btn {
+        display: inline-block;
+        background-color: #e74c3c;
+        color: white;
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
 
-        .header h1 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
+      .logout-btn:hover {
+        background-color: #c0392b;
+      }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+      .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+      }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #3498db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
+      .stat-card {
+        background-color: white;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
 
-        .welcome-section {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+      }
 
-        .welcome-section h2 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.5rem;
+      @media (max-width: 768px) {
+        .action-grid {
+          grid-template-columns: 1fr;
         }
-
-        .welcome-section p {
-            color: #7f8c8d;
-            line-height: 1.6;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .option-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .option-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .card-1 .card-icon {
-            background-color: rgba(52, 152, 219, 0.1);
-            color: #3498db;
-        }
-
-        .card-2 .card-icon {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-        }
-
-        .card-3 .card-icon {
-            background-color: rgba(155, 89, 182, 0.1);
-            color: #9b59b6;
-        }
-
-        .option-card h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .option-card p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn:hover {
-            background-color: #2980b9;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                overflow: hidden;
-            }
-            
-            .sidebar-header h2, .sidebar-menu span {
-                display: none;
-            }
-            
-            .sidebar-menu a {
-                justify-content: center;
-                padding: 15px 0;
-            }
-            
-            .sidebar-menu i {
-                margin-right: 0;
-                font-size: 1.4rem;
-            }
-            
-            .main-content {
-                margin-left: 70px;
-            }
-        }
+      }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Barra lateral -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Sistema Docente</h2>
-        </div>
-        <ul class="sidebar-menu">
-                        <p>Usuario: {{ request.session.nombre }}</p>
-<p>ID: {{ request.session.id_usuario }}</p>
-<p>Rol: {{ request.session.rol }}</p>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Encabezado -->
+      <div class="header">
+        <h1>📚 Panel del Docente</h1>
+        <p>Sistema de Gestión de Préstamos de Bodega</p>
+      </div>
 
-            <li><a href="#" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
-            <li><a href="/docente/elegir/"><i class="fas fa-book"></i> <span>Elegir Artículos</span></a></li>
-            <li><a href="/docente/prestamo/mis_prestamos/"><i class="fas fa-list"></i> <span>Mis Préstamos</span></a></li>
-            <li><a href="{% url 'prestamo:confirmar_prestamo' %}"><i class="fas fa-check-circle"></i> <span>Confirmar Préstamo</span></a></li>
-            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a></li>
-        </ul>
+      <!-- Información del usuario -->
+      <div class="user-info">
+        <h3>👤 Bienvenido, {{ request.session.nombre|default:"Docente" }}</h3>
+        <p>ID Usuario: {{ request.session.id_usuario }}</p>
+        <p>Rol: {{ request.session.rol|default:"Docente" }}</p>
+      </div>
+
+      <!-- Acciones principales -->
+      <div class="action-grid">
+        <!-- Solicitar préstamo -->
+        <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="action-card">
+          <div class="action-icon">🛒</div>
+          <h3>Solicitar Nuevo Préstamo</h3>
+          <p>
+            Selecciona artículos de papelería, hardware o deportivos para
+            solicitar un préstamo.
+          </p>
+        </a>
+
+        <!-- Ver mi bolsa -->
+        <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="action-card">
+          <div class="action-icon">👜</div>
+          <h3>Mi Bolsa de Artículos</h3>
+          <p>
+            Revisa y gestiona los artículos que has seleccionado para tu
+            préstamo actual.
+          </p>
+        </a>
+
+        <!-- Historial de préstamos -->
+        <a href="{% url 'solicitarPrestamo:historial' %}" class="action-card">
+          <div class="action-icon">📋</div>
+          <h3>Historial de Préstamos</h3>
+          <p>
+            Consulta el estado de todas tus solicitudes de préstamo anteriores.
+          </p>
+        </a>
+
+        <!-- Confirmar solicitud -->
+        <a href="{% url 'solicitarPrestamo:confirmar' %}" class="action-card">
+          <div class="action-icon">✅</div>
+          <h3>Confirmar Solicitud</h3>
+          <p>
+            Finaliza y envía tu solicitud de préstamo para revisión del
+            administrador.
+          </p>
+        </a>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div class="quick-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="pendientes-count">0</div>
+          <p>Préstamos Pendientes</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="aceptados-count">0</div>
+          <p>Préstamos Aceptados</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="finalizados-count">0</div>
+          <p>Préstamos Finalizados</p>
+        </div>
+      </div>
+
+      <!-- Cerrar sesión -->
+      <div style="text-align: center; margin-top: var(--spacing-lg)">
+        <a href="{% url 'logout' %}" class="logout-btn">🚪 Cerrar Sesión</a>
+      </div>
     </div>
 
-    <!-- Contenido principal -->
-    <div class="main-content">
-        <div class="header">
-            <h1>Bienvenido Docente</h1>
-
-        </div>
-
-        <div class="welcome-section">
-            <h2>Panel de Control</h2>
-            <p>Desde aquí puedes gestionar tus préstamos de artículos, consultar tus solicitudes y realizar nuevas reservas.</p>
-        </div>
-
-        <div class="options-grid">
-            
-            <a href="/docente/elegir/" class="option-card card-1">
-                <div class="card-icon">
-                    <i class="fas fa-book"></i>
-                </div>
-                <h3>Elegir Artículos</h3>
-                <p>Explora y selecciona los artículos que necesitas para tus actividades académicas.</p>
-            </a>
-
-            <a href="/docente/prestamo/mis_prestamos/" class="option-card card-2">
-                <div class="card-icon">
-                    <i class="fas fa-list"></i>
-                </div>
-                <h3>Mis Préstamos</h3>
-                <p>Consulta el estado de tus préstamos actuales y el historial de solicitudes anteriores.</p>
-            </a>
-
-            <a href="{% url 'prestamo:confirmar_prestamo' %}" class="option-card card-3">
-                <div class="card-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3>Confirmar Préstamo</h3>
-                <p>Finaliza el proceso de solicitud confirmando los detalles de tu préstamo.</p>
-            </a>
-        </div>
-    </div>
-</body>
+    <script>
+      // Aquí podrías agregar JavaScript para cargar estadísticas reales
+      document.addEventListener("DOMContentLoaded", function () {
+        // Ejemplo: Podrías hacer una petición AJAX aquí para obtener datos reales
+        console.log("Panel del docente cargado");
+      });
+    </script>
+  </body>
 </html>
