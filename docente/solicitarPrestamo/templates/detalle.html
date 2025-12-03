@@ -1,31 +1,702 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Detalle</title>
+    <title>Detalle de Solicitud - Sistema de Préstamos</title>
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #1abc9c;
+        --light-color: #f8f9fa;
+        --dark-color: #2c3e50;
+        --sidebar-bg: #ffffff;
+        --card-bg: #ffffff;
+        --hover-color: #f1f8ff;
+        --border-color: #eaeaea;
+        --danger-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+
+        --spacing-lg: 24px;
+        --spacing-md: 16px;
+        --spacing-sm: 12px;
+        --spacing-xs: 8px;
+        --border-radius: 10px;
+        --border-radius-sm: 6px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+        --sidebar-width: 280px;
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        line-height: 1.6;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* BARRA LATERAL (MISMA QUE LAS ANTERIORES) */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--sidebar-bg);
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        padding: var(--spacing-lg);
+        overflow-y: auto;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        text-align: center;
+        padding-bottom: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--light-color);
+      }
+
+      .sidebar-header h2 {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .sidebar-header p {
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-md);
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-right: var(--spacing-sm);
+      }
+
+      .user-info-sidebar h4 {
+        color: var(--primary-color);
+        margin-bottom: 4px;
+        font-size: 1rem;
+      }
+
+      .user-info-sidebar p {
+        color: #6c757d;
+        font-size: 0.85rem;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-grow: 1;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-md);
+        color: var(--dark-color);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        background-color: transparent;
+        border-left: 4px solid transparent;
+      }
+
+      .nav-link:hover {
+        background-color: var(--hover-color);
+        transform: translateX(5px);
+        border-left-color: var(--secondary-color);
+      }
+
+      .nav-link.active {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left-color: var(--secondary-color);
+        color: var(--secondary-color);
+        font-weight: 500;
+      }
+
+      .nav-icon {
+        width: 24px;
+        text-align: center;
+        margin-right: var(--spacing-md);
+        color: var(--secondary-color);
+        font-weight: bold;
+      }
+
+      .nav-link.active .nav-icon {
+        color: var(--secondary-color);
+      }
+
+      .nav-text h4 {
+        font-size: 0.95rem;
+        margin-bottom: 3px;
+        font-weight: 500;
+      }
+
+      .nav-text p {
+        font-size: 0.8rem;
+        color: #6c757d;
+      }
+
+      /* CONTENIDO PRINCIPAL */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        max-width: calc(100% - var(--sidebar-width));
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* ENCABEZADO */
+      .header {
+        background: linear-gradient(135deg, var(--primary-color), #34495e);
+        color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+      }
+
+      .header h1 {
+        font-weight: 600;
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 1rem;
+      }
+
+      /* INFORMACIÓN DEL PRÉSTAMO */
+      .loan-info-container {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .loan-info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 2px solid var(--light-color);
+      }
+
+      .loan-info-header h2 {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .loan-id-badge {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .loan-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .detail-card {
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius-sm);
+        padding: var(--spacing-md);
+        border: 1px solid var(--border-color);
+      }
+
+      .detail-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .detail-value {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+      }
+
+      /* ESTADO CON COLOR */
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        min-width: 100px;
+      }
+
+      .status-pendiente {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(243, 156, 18, 0.2);
+      }
+
+      .status-aprobado {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(39, 174, 96, 0.2);
+      }
+
+      .status-rechazado {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(231, 76, 60, 0.2);
+      }
+
+      .status-finalizado {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        border: 1px solid rgba(52, 152, 219, 0.2);
+      }
+
+      /* TABLA DE ARTÍCULOS */
+      .articles-container {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+      }
+
+      .articles-header {
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 2px solid var(--light-color);
+      }
+
+      .articles-header h2 {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .articles-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+
+      .articles-table thead {
+        background-color: #f8f9fa;
+      }
+
+      .articles-table th {
+        padding: var(--spacing-md);
+        text-align: left;
+        font-weight: 600;
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--border-color);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .articles-table td {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+      }
+
+      .articles-table tbody tr {
+        transition: var(--transition);
+      }
+
+      .articles-table tbody tr:hover {
+        background-color: var(--hover-color);
+      }
+
+      /* ESTADO DEL DETALLE */
+      .detail-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .detail-status.entregado {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(39, 174, 96, 0.2);
+      }
+
+      .detail-status.pendiente {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(243, 156, 18, 0.2);
+      }
+
+      .detail-status.devuelto {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        border: 1px solid rgba(52, 152, 219, 0.2);
+      }
+
+      /* BOTÓN VOLVER */
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 12px 24px;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        margin-top: var(--spacing-lg);
+      }
+
+      .back-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+      }
+
+      /* MENSAJE SIN DETALLES */
+      .empty-message {
+        text-align: center;
+        padding: var(--spacing-lg);
+        color: #6c757d;
+        font-size: 1.1rem;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1024px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          position: relative;
+          width: 100%;
+          height: auto;
+          margin-bottom: 0;
+          padding: var(--spacing-md);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-links {
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: var(--spacing-sm);
+        }
+
+        .nav-link {
+          flex: 1;
+          min-width: 180px;
+          max-width: 220px;
+          flex-direction: column;
+          text-align: center;
+          padding: var(--spacing-sm);
+        }
+
+        .nav-icon {
+          margin-right: 0;
+          margin-bottom: 5px;
+        }
+
+        .nav-text h4 {
+          font-size: 0.9rem;
+        }
+
+        .nav-text p {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+          max-width: 100%;
+          padding: var(--spacing-md);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .loan-details-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .articles-table {
+          min-width: 500px;
+        }
+
+        .articles-table th,
+        .articles-table td {
+          padding: var(--spacing-sm);
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .loan-info-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--spacing-sm);
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Detalle solicitud #{{ prestamo.id_prestamo }}</h1>
-    <p>Estado: {{ prestamo.estado }}</p>
-    <p>Fecha inicio: {{ prestamo.fecha_inicio }} {{ prestamo.hora_inicio }}</p>
-    <p>Observaciones: {{ prestamo.observaciones }}</p>
+    <!-- BARRA LATERAL IZQUIERDA -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Sistema de Préstamos</h2>
+        <p>Panel del Docente</p>
+      </div>
 
-    <h2>Artículos</h2>
-    <table border="1">
-      <tr>
-        <th>Artículo</th>
-        <th>Tipo</th>
-        <th>Cantidad</th>
-        <th>Estado detalle</th>
-      </tr>
-      {% for row in detalles %}
-      <tr>
-        <td>{{ row.art.nombre|default:"Artículo eliminado" }}</td>
-        <td>{{ row.detalle.tipo_articulo }}</td>
-        <td>{{ row.detalle.cantidad }}</td>
-        <td>{{ row.detalle.estado_detalle }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+      <div class="user-profile">
+        <div class="user-avatar">
+          {{ request.session.nombre|default:"D"|first }}
+        </div>
+        <div class="user-info-sidebar">
+          <h4>{{ request.session.nombre|default:"Docente" }}</h4>
+          <p>ID: {{ request.session.id_usuario|default:"N/A" }}</p>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <div class="nav-links">
+        <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="nav-link">
+          <span class="nav-icon">+</span>
+          <div class="nav-text">
+            <h4>Solicitar Préstamo</h4>
+            <p>Nuevo préstamo de artículos</p>
+          </div>
+        </a>
+
+        <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="nav-link">
+          <span class="nav-icon">B</span>
+          <div class="nav-text">
+            <h4>Mi Bolsa</h4>
+            <p>Artículos seleccionados</p>
+          </div>
+        </a>
+
+        <a href="{% url 'solicitarPrestamo:historial' %}" class="nav-link">
+          <span class="nav-icon">H</span>
+          <div class="nav-text">
+            <h4>Historial</h4>
+            <p>Préstamos anteriores</p>
+          </div>
+        </a>
+
+        <div
+          style="
+            margin-top: auto;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+          "
+        >
+          <a
+            href="{% url 'logout' %}"
+            class="nav-link"
+            style="color: var(--danger-color)"
+          >
+            <span class="nav-icon">X</span>
+            <div class="nav-text">
+              <h4>Cerrar Sesión</h4>
+              <p>Salir del sistema</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+      <div class="container">
+        <!-- Encabezado -->
+        <div class="header">
+          <h1>Detalle de Solicitud de Préstamo</h1>
+          <p>Información completa de la solicitud seleccionada</p>
+        </div>
+
+        <!-- Información del Préstamo -->
+        <div class="loan-info-container">
+          <div class="loan-info-header">
+            <h2>Información del Préstamo</h2>
+            <span class="loan-id-badge">#{{ prestamo.id_prestamo }}</span>
+          </div>
+
+          <div class="loan-details-grid">
+            <div class="detail-card">
+              <div class="detail-label">Estado</div>
+              <div class="detail-value">
+                {% if prestamo.estado == 'pendiente' %}
+                <span class="status-badge status-pendiente">Pendiente</span>
+                {% elif prestamo.estado == 'aprobado' %}
+                <span class="status-badge status-aprobado">Aprobado</span>
+                {% elif prestamo.estado == 'rechazado' %}
+                <span class="status-badge status-rechazado">Rechazado</span>
+                {% elif prestamo.estado == 'finalizado' %}
+                <span class="status-badge status-finalizado">Finalizado</span>
+                {% else %}
+                <span class="status-badge">{{ prestamo.estado }}</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="detail-card">
+              <div class="detail-label">Fecha de Inicio</div>
+              <div class="detail-value">{{ prestamo.fecha_inicio }}</div>
+            </div>
+
+            <div class="detail-card">
+              <div class="detail-label">Hora de Inicio</div>
+              <div class="detail-value">{{ prestamo.hora_inicio }}</div>
+            </div>
+
+            {% if prestamo.observaciones %}
+            <div class="detail-card" style="grid-column: 1 / -1">
+              <div class="detail-label">Observaciones</div>
+              <div class="detail-value">{{ prestamo.observaciones }}</div>
+            </div>
+            {% endif %}
+          </div>
+
+          <a href="{% url 'solicitarPrestamo:historial' %}" class="back-btn">
+            <span>← Volver al Historial</span>
+          </a>
+        </div>
+
+        <!-- Tabla de Artículos -->
+        <div class="articles-container">
+          <div class="articles-header">
+            <h2>Artículos Solicitados</h2>
+          </div>
+
+          {% if detalles %}
+          <table class="articles-table">
+            <thead>
+              <tr>
+                <th>Artículo</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Estado del Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in detalles %}
+              <tr>
+                <td>
+                  <strong
+                    >{{ row.art.nombre|default:"Artículo eliminado" }}</strong
+                  >
+                </td>
+                <td>{{ row.detalle.tipo_articulo }}</td>
+                <td>
+                  <span
+                    style="
+                      background-color: var(--secondary-color);
+                      color: white;
+                      padding: 4px 10px;
+                      border-radius: var(--border-radius-sm);
+                      font-weight: 600;
+                    "
+                  >
+                    {{ row.detalle.cantidad }}
+                  </span>
+                </td>
+                <td>
+                  {% if row.detalle.estado_detalle == 'entregado' %}
+                  <span class="detail-status entregado">Entregado</span>
+                  {% elif row.detalle.estado_detalle == 'pendiente' %}
+                  <span class="detail-status pendiente">Pendiente</span>
+                  {% elif row.detalle.estado_detalle == 'devuelto' %}
+                  <span class="detail-status devuelto">Devuelto</span>
+                  {% else %}
+                  <span class="detail-status"
+                    >{{ row.detalle.estado_detalle }}</span
+                  >
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="empty-message">
+            <p>No hay artículos registrados para esta solicitud.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Resaltar filas de la tabla al pasar el mouse
+        const tableRows = document.querySelectorAll(".articles-table tbody tr");
+        tableRows.forEach((row) => {
+          row.addEventListener("mouseenter", function () {
+            this.style.backgroundColor = "#f1f8ff";
+          });
+
+          row.addEventListener("mouseleave", function () {
+            this.style.backgroundColor = "";
+          });
+        });
+
+        // Mostrar información de la solicitud en consola (para debugging)
+        console.log(`Detalle de solicitud #{{ prestamo.id_prestamo }} cargado`);
+        console.log(`Estado: {{ prestamo.estado }}`);
+        console.log(`Artículos: {{ detalles|length }}`);
+      });
+    </script>
   </body>
 </html>

@@ -1,79 +1,971 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="es">
+<head>
     <meta charset="utf-8" />
-    <title>Crear solicitud</title>
-  </head>
-  <body>
-    <h1>Crear nueva solicitud</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Solicitud - Sistema de Préstamos</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1abc9c;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --hover-color: #f1f8ff;
+            --border-color: #eaeaea;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            
+            --spacing-lg: 24px;
+            --spacing-md: 16px;
+            --spacing-sm: 12px;
+            --spacing-xs: 8px;
+            --border-radius: 10px;
+            --border-radius-sm: 6px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --sidebar-width: 280px;
+            --transition: all 0.3s ease;
+        }
 
-    <p><strong>Docente ID:</strong> {{ usuario_id }}</p>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <h2>Papelería</h2>
-    {% for art in papeleria %}
-    <div style="margin-bottom: 6px">
-      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
-        {% csrf_token %}
-        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
-        <input type="hidden" name="categoria" value="papeleria" />
-        <input type="hidden" name="art_id" value="{{ art.id_papeleria }}" />
-        <input
-          type="number"
-          name="cantidad"
-          min="1"
-          max="{{ art.cantidad_total }}"
-          value="1"
-        />
-        <button type="submit">Añadir</button>
-      </form>
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* BARRA LATERAL IZQUIERDA */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .sidebar-header p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: var(--spacing-sm);
+        }
+
+        .user-info-sidebar h4 {
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
+        .user-info-sidebar p {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            color: var(--dark-color);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            background-color: transparent;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover {
+            background-color: var(--hover-color);
+            transform: translateX(5px);
+            border-left-color: var(--secondary-color);
+        }
+
+        .nav-link.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--secondary-color);
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            width: 24px;
+            text-align: center;
+            margin-right: var(--spacing-md);
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .nav-link.active .nav-icon {
+            color: var(--secondary-color);
+        }
+
+        .nav-text h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            font-weight: 500;
+        }
+
+        .nav-text p {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: var(--spacing-lg);
+            max-width: calc(100% - var(--sidebar-width));
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ENCABEZADO */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        /* INFORMACIÓN DEL USUARIO */
+        .user-info-card {
+            background-color: var(--card-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+            border-top: 4px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .user-details {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .user-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* SECCIONES DE ARTÍCULOS */
+        .category-section {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .category-count {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* GRID DE ARTÍCULOS */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .article-card {
+            background-color: #ffffff;
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary-color);
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .article-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            flex: 1;
+        }
+
+        .article-stock {
+            background-color: #f8f9fa;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+
+        .article-stock.available {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+            border-color: rgba(39, 174, 96, 0.2);
+        }
+
+        .article-stock.low {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+            border-color: rgba(243, 156, 18, 0.2);
+        }
+
+        .article-stock.out {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* FORMULARIO DE AÑADIR ARTÍCULO */
+        .article-form {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .add-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            max-width: 120px;
+            font-size: 0.9rem;
+        }
+
+        .add-btn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .add-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* BARRA DE ACCIONES INFERIOR */
+        .action-bar {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            margin-top: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cart-summary {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .cart-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .cart-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .cart-count {
+            background-color: white;
+            color: var(--secondary-color);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* MENSAJES Y ALERTAS */
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                margin-bottom: 0;
+                padding: var(--spacing-md);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: var(--spacing-sm);
+            }
+
+            .nav-link {
+                flex: 1;
+                min-width: 180px;
+                max-width: 220px;
+                flex-direction: column;
+                text-align: center;
+                padding: var(--spacing-sm);
+            }
+
+            .nav-icon {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            .nav-text h4 {
+                font-size: 0.9rem;
+            }
+
+            .nav-text p {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+            }
+
+            .cart-summary {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .user-details {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .article-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .add-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BARRA LATERAL IZQUIERDA -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Sistema de Préstamos</h2>
+            <p>Panel del Docente</p>
+        </div>
+
+        <!-- Perfil de usuario -->
+        <div class="user-profile">
+            <div class="user-avatar">
+                {{ request.session.nombre|default:"D"|first }}
+            </div>
+            <div class="user-info-sidebar">
+                <h4>{{ request.session.nombre|default:"Docente" }}</h4>
+                <p>ID: {{ request.session.id_usuario|default:"N/A" }}</p>
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <div class="nav-links">
+            <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="nav-link active">
+                <span class="nav-icon">+</span>
+                <div class="nav-text">
+                    <h4>Solicitar Préstamo</h4>
+                    <p>Nuevo préstamo de artículos</p>
+                </div>
+            </a>
+
+            <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="nav-link">
+                <span class="nav-icon">B</span>
+                <div class="nav-text">
+                    <h4>Mi Bolsa</h4>
+                    <p>Artículos seleccionados</p>
+                </div>
+            </a>
+
+            <a href="{% url 'solicitarPrestamo:historial' %}" class="nav-link">
+                <span class="nav-icon">H</span>
+                <div class="nav-text">
+                    <h4>Historial</h4>
+                    <p>Préstamos anteriores</p>
+                </div>
+            </a>
+
+            <a href="{% url 'solicitarPrestamo:confirmar' %}" class="nav-link">
+                <span class="nav-icon">C</span>
+                <div class="nav-text">
+                    <h4>Confirmar</h4>
+                    <p>Enviar solicitud</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Cerrar sesión en sidebar -->
+        <div style="margin-top: auto; padding-top: var(--spacing-md); border-top: 1px solid var(--border-color);">
+            <a href="{% url 'logout' %}" class="nav-link" style="color: var(--danger-color);">
+                <span class="nav-icon">X</span>
+                <div class="nav-text">
+                    <h4>Cerrar Sesión</h4>
+                    <p>Salir del sistema</p>
+                </div>
+            </a>
+        </div>
     </div>
-    {% endfor %}
 
-    <h2>Hardware</h2>
-    {% for art in hardware %}
-    <div style="margin-bottom: 6px">
-      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
-        {% csrf_token %}
-        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
-        <input type="hidden" name="categoria" value="hardware" />
-        <input type="hidden" name="art_id" value="{{ art.id_hardware }}" />
-        <input
-          type="number"
-          name="cantidad"
-          min="1"
-          max="{{ art.cantidad_total }}"
-          value="1"
-        />
-        <button type="submit">Añadir</button>
-      </form>
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Encabezado -->
+            <div class="header">
+                <h1>Crear Nueva Solicitud de Préstamo</h1>
+                <p>Selecciona los artículos que necesitas para tu préstamo</p>
+            </div>
+
+            <!-- Información del usuario -->
+            <div class="user-info-card">
+                <div class="user-details">
+                    <div class="user-detail-item">
+                        <strong>Docente ID:</strong>
+                        <span class="badge">{{ usuario_id }}</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <strong>Nombre:</strong>
+                        <span>{{ request.session.nombre|default:"Docente" }}</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <strong>Rol:</strong>
+                        <span>{{ request.session.rol|default:"Docente" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje informativo -->
+            <div class="alert alert-info">
+                <p><strong>Instrucciones:</strong> Selecciona la cantidad de cada artículo que necesitas. El sistema validará automáticamente la disponibilidad en stock.</p>
+            </div>
+
+            <!-- Sección de Papelería -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h2 class="category-title">Papelería</h2>
+                    <span class="category-count">{{ papeleria|length }} artículos disponibles</span>
+                </div>
+                
+                <div class="articles-grid">
+                    {% for art in papeleria %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <div class="article-name">{{ art.nombre }}</div>
+                            <div class="article-stock {% if art.cantidad_total > 10 %}available{% elif art.cantidad_total > 0 %}low{% else %}out{% endif %}">
+                                Stock: {{ art.cantidad_total }}
+                            </div>
+                        </div>
+                        
+                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="categoria" value="papeleria" />
+                            <input type="hidden" name="art_id" value="{{ art.id_papeleria }}" />
+                            
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn minus" data-max="{{ art.cantidad_total }}">-</button>
+                                <input
+                                    type="number"
+                                    name="cantidad"
+                                    class="quantity-input"
+                                    min="1"
+                                    max="{{ art.cantidad_total }}"
+                                    value="1"
+                                    data-max="{{ art.cantidad_total }}"
+                                />
+                                <button type="button" class="quantity-btn plus" data-max="{{ art.cantidad_total }}">+</button>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                class="add-btn"
+                                {% if art.cantidad_total == 0 %}disabled{% endif %}
+                            >
+                                {% if art.cantidad_total == 0 %}Sin Stock{% else %}Añadir{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    {% empty %}
+                    <div class="alert">
+                        <p>No hay artículos de papelería disponibles en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sección de Hardware -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h2 class="category-title">Hardware</h2>
+                    <span class="category-count">{{ hardware|length }} artículos disponibles</span>
+                </div>
+                
+                <div class="articles-grid">
+                    {% for art in hardware %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <div class="article-name">{{ art.nombre }}</div>
+                            <div class="article-stock {% if art.cantidad_total > 5 %}available{% elif art.cantidad_total > 0 %}low{% else %}out{% endif %}">
+                                Stock: {{ art.cantidad_total }}
+                            </div>
+                        </div>
+                        
+                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="categoria" value="hardware" />
+                            <input type="hidden" name="art_id" value="{{ art.id_hardware }}" />
+                            
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn minus" data-max="{{ art.cantidad_total }}">-</button>
+                                <input
+                                    type="number"
+                                    name="cantidad"
+                                    class="quantity-input"
+                                    min="1"
+                                    max="{{ art.cantidad_total }}"
+                                    value="1"
+                                    data-max="{{ art.cantidad_total }}"
+                                />
+                                <button type="button" class="quantity-btn plus" data-max="{{ art.cantidad_total }}">+</button>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                class="add-btn"
+                                {% if art.cantidad_total == 0 %}disabled{% endif %}
+                            >
+                                {% if art.cantidad_total == 0 %}Sin Stock{% else %}Añadir{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    {% empty %}
+                    <div class="alert">
+                        <p>No hay artículos de hardware disponibles en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sección de Deportivos -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h2 class="category-title">Artículos Deportivos</h2>
+                    <span class="category-count">{{ deportivos|length }} artículos disponibles</span>
+                </div>
+                
+                <div class="articles-grid">
+                    {% for art in deportivos %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <div class="article-name">{{ art.nombre }}</div>
+                            <div class="article-stock {% if art.cantidad_total > 5 %}available{% elif art.cantidad_total > 0 %}low{% else %}out{% endif %}">
+                                Stock: {{ art.cantidad_total }}
+                            </div>
+                        </div>
+                        
+                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="categoria" value="deportivo" />
+                            <input type="hidden" name="art_id" value="{{ art.id_deportivo }}" />
+                            
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn minus" data-max="{{ art.cantidad_total }}">-</button>
+                                <input
+                                    type="number"
+                                    name="cantidad"
+                                    class="quantity-input"
+                                    min="1"
+                                    max="{{ art.cantidad_total }}"
+                                    value="1"
+                                    data-max="{{ art.cantidad_total }}"
+                                />
+                                <button type="button" class="quantity-btn plus" data-max="{{ art.cantidad_total }}">+</button>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                class="add-btn"
+                                {% if art.cantidad_total == 0 %}disabled{% endif %}
+                            >
+                                {% if art.cantidad_total == 0 %}Sin Stock{% else %}Añadir{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    {% empty %}
+                    <div class="alert">
+                        <p>No hay artículos deportivos disponibles en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Barra de acciones -->
+            <div class="action-bar">
+                <div>
+                    <p><strong>Nota:</strong> Los artículos añadidos se guardarán en tu bolsa de préstamos.</p>
+                </div>
+                <div class="cart-summary">
+                    <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="cart-btn">
+                        <span>Ver Bolsa y Confirmar</span>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endfor %}
 
-    <h2>Deportivos</h2>
-    {% for art in deportivos %}
-    <div style="margin-bottom: 6px">
-      <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}">
-        {% csrf_token %}
-        <span>{{ art.nombre }} | Stock: {{ art.cantidad_total }}</span>
-        <input type="hidden" name="categoria" value="deportivo" />
-        <input type="hidden" name="art_id" value="{{ art.id_deportivo }}" />
-        <input
-          type="number"
-          name="cantidad"
-          min="1"
-          max="{{ art.cantidad_total }}"
-          value="1"
-        />
-        <button type="submit">Añadir</button>
-      </form>
-    </div>
-    {% endfor %}
+    <script>
+        // Funciones para control de cantidad
+        function incrementQuantity(input) {
+            const max = parseInt(input.getAttribute('data-max'));
+            let currentValue = parseInt(input.value);
+            
+            if (currentValue < max) {
+                input.value = currentValue + 1;
+                updateAddButton(input);
+            }
+        }
 
-    <hr />
-    <p>
-      <a href="{% url 'solicitarPrestamo:bolsa_ver' %}"
-        >Ver bolsa y confirmar</a
-      >
-    </p>
-  </body>
+        function decrementQuantity(input) {
+            let currentValue = parseInt(input.value);
+            
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                updateAddButton(input);
+            }
+        }
+
+        function validateQuantity(input) {
+            const max = parseInt(input.getAttribute('data-max'));
+            let value = parseInt(input.value);
+            
+            if (isNaN(value) || value < 1) {
+                input.value = 1;
+            } else if (value > max) {
+                input.value = max;
+                alert(`La cantidad máxima disponible es ${max} unidades.`);
+            }
+            
+            updateAddButton(input);
+        }
+
+        function updateAddButton(input) {
+            const form = input.closest('.article-form');
+            const addBtn = form.querySelector('.add-btn');
+            const max = parseInt(input.getAttribute('data-max'));
+            
+            if (max === 0) {
+                addBtn.disabled = true;
+                addBtn.textContent = 'Sin Stock';
+            } else {
+                addBtn.disabled = false;
+                addBtn.textContent = 'Añadir';
+            }
+        }
+
+        // Inicializar eventos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Actualizar contador del carrito (simulado)
+            const cartCount = document.querySelector('.cart-count');
+            cartCount.textContent = '0';
+            
+            // Configurar botones de cantidad
+            const plusButtons = document.querySelectorAll('.quantity-btn.plus');
+            const minusButtons = document.querySelectorAll('.quantity-btn.minus');
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            
+            plusButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.quantity-input');
+                    incrementQuantity(input);
+                });
+            });
+            
+            minusButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.quantity-input');
+                    decrementQuantity(input);
+                });
+            });
+            
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    validateQuantity(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    validateQuantity(this);
+                });
+                
+                // Inicializar estado de los botones
+                updateAddButton(input);
+            });
+            
+            // Manejar envío de formularios
+            const forms = document.querySelectorAll('.article-form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const addBtn = this.querySelector('.add-btn');
+                    const originalText = addBtn.textContent;
+                    
+                    if (addBtn.disabled) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    addBtn.textContent = 'Añadiendo...';
+                    addBtn.disabled = true;
+                    
+                    // Simular actualización del contador (en producción esto sería real)
+                    setTimeout(() => {
+                        let currentCount = parseInt(cartCount.textContent);
+                        const quantity = parseInt(this.querySelector('.quantity-input').value);
+                        cartCount.textContent = currentCount + quantity;
+                        
+                        addBtn.textContent = '¡Añadido!';
+                        
+                        setTimeout(() => {
+                            addBtn.textContent = originalText;
+                            addBtn.disabled = false;
+                        }, 1500);
+                    }, 800);
+                });
+            });
+        });
+    </script>
+</body>
 </html>

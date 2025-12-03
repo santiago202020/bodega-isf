@@ -3,16 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menú Docente</title>
+    <title>Menú Docente - Sistema de Préstamos</title>
     <style>
       :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --light-color: #ecf0f1;
-        --dark-color: #2c3e50;
-        --spacing-lg: 20px;
-        --border-radius: 5px;
-        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* PALETA DE COLORES ARMÓNICA Y PROFESIONAL */
+        --primary-color: #2c3e50; /* Azul oscuro principal */
+        --secondary-color: #3498db; /* Azul claro */
+        --accent-color: #1abc9c; /* Verde azulado (acento) */
+        --light-color: #f8f9fa; /* Fondo claro */
+        --dark-color: #2c3e50; /* Texto oscuro */
+        --sidebar-bg: #ffffff; /* Fondo blanco para sidebar */
+        --card-bg: #ffffff; /* Fondo tarjetas */
+        --hover-color: #f1f8ff; /* Hover suave */
+        --border-color: #eaeaea; /* Bordes sutiles */
+        --danger-color: #e74c3c; /* Rojo para acciones críticas */
+        --success-color: #27ae60; /* Verde para confirmaciones */
+
+        /* Variables de diseño */
+        --spacing-lg: 24px;
+        --spacing-md: 16px;
+        --spacing-sm: 12px;
+        --border-radius: 10px;
+        --border-radius-sm: 6px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+        --sidebar-width: 280px;
+        --transition: all 0.3s ease;
       }
 
       * {
@@ -22,59 +38,237 @@
       }
 
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f5f7fa;
-        color: #333;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        line-height: 1.6;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* BARRA LATERAL IZQUIERDA - MEJORADA */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--sidebar-bg);
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        padding: var(--spacing-lg);
+        overflow-y: auto;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        text-align: center;
+        padding-bottom: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--light-color);
+      }
+
+      .sidebar-header h2 {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .sidebar-header p {
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+
+      .user-profile {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-md);
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-right: var(--spacing-sm);
+      }
+
+      .user-info-sidebar h4 {
+        color: var(--primary-color);
+        margin-bottom: 4px;
+        font-size: 1rem;
+      }
+
+      .user-info-sidebar p {
+        color: #6c757d;
+        font-size: 0.85rem;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-grow: 1;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-md);
+        color: var(--dark-color);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        background-color: transparent;
+        border-left: 4px solid transparent;
+      }
+
+      .nav-link:hover {
+        background-color: var(--hover-color);
+        transform: translateX(5px);
+        border-left-color: var(--secondary-color);
+      }
+
+      .nav-link.active {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left-color: var(--secondary-color);
+        color: var(--secondary-color);
+        font-weight: 500;
+      }
+
+      .nav-icon {
+        font-size: 1.3rem;
+        margin-right: var(--spacing-md);
+        min-width: 30px;
+        text-align: center;
+        color: var(--secondary-color);
+      }
+
+      .nav-link.active .nav-icon {
+        color: var(--secondary-color);
+      }
+
+      .nav-text h4 {
+        font-size: 0.95rem;
+        margin-bottom: 3px;
+        font-weight: 500;
+      }
+
+      .nav-text p {
+        font-size: 0.8rem;
+        color: #6c757d;
+      }
+
+      /* CONTENIDO PRINCIPAL */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        max-width: calc(100% - var(--sidebar-width));
       }
 
       .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--spacing-lg);
       }
 
+      /* ENCABEZADO MEJORADO */
       .header {
-        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        background: linear-gradient(135deg, var(--primary-color), #34495e);
         color: white;
         padding: var(--spacing-lg);
         border-radius: var(--border-radius);
         margin-bottom: var(--spacing-lg);
         text-align: center;
+        box-shadow: var(--shadow);
       }
 
       .header h1 {
         margin-bottom: 10px;
+        font-weight: 600;
+        font-size: 2rem;
       }
 
-      .user-info {
-        background-color: white;
-        padding: 15px;
+      .header p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      /* TARJETA DE INFORMACIÓN DE USUARIO */
+      .user-info-card {
+        background-color: var(--card-bg);
+        padding: var(--spacing-lg);
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
         margin-bottom: var(--spacing-lg);
+        border-top: 4px solid var(--accent-color);
       }
 
+      .user-info-card h3 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.3rem;
+      }
+
+      .user-details {
+        display: flex;
+        gap: var(--spacing-lg);
+        flex-wrap: wrap;
+      }
+
+      .user-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .user-detail-item .icon {
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+      }
+
+      /* GRID DE ACCIONES PRINCIPALES */
       .action-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: var(--spacing-lg);
         margin-bottom: var(--spacing-lg);
       }
 
       .action-card {
-        background-color: white;
+        background-color: var(--card-bg);
         border-radius: var(--border-radius);
         padding: var(--spacing-lg);
         box-shadow: var(--shadow);
         text-decoration: none;
         color: inherit;
-        transition: transform 0.3s, box-shadow 0.3s;
-        border-left: 4px solid var(--secondary-color);
+        transition: var(--transition);
+        border-top: 4px solid var(--secondary-color);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
 
       .action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-hover);
+        border-top-color: var(--accent-color);
       }
 
       .action-icon {
@@ -85,136 +279,486 @@
 
       .action-card h3 {
         margin-bottom: 10px;
-        color: var(--dark-color);
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 600;
       }
 
-      .logout-btn {
-        display: inline-block;
-        background-color: #e74c3c;
-        color: white;
-        padding: 10px 20px;
+      .action-card p {
+        color: #666;
+        font-size: 0.95rem;
+        flex-grow: 1;
+      }
+
+      /* ESTADÍSTICAS */
+      .stats-container {
+        background-color: var(--card-bg);
         border-radius: var(--border-radius);
-        text-decoration: none;
-        font-weight: bold;
-        transition: background-color 0.3s;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
       }
 
-      .logout-btn:hover {
-        background-color: #c0392b;
+      .stats-container h3 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-md);
+        font-size: 1.3rem;
       }
 
       .quick-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
       }
 
       .stat-card {
-        background-color: white;
-        padding: 15px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: var(--spacing-lg);
         border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
         text-align: center;
+        transition: var(--transition);
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(135deg, #e9ecef, #dee2e6);
       }
 
       .stat-number {
-        font-size: 2rem;
-        font-weight: bold;
+        font-size: 2.5rem;
+        font-weight: 700;
         color: var(--secondary-color);
+        margin-bottom: 8px;
+      }
+
+      .stat-card p {
+        color: var(--primary-color);
+        font-weight: 500;
+        font-size: 1rem;
+      }
+
+      /* BOTÓN CERRAR SESIÓN */
+      .logout-section {
+        text-align: center;
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .logout-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background-color: var(--danger-color);
+        color: white;
+        padding: 12px 28px;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .logout-btn:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+      }
+
+      /* RESPONSIVE DESIGN */
+      @media (max-width: 1024px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          position: relative;
+          width: 100%;
+          height: auto;
+          margin-bottom: 0;
+          padding: var(--spacing-md);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-links {
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: var(--spacing-sm);
+        }
+
+        .nav-link {
+          flex: 1;
+          min-width: 180px;
+          max-width: 220px;
+          flex-direction: column;
+          text-align: center;
+          padding: var(--spacing-sm);
+        }
+
+        .nav-icon {
+          margin-right: 0;
+          margin-bottom: 5px;
+          font-size: 1.5rem;
+        }
+
+        .nav-text h4 {
+          font-size: 0.9rem;
+        }
+
+        .nav-text p {
+          display: none;
+        }
+
+        .main-content {
+          margin-left: 0;
+          max-width: 100%;
+          padding: var(--spacing-md);
+        }
       }
 
       @media (max-width: 768px) {
         .action-grid {
           grid-template-columns: 1fr;
         }
+
+        .quick-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          flex-direction: column;
+        }
+
+        .nav-link {
+          max-width: 100%;
+          flex-direction: row;
+          text-align: left;
+        }
+
+        .nav-icon {
+          margin-right: var(--spacing-sm);
+          margin-bottom: 0;
+        }
+
+        .nav-text p {
+          display: block;
+        }
+      }
+
+      /* INDICADOR DE PÁGINA ACTIVA */
+      .active-indicator {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 8px;
+        height: 8px;
+        background-color: var(--success-color);
+        border-radius: 50%;
+        margin-left: 8px;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <!-- Encabezado -->
-      <div class="header">
-        <h1>📚 Panel del Docente</h1>
-        <p>Sistema de Gestión de Préstamos de Bodega</p>
+    <!-- BARRA LATERAL IZQUIERDA -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Sistema de Préstamos</h2>
+        <p>Panel del Docente</p>
       </div>
 
-      <!-- Información del usuario -->
-      <div class="user-info">
-        <h3>👤 Bienvenido, {{ request.session.nombre|default:"Docente" }}</h3>
-        <p>ID Usuario: {{ request.session.id_usuario }}</p>
-        <p>Rol: {{ request.session.rol|default:"Docente" }}</p>
-      </div>
-
-      <!-- Acciones principales -->
-      <div class="action-grid">
-        <!-- Solicitar préstamo -->
-        <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="action-card">
-          <div class="action-icon">🛒</div>
-          <h3>Solicitar Nuevo Préstamo</h3>
-          <p>
-            Selecciona artículos de papelería, hardware o deportivos para
-            solicitar un préstamo.
-          </p>
-        </a>
-
-        <!-- Ver mi bolsa -->
-        <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="action-card">
-          <div class="action-icon">👜</div>
-          <h3>Mi Bolsa de Artículos</h3>
-          <p>
-            Revisa y gestiona los artículos que has seleccionado para tu
-            préstamo actual.
-          </p>
-        </a>
-
-        <!-- Historial de préstamos -->
-        <a href="{% url 'solicitarPrestamo:historial' %}" class="action-card">
-          <div class="action-icon">📋</div>
-          <h3>Historial de Préstamos</h3>
-          <p>
-            Consulta el estado de todas tus solicitudes de préstamo anteriores.
-          </p>
-        </a>
-
-        <!-- Confirmar solicitud -->
-        <a href="{% url 'solicitarPrestamo:confirmar' %}" class="action-card">
-          <div class="action-icon">✅</div>
-          <h3>Confirmar Solicitud</h3>
-          <p>
-            Finaliza y envía tu solicitud de préstamo para revisión del
-            administrador.
-          </p>
-        </a>
-      </div>
-
-      <!-- Estadísticas rápidas -->
-      <div class="quick-stats">
-        <div class="stat-card">
-          <div class="stat-number" id="pendientes-count">0</div>
-          <p>Préstamos Pendientes</p>
+      <!-- Perfil de usuario -->
+      <div class="user-profile">
+        <div class="user-avatar">
+          {{ request.session.nombre|default:"D"|first }}
         </div>
-        <div class="stat-card">
-          <div class="stat-number" id="aceptados-count">0</div>
-          <p>Préstamos Aceptados</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="finalizados-count">0</div>
-          <p>Préstamos Finalizados</p>
+        <div class="user-info-sidebar">
+          <h4>{{ request.session.nombre|default:"Docente" }}</h4>
+          <p>ID: {{ request.session.id_usuario|default:"N/A" }}</p>
         </div>
       </div>
 
-      <!-- Cerrar sesión -->
-      <div style="text-align: center; margin-top: var(--spacing-lg)">
-        <a href="{% url 'logout' %}" class="logout-btn">🚪 Cerrar Sesión</a>
+      <!-- Navegación -->
+      <div class="nav-links">
+        <a
+          href="{% url 'solicitarPrestamo:seleccionar' %}"
+          class="nav-link"
+          id="nav-prestamo"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Solicitar Préstamo</h4>
+            <p>Nuevo préstamo de artículos</p>
+          </div>
+        </a>
+
+        <a
+          href="{% url 'solicitarPrestamo:bolsa_ver' %}"
+          class="nav-link"
+          id="nav-bolsa"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Mi Bolsa</h4>
+            <p>Artículos seleccionados</p>
+          </div>
+        </a>
+
+        <a
+          href="{% url 'solicitarPrestamo:historial' %}"
+          class="nav-link"
+          id="nav-historial"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Historial</h4>
+            <p>Préstamos anteriores</p>
+          </div>
+        </a>
+
+        <a
+          href="{% url 'solicitarPrestamo:confirmar' %}"
+          class="nav-link"
+          id="nav-confirmar"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Confirmar</h4>
+            <p>Enviar solicitud</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Cerrar sesión en sidebar -->
+      <div
+        style="
+          margin-top: auto;
+          padding-top: var(--spacing-md);
+          border-top: 1px solid var(--border-color);
+        "
+      >
+        <a
+          href="{% url 'logout' %}"
+          class="nav-link"
+          style="color: var(--danger-color)"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Cerrar Sesión</h4>
+            <p>Salir del sistema</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+      <div class="container">
+        <!-- Encabezado -->
+        <div class="header">
+          <h1>Panel del Docente</h1>
+          <p>Sistema de Gestión de Préstamos de Bodega - ISF</p>
+        </div>
+
+        <!-- Información del usuario -->
+        <div class="user-info-card">
+          <h3>Bienvenido, {{ request.session.nombre|default:"Docente" }}</h3>
+          <div class="user-details">
+            <div class="user-detail-item">
+              <span class="icon"></span>
+              <span
+                >ID Usuario:
+                <strong
+                  >{{ request.session.id_usuario|default:"N/A" }}</strong
+                ></span
+              >
+            </div>
+            <div class="user-detail-item">
+              <span class="icon"></span>
+              <span
+                >Rol:
+                <strong
+                  >{{ request.session.rol|default:"Docente" }}</strong
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones principales -->
+        <div class="action-grid">
+          <a
+            href="{% url 'solicitarPrestamo:seleccionar' %}"
+            class="action-card"
+          >
+            <div class="action-icon"></div>
+            <h3>Solicitar Nuevo Préstamo</h3>
+            <p>
+              Selecciona artículos de papelería, hardware o deportivos para
+              solicitar un préstamo. Controla cantidades y fechas.
+            </p>
+          </a>
+
+          <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="action-card">
+            <div class="action-icon"></div>
+            <h3>Mi Bolsa de Artículos</h3>
+            <p>
+              Revisa y gestiona los artículos que has seleccionado para tu
+              préstamo actual. Modifica cantidades o elimina items.
+            </p>
+          </a>
+
+          <a href="{% url 'solicitarPrestamo:historial' %}" class="action-card">
+            <div class="action-icon"></div>
+            <h3>Historial de Préstamos</h3>
+            <p>
+              Consulta el estado de todas tus solicitudes de préstamo
+              anteriores. Filtra por estado, fecha o tipo de artículo.
+            </p>
+          </a>
+
+          <a href="{% url 'solicitarPrestamo:confirmar' %}" class="action-card">
+            <div class="action-icon"></div>
+            <h3>Confirmar Solicitud</h3>
+            <p>
+              Finaliza y envía tu solicitud de préstamo para revisión del
+              administrador. Verifica todos los detalles antes de enviar.
+            </p>
+          </a>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="stats-container">
+          <h3>Mis Estadísticas</h3>
+          <div class="quick-stats">
+            <div class="stat-card">
+              <div class="stat-number" id="pendientes-count">0</div>
+              <p>Préstamos Pendientes</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="aceptados-count">0</div>
+              <p>Préstamos Aceptados</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="finalizados-count">0</div>
+              <p>Préstamos Finalizados</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="total-count">0</div>
+              <p>Total de Préstamos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cerrar sesión -->
+        <div class="logout-section">
+          <a href="{% url 'logout' %}" class="logout-btn">
+            <span></span>
+            <span>Cerrar Sesión</span>
+          </a>
+          <p
+            style="
+              margin-top: var(--spacing-sm);
+              color: #6c757d;
+              font-size: 0.9rem;
+            "
+          >
+            Último acceso:
+            <span id="last-access">Hoy, {{ "now"|date:"H:i" }}</span>
+          </p>
+        </div>
       </div>
     </div>
 
     <script>
-      // Aquí podrías agregar JavaScript para cargar estadísticas reales
+      // Detectar y resaltar página activa
       document.addEventListener("DOMContentLoaded", function () {
-        // Ejemplo: Podrías hacer una petición AJAX aquí para obtener datos reales
-        console.log("Panel del docente cargado");
+        // URLs de las páginas (simuladas para ejemplo)
+        const currentPath = window.location.pathname;
+        const pageMap = {
+          seleccionar: "nav-prestamo",
+          bolsa_ver: "nav-bolsa",
+          historial: "nav-historial",
+          confirmar: "nav-confirmar",
+        };
+
+        // Detectar página actual (simplificado)
+        let activePage = "seleccionar"; // Por defecto
+        for (const [key, value] of Object.entries(pageMap)) {
+          if (currentPath.includes(key)) {
+            activePage = value;
+            break;
+          }
+        }
+
+        // Resaltar enlace activo
+        const activeLink = document.getElementById(activePage);
+        if (activeLink) {
+          activeLink.classList.add("active");
+          const indicator = document.createElement("span");
+          indicator.className = "active-indicator";
+          indicator.title = "Página actual";
+          activeLink.querySelector(".nav-text h4").appendChild(indicator);
+        }
+
+        // Cargar estadísticas (simuladas)
+        setTimeout(() => {
+          // Datos de ejemplo - en producción vendrían de una API
+          const stats = {
+            pendientes: Math.floor(Math.random() * 5) + 1,
+            aceptados: Math.floor(Math.random() * 15) + 5,
+            finalizados: Math.floor(Math.random() * 30) + 10,
+          };
+
+          document.getElementById("pendientes-count").textContent =
+            stats.pendientes;
+          document.getElementById("aceptados-count").textContent =
+            stats.aceptados;
+          document.getElementById("finalizados-count").textContent =
+            stats.finalizados;
+          document.getElementById("total-count").textContent =
+            stats.pendientes + stats.aceptados + stats.finalizados;
+
+          // Simular última hora de acceso
+          const now = new Date();
+          const lastAccess = document.getElementById("last-access");
+          lastAccess.textContent = `Hoy, ${now
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        }, 800);
+
+        // Animación suave para las tarjetas al cargar
+        const cards = document.querySelectorAll(".action-card");
+        cards.forEach((card, index) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(20px)";
+
+          setTimeout(() => {
+            card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, 100 * index);
+        });
       });
     </script>
   </body>
