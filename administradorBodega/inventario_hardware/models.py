@@ -9,7 +9,7 @@ class ArticulosHardware(models.Model):
     serial = models.CharField(max_length=255)
     cantidad_total = models.BigIntegerField()
     estado = models.CharField(max_length=255)
-    devolucion = models.CharField(max_length=255)  # obligatorio, no obligatorio
+    devolucion = models.CharField(max_length=255)  
 
     class Meta:
         managed = False

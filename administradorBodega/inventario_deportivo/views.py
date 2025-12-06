@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import ArticuloDeportivo
 
 def gestion_articulos(request):
-    articulos = ArticuloDeportivo.objects.all()
+    articulos = ArticuloDeportivo.objects.all().order_by('id_deportivo')
+    articulo_editar = None
     
     # Si se envía el formulario para crear o editar
     if request.method == 'POST':
@@ -10,30 +12,55 @@ def gestion_articulos(request):
         
         if articulo_id:  # Editar
             articulo = get_object_or_404(ArticuloDeportivo, id_deportivo=articulo_id)
+            mensaje = "Artículo actualizado correctamente"
         else:  # Crear
             articulo = ArticuloDeportivo()
+            mensaje = "Artículo creado correctamente"
         
-        articulo.nombre = request.POST.get('nombre')
-        articulo.descripcion = request.POST.get('descripcion')
-        articulo.cantidad_total = request.POST.get('cantidad_total')
-        articulo.estado = request.POST.get('estado')
-        articulo.devolucion = request.POST.get('devolucion')
-        articulo.save()
-        
-        return redirect('gestion_articulos')
+        try:
+            articulo.nombre = request.POST.get('nombre')
+            articulo.descripcion = request.POST.get('descripcion')
+            articulo.cantidad_total = request.POST.get('cantidad_total', 0)
+            
+            # Obtener estado (con valor por defecto)
+            estado = request.POST.get('estado', 'DISPONIBLE')
+            if estado not in dict(ArticuloDeportivo.ESTADO_CHOICES):
+                estado = 'DISPONIBLE'
+            articulo.estado = estado
+            
+            # Obtener devolución (con valor por defecto)
+            devolucion = request.POST.get('devolucion', 'NO')
+            if devolucion not in dict(ArticuloDeportivo.DEVOLUCION_CHOICES):
+                devolucion = 'NO'
+            articulo.devolucion = devolucion
+            
+            articulo.save()
+            
+            messages.success(request, mensaje)
+            return redirect('gestion_articulos')
+            
+        except Exception as e:
+            messages.error(request, f"Error al guardar el artículo: {str(e)}")
     
     # Si se quiere editar (GET con ID)
-    articulo_editar = None
     articulo_id = request.GET.get('editar')
     if articulo_id:
         articulo_editar = get_object_or_404(ArticuloDeportivo, id_deportivo=articulo_id)
     
     return render(request, 'inventario_deportivo.html', {
         'articulos': articulos,
-        'articulo_editar': articulo_editar
+        'articulo_editar': articulo_editar,
+        'estado_choices': ArticuloDeportivo.ESTADO_CHOICES,
+        'devolucion_choices': ArticuloDeportivo.DEVOLUCION_CHOICES
     })
 
 def eliminar_articulo(request, id):
     articulo = get_object_or_404(ArticuloDeportivo, id_deportivo=id)
-    articulo.delete()
+    try:
+        nombre_articulo = articulo.nombre
+        articulo.delete()
+        messages.success(request, f"Artículo '{nombre_articulo}' eliminado correctamente")
+    except Exception as e:
+        messages.error(request, f"Error al eliminar: {str(e)}")
+    
     return redirect('gestion_articulos')

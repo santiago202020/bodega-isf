@@ -285,20 +285,17 @@
         <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
         <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
         <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
-
-        <!-- 🆕 NUEVOS ENLACES PARA PRÉSTAMOS -->
         <li>
           <a href="{% url 'gestionPrestamos:pendientes' %}"
-            >📋 Préstamos Pendientes</a
+            >Préstamos Pendientes</a
           >
         </li>
         <li>
           <a href="{% url 'gestionDevolucion:pendientes' %}"
-            >📦 Gestión Devoluciones</a
+            >Gestión Devoluciones</a
           >
         </li>
-
-        <li><a href="{% url 'logout' %}">🚪 Cerrar sesión</a></li>
+        <li><a href="{% url 'logout' %}"> Cerrar sesión</a></li>
       </ul>
     </nav>
 
@@ -312,11 +309,8 @@
           <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
           <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
           <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-
-          <!-- 🆕 NUEVOS ENLACES -->
           <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
           <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
-
           <a href="{% url 'logout' %}">Cerrar sesión</a>
         </div>
         <div class="user-info">
@@ -337,25 +331,24 @@
         <h2>Acciones Rápidas</h2>
         <div class="action-buttons">
           <a href="{% url 'gestion_articulos' %}" class="action-btn">
-            <span>🏃‍♂️</span>
+            <span></span>
             <span>Gestión Deportivo</span>
           </a>
           <a href="{% url 'gestion_articulos_papeleria' %}" class="action-btn">
-            <span>📝</span>
+            <span></span>
             <span>Gestión Papelería</span>
           </a>
           <a href="{% url 'inventario_hardware' %}" class="action-btn">
-            <span>💻</span>
+            <span></span>
             <span>Gestión Hardware</span>
           </a>
 
-          <!-- 🆕 NUEVOS BOTONES -->
           <a href="{% url 'gestionPrestamos:pendientes' %}" class="action-btn">
-            <span>📋</span>
+            <span></span>
             <span>Préstamos Pendientes</span>
           </a>
           <a href="{% url 'gestionDevolucion:pendientes' %}" class="action-btn">
-            <span>📦</span>
+            <span></span>
             <span>Gestión Devoluciones</span>
           </a>
         </div>

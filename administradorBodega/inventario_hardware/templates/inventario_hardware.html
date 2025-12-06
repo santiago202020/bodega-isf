@@ -495,28 +495,41 @@
 <body>
 
 <!-- Barra lateral de navegación -->
-<div class="sidebar">
-    <h1>Panel de Bodega</h1>
-    <ul class="nav-menu">
-        <li><a href="{% url 'menu' %}">Inicio</a></li>
+<nav class="sidebar">
+      <h1>Panel de Bodega</h1>
+      <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}" class="active">Inicio</a></li>
         <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
         <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
-        <li><a href="{% url 'inventario_hardware' %}" class="active">Hardware</a></li>
-        <li><a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a></li>
-    </ul>
-</div>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+        <li>
+          <a href="{% url 'gestionPrestamos:pendientes' %}"
+            >Préstamos Pendientes</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'gestionDevolucion:pendientes' %}"
+            >Gestión Devoluciones</a
+          >
+        </li>
+        <li><a href="{% url 'logout' %}"> Cerrar sesión</a></li>
+      </ul>
+    </nav>
+
 
 <!-- Contenido principal -->
 <div class="main-content">
     <!-- Encabezado de navegación MEJORADO -->
     <div class="nav-header">
         <div class="nav-links">
-            <strong>Navegación: </strong>
-            <a href="{% url 'menu' %}">Inicio</a> |
-            <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-            <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-            <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-            <a href="{% url 'gestion_prestamos:lista_pendientes' %}">Préstamos</a>
+          <strong>Navegación: </strong>
+          <a href="{% url 'menu' %}">Inicio</a> |
+          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+          <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+          <a href="{% url 'logout' %}">Cerrar sesión</a>
         </div>
         <div class="user-info">
             <p><strong>{{ request.session.nombre }}</strong></p>
