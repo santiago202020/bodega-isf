@@ -4,532 +4,793 @@
     <meta charset="UTF-8">
     <title>Inventario Hardware</title>
     <style>
-        /* Variables CSS para colores y dimensiones - CONSISTENTES */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --sidebar-width: 250px;
-            --spacing-sm: 10px;
-            --spacing-md: 15px;
-            --spacing-lg: 20px;
-            --border-radius: 5px;
-            --shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    /* Variables CSS para colores y dimensiones - CONSISTENTES */
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --sidebar-width: 250px;
+        --spacing-sm: 10px;
+        --spacing-md: 15px;
+        --spacing-lg: 20px;
+        --border-radius: 5px;
+        --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        --info-color: #17a2b8;
+    }
 
-        /* Reset y estilos base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* Reset y estilos base */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f7fa;
-            display: flex;
-            min-height: 100vh;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f7fa;
+        display: flex;
+        min-height: 100vh;
+    }
 
-        /* Barra lateral de navegación */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--primary-color);
-            color: white;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow);
-            z-index: 1000;
-        }
+    /* Barra lateral de navegación */
+    .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+    }
 
-        .sidebar h1 {
-            font-size: 1.5rem;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            color: white;
-        }
+    .sidebar h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: white;
+    }
 
-        .nav-menu {
-            list-style: none;
-        }
+    .nav-menu {
+        list-style: none;
+    }
 
-        .nav-menu li {
-            margin-bottom: var(--spacing-sm);
-        }
+    .nav-menu li {
+        margin-bottom: var(--spacing-sm);
+    }
 
-        .nav-menu a {
-            color: var(--light-color);
-            text-decoration: none;
-            display: block;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius);
-            transition: background-color 0.3s;
-        }
+    .nav-menu a {
+        color: var(--light-color);
+        text-decoration: none;
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        transition: background-color 0.3s;
+    }
 
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            background-color: rgba(255,255,255,0.1);
-        }
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        background-color: rgba(255,255,255,0.1);
+    }
 
-        /* Contenido principal */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            padding: var(--spacing-lg);
-            min-height: 100vh;
-        }
+    /* Contenido principal */
+    .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        min-height: 100vh;
+    }
 
-        /* Encabezado de navegación MEJORADO */
-        .nav-header {
-            background-color: var(--light-color);
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    /* Encabezado de navegación MEJORADO */
+    .nav-header {
+        background-color: var(--light-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
 
-        .nav-links {
-            flex: 1;
-        }
+    .nav-links {
+        flex: 1;
+    }
 
-        .nav-links strong {
-            color: var(--dark-color);
-        }
+    .nav-links strong {
+        color: var(--dark-color);
+    }
 
-        .nav-links a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+    .nav-links a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
 
-        .nav-links a:hover {
-            text-decoration: underline;
-            color: var(--primary-color);
-        }
+    .nav-links a:hover {
+        text-decoration: underline;
+        color: var(--primary-color);
+    }
 
-        /* Información del usuario en el header */
-        .user-info {
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
-            color: white;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius);
-            text-align: center;
-            min-width: 200px;
-        }
+    /* Información del usuario en el header */
+    .user-info {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        min-width: 200px;
+    }
 
-        .user-info p {
-            margin: 2px 0;
-            font-size: 0.9rem;
-        }
+    .user-info p {
+        margin: 2px 0;
+        font-size: 0.9rem;
+    }
 
-        .user-role {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-        }
+    .user-role {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
 
-        /* Contenedor principal de contenido */
+    /* Mensajes del sistema */
+    .messages-container {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .alert {
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: var(--border-radius);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+        font-weight: 500;
+    }
+
+    .alert-success {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--success-color);
+        border-left: 4px solid var(--success-color);
+    }
+
+    .alert-error, .alert-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--accent-color);
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .alert-info {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: var(--info-color);
+        border-left: 4px solid var(--info-color);
+    }
+
+    .close-alert {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: inherit;
+        opacity: 0.7;
+        line-height: 1;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-alert:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Contenedor principal de contenido */
+    .content-container {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    /* Formularios MEJORADOS */
+    .form-section {
+        flex: 1;
+        min-width: 300px;
+        background-color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        height: fit-content;
+    }
+
+    .form-section h2 {
+        margin-bottom: var(--spacing-lg);
+        color: var(--dark-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: var(--spacing-sm);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+
+    .form-section label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: var(--dark-color);
+    }
+
+    .form-section input[type="text"],
+    .form-section input[type="number"],
+    .form-section textarea,
+    .form-section select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-family: inherit;
+        transition: all 0.3s;
+        background-color: white;
+    }
+
+    .form-section input:focus,
+    .form-section textarea:focus,
+    .form-section select:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .form-section textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Estilos para el contador de caracteres */
+    .char-counter {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+        text-align: right;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    /* Tabla MEJORADA */
+    .table-section {
+        flex: 2;
+        min-width: 500px;
+        background-color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+
+    .table-section h2 {
+        color: var(--dark-color);
+        margin: 0;
+        border-bottom: none;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .table-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .total-items {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        font-weight: 500;
+        background-color: #f8f9fa;
+        padding: 5px 10px;
+        border-radius: var(--border-radius);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: var(--spacing-md);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    thead {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    th {
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        border: none;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #ecf0f1;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.2s;
+    }
+
+    /* Celdas especiales */
+    .text-center {
+        text-align: center;
+    }
+
+    .descripcion-cell {
+        max-width: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .serial-code {
+        font-family: 'Courier New', monospace;
+        background-color: #f8f9fa;
+        padding: 2px 6px;
+        border-radius: 3px;
+        border: 1px solid #e9ecef;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .serial-code:hover {
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    .actions-cell {
+        white-space: nowrap;
+    }
+
+    /* Botones */
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background-color: var(--success-color);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #219653;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        border: 1px solid #6c757d;
+        color: #6c757d;
+        padding: 7px 15px;
+    }
+
+    .btn-outline:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: var(--warning-color);
+        color: #212529;
+    }
+
+    .btn-edit:hover {
+        background-color: #e0a800;
+        transform: translateY(-1px);
+    }
+
+    .btn-delete {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
+        transform: translateY(-1px);
+    }
+
+    .btn-warning {
+        background-color: var(--warning-color);
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background-color: #e67e22;
+        transform: translateY(-1px);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+        margin-top: var(--spacing-lg);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    /* Badges para estados - ACTUALIZADOS */
+    .estado-badge, .devolucion-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-align: center;
+        min-width: 120px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .estado-disponible {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(39, 174, 96, 0.3);
+    }
+
+    .estado-no-disponible {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--accent-color);
+        border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .devolucion-si {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .devolucion-no {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        border: 1px solid rgba(108, 117, 125, 0.3);
+    }
+
+    /* Badge para cantidad */
+    .cantidad-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        font-weight: 600;
+        min-width: 40px;
+        border: 1px solid rgba(52, 152, 219, 0.2);
+    }
+
+    .cantidad-cero {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--accent-color);
+        border-color: rgba(231, 76, 60, 0.3);
+    }
+
+    /* Empty state mejorado */
+    .empty-state {
+        text-align: center;
+        padding: var(--spacing-lg);
+    }
+
+    .empty-message {
+        padding: 40px 20px;
+        color: #7f8c8d;
+    }
+
+    .empty-message i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+        color: #bdc3c7;
+    }
+
+    .empty-message p {
+        margin: 10px 0;
+        font-size: 1.1rem;
+    }
+
+    .empty-subtext {
+        font-size: 0.9rem;
+        margin-top: 10px;
+        opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
         .content-container {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
-
-        /* Formularios MEJORADOS */
-        .form-section {
-            flex: 1;
-            min-width: 300px;
-            background-color: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-        }
-
-        .form-section h2 {
-            margin-bottom: var(--spacing-lg);
-            color: var(--dark-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: var(--spacing-sm);
-        }
-
-        .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .form-section label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: var(--dark-color);
-        }
-
-        .form-section input[type="text"],
-        .form-section input[type="number"],
-        .form-section textarea,
-        .form-section select {
+        
+        .form-section, .table-section {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-family: inherit;
-            transition: border-color 0.3s;
-            margin-bottom: var(--spacing-md);
+            min-width: auto;
         }
-
-        .form-section input:focus,
-        .form-section textarea:focus,
-        .form-section select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-        }
-
-        .form-section textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
+        
+        .table-header {
+            flex-direction: column;
+            align-items: flex-start;
             gap: var(--spacing-sm);
-            transition: all 0.3s;
-            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            flex-direction: column;
         }
 
-        .btn-primary {
-            background-color: var(--success-color);
-            color: white;
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            padding: var(--spacing-md);
+        }
+        
+        .main-content {
+            margin-left: 0;
+            padding: var(--spacing-md);
+        }
+        
+        .nav-menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-menu li {
+            margin: 5px;
+        }
+        
+        .nav-header {
+            flex-direction: column;
+            gap: var(--spacing-md);
+            text-align: center;
         }
 
-        .btn-primary:hover {
-            background-color: #219653;
-            transform: translateY(-1px);
-        }
-
-        .btn-warning {
-            background-color: var(--warning-color);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background-color: #e67e22;
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #2980b9;
-            transform: translateY(-1px);
+        .user-info {
+            width: 100%;
         }
 
         .form-actions {
-            display: flex;
-            gap: var(--spacing-sm);
-            flex-wrap: wrap;
-            margin-top: var(--spacing-md);
+            flex-direction: column;
         }
 
-        /* Tabla MEJORADA */
-        .table-section {
-            flex: 2;
-            min-width: 500px;
-            background-color: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow-x: auto;
+        .form-actions .btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
         }
 
-        .table-section h2 {
-            margin-bottom: var(--spacing-lg);
-            color: var(--dark-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: var(--spacing-sm);
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+            justify-content: center;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 8px 10px;
         }
 
-        thead {
-            background: var(--secondary-color);
-            color: white;
+        .estado-badge, .devolucion-badge {
+            min-width: 100px;
+            font-size: 0.75rem;
+            padding: 3px 8px;
         }
 
-        th {
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: 600;
-            border: none;
-        }
-
-        td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .actions-cell {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .actions-cell .btn {
+        .btn {
             padding: 6px 12px;
             font-size: 0.8rem;
         }
+    }
 
-        /* Estados con colores MEJORADOS */
-        .estado-activo {
-            color: var(--success-color);
-            background-color: rgba(39, 174, 96, 0.1);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-            font-weight: 500;
+    @media (max-width: 576px) {
+        body {
+            font-size: 14px;
         }
-
-        .estado-inactivo {
-            color: #7f8c8d;
-            background-color: rgba(127, 140, 141, 0.1);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-            font-weight: 500;
+        
+        .main-content {
+            padding: var(--spacing-sm);
         }
-
-        .estado-mantenimiento {
-            color: var(--warning-color);
-            background-color: rgba(243, 156, 18, 0.1);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-            font-weight: 500;
-        }
-
-        .devolucion-obligatorio {
-            color: var(--success-color);
-            background-color: rgba(39, 174, 96, 0.1);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-            font-weight: 500;
-        }
-
-        .devolucion-no-obligatorio {
-            color: var(--accent-color);
-            background-color: rgba(231, 76, 60, 0.1);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            display: inline-block;
-            font-weight: 500;
-        }
-
-        /* Modo eliminar */
-        .delete-warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
+        
+        .form-section, .table-section {
             padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-md);
+        }
+        
+        table {
+            font-size: 12px;
+        }
+        
+        th, td {
+            padding: 6px 8px;
+        }
+        
+        .btn {
+            padding: 6px 10px;
+            font-size: 0.8rem;
         }
 
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: var(--spacing-lg);
-            color: #7f8c8d;
-            font-style: italic;
+        .nav-menu {
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .content-container {
-                flex-direction: column;
-            }
-            
-            .form-section, .table-section {
-                width: 100%;
-                min-width: auto;
-            }
+        .table-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
         }
 
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding: var(--spacing-md);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: var(--spacing-md);
-            }
-            
-            .nav-menu {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .nav-menu li {
-                margin: 5px;
-            }
-            
-            .actions-cell {
-                flex-direction: column;
-            }
-
-            .nav-header {
-                flex-direction: column;
-                gap: var(--spacing-md);
-                text-align: center;
-            }
-
-            .user-info {
-                width: 100%;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
+        .estado-badge, .devolucion-badge {
+            min-width: 90px;
+            font-size: 0.7rem;
+            padding: 2px 6px;
         }
 
-        @media (max-width: 576px) {
-            body {
-                font-size: 14px;
-            }
-            
-            .main-content {
-                padding: var(--spacing-md);
-            }
-            
-            .form-section, .table-section {
-                padding: var(--spacing-md);
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px 10px;
-            }
-            
-            .btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-
-            .nav-menu {
-                flex-direction: column;
-                align-items: center;
-            }
+        .cantidad-badge {
+            min-width: 30px;
+            font-size: 0.8rem;
+            padding: 2px 6px;
         }
-    </style>
+    }
+
+    /* Estilos para iconos (si usas Font Awesome) */
+    .fas {
+        font-size: 0.9em;
+    }
+
+    /* Tooltip para descripciones */
+    [title] {
+        position: relative;
+    }
+
+    [title]:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--dark-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: var(--border-radius);
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 1000;
+        margin-bottom: 5px;
+        box-shadow: var(--shadow);
+    }
+
+    /* Placeholders mejorados */
+    ::placeholder {
+        color: #95a5a6;
+        opacity: 0.7;
+    }
+
+    /* Estilos específicos para serial */
+    .serial-code {
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 0.85rem;
+    }
+</style>
 </head>
 <body>
-
 <!-- Barra lateral de navegación -->
 <nav class="sidebar">
-      <h1>Panel de Bodega</h1>
-      <ul class="nav-menu">
+    <h1>Panel de Bodega</h1>
+    <ul class="nav-menu">
         <li><a href="{% url 'menu' %}" class="active">Inicio</a></li>
         <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
         <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
         <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
         <li>
-          <a href="{% url 'gestionPrestamos:pendientes' %}"
-            >Préstamos Pendientes</a
-          >
+            <a href="{% url 'gestionPrestamos:pendientes' %}"
+            >Préstamos Pendientes</a>
         </li>
         <li>
-          <a href="{% url 'gestionDevolucion:pendientes' %}"
-            >Gestión Devoluciones</a
-          >
+            <a href="{% url 'gestionDevolucion:pendientes' %}"
+            >Gestión Devoluciones</a>
         </li>
         <li><a href="{% url 'logout' %}"> Cerrar sesión</a></li>
-      </ul>
-    </nav>
-
+    </ul>
+</nav>
 
 <!-- Contenido principal -->
 <div class="main-content">
     <!-- Encabezado de navegación MEJORADO -->
     <div class="nav-header">
         <div class="nav-links">
-          <strong>Navegación: </strong>
-          <a href="{% url 'menu' %}">Inicio</a> |
-          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
-          <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
-          <a href="{% url 'logout' %}">Cerrar sesión</a>
+            <strong>Navegación: </strong>
+            <a href="{% url 'menu' %}">Inicio</a> |
+            <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+            <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+            <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+            <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+            <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+            <a href="{% url 'logout' %}">Cerrar sesión</a>
         </div>
         <div class="user-info">
             <p><strong>{{ request.session.nombre }}</strong></p>
@@ -538,149 +799,168 @@
         </div>
     </div>
     
+    <!-- Mensajes del sistema -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button type="button" class="close-alert" onclick="this.parentElement.style.display='none'">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
     <div class="content-container">
         <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
         <div class="form-section">
             {% if modo == "lista" %}
                 <h2>💻 Crear Artículo de Hardware</h2>
-                <form method="POST">
+                <form method="POST" id="hardwareForm">
                     {% csrf_token %}
                     <input type="hidden" name="accion" value="crear">
 
                     <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" name="nombre" placeholder="Ej: Laptop Dell" required>
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" 
+                               placeholder="Ej: Laptop Dell, Mouse inalámbrico" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Descripción:</label>
-                        <textarea name="descripcion" placeholder="Descripción del equipo" required></textarea>
+                        <label for="descripcion">Descripción:</label>
+                        <textarea id="descripcion" name="descripcion" 
+                                  placeholder="Descripción detallada del equipo" required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>Marca:</label>
-                        <input type="text" name="marca" placeholder="Ej: Dell, HP, Lenovo" required>
+                        <label for="marca">Marca:</label>
+                        <input type="text" id="marca" name="marca" 
+                               placeholder="Ej: Dell, HP, Lenovo, Logitech" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Modelo:</label>
-                        <input type="text" name="modelo" placeholder="Ej: Latitude 5490" required>
+                        <label for="modelo">Modelo:</label>
+                        <input type="text" id="modelo" name="modelo" 
+                               placeholder="Ej: Latitude 5490, MX Master 3" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Serial:</label>
-                        <input type="text" name="serial" placeholder="Número de serie" required>
+                        <label for="serial">Serial:</label>
+                        <input type="text" id="serial" name="serial" 
+                               placeholder="Número de serie único" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Cantidad total:</label>
-                        <input type="number" name="cantidad_total" min="0" value="1" required>
+                        <label for="cantidad_total">Cantidad total:</label>
+                        <input type="number" id="cantidad_total" name="cantidad_total" 
+                               min="0" value="1" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Estado:</label>
-                        <select name="estado" required>
+                        <label for="estado">Estado:</label>
+                        <select id="estado" name="estado" required>
                             <option value="">Seleccionar estado...</option>
-                            <option value="activo"> Activo</option>
-                            <option value="inactivo"> Inactivo</option>
-                            <option value="mantenimiento"> Mantenimiento</option>
+                            {% for valor, etiqueta in estado_choices %}
+                                <option value="{{ valor }}">{{ etiqueta }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Devolución:</label>
-                        <select name="devolucion" required>
-                            <option value="obligatorio"> Obligatorio</option>
-                            <option value="no obligatorio"> No obligatorio</option>
+                        <label for="devolucion">Devolución:</label>
+                        <select id="devolucion" name="devolucion" required>
+                            <option value="">Seleccionar opción...</option>
+                            {% for valor, etiqueta in devolucion_choices %}
+                                <option value="{{ valor }}">{{ etiqueta }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"> Guardar Artículo</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Artículo
+                        </button>
+                        <button type="reset" class="btn btn-secondary">Limpiar formulario</button>
                     </div>
                 </form>
             {% endif %}
 
-            {% if modo == "editar" %}
-                <h2> Editar Artículo</h2>
+            {% if modo == "editar" and item %}
+                <h2><i class="fas fa-edit"></i> Editar Artículo</h2>
 
-                <form method="POST">
+                <form method="POST" id="editHardwareForm">
                     {% csrf_token %}
                     <input type="hidden" name="accion" value="editar">
+                    <input type="hidden" name="id_hardware" value="{{ item.id_hardware }}">
 
                     <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" name="nombre" value="{{ item.nombre }}" required>
+                        <label for="edit_nombre">Nombre:</label>
+                        <input type="text" id="edit_nombre" name="nombre" 
+                               value="{{ item.nombre }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Descripción:</label>
-                        <textarea name="descripcion" required>{{ item.descripcion }}</textarea>
+                        <label for="edit_descripcion">Descripción:</label>
+                        <textarea id="edit_descripcion" name="descripcion" required>{{ item.descripcion }}</textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>Marca:</label>
-                        <input type="text" name="marca" value="{{ item.marca }}" required>
+                        <label for="edit_marca">Marca:</label>
+                        <input type="text" id="edit_marca" name="marca" 
+                               value="{{ item.marca }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Modelo:</label>
-                        <input type="text" name="modelo" value="{{ item.modelo }}" required>
+                        <label for="edit_modelo">Modelo:</label>
+                        <input type="text" id="edit_modelo" name="modelo" 
+                               value="{{ item.modelo }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Serial:</label>
-                        <input type="text" name="serial" value="{{ item.serial }}" required>
+                        <label for="edit_serial">Serial:</label>
+                        <input type="text" id="edit_serial" name="serial" 
+                               value="{{ item.serial }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Cantidad total:</label>
-                        <input type="number" name="cantidad_total" value="{{ item.cantidad_total }}" min="0" required>
+                        <label for="edit_cantidad">Cantidad total:</label>
+                        <input type="number" id="edit_cantidad" name="cantidad_total" 
+                               value="{{ item.cantidad_total }}" min="0" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Estado:</label>
-                        <select name="estado" required>
+                        <label for="edit_estado">Estado:</label>
+                        <select id="edit_estado" name="estado" required>
                             <option value="">Seleccionar estado...</option>
-                            <option value="activo" {% if item.estado == "activo" %}selected{% endif %}> Activo</option>
-                            <option value="inactivo" {% if item.estado == "inactivo" %}selected{% endif %}> Inactivo</option>
-                            <option value="mantenimiento" {% if item.estado == "mantenimiento" %}selected{% endif %}> Mantenimiento</option>
+                            {% for valor, etiqueta in estado_choices %}
+                                <option value="{{ valor }}" 
+                                    {% if item.estado == valor %}selected{% endif %}>
+                                    {{ etiqueta }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Devolución:</label>
-                        <select name="devolucion" required>
-                            <option value="obligatorio" {% if item.devolucion == "obligatorio" %}selected{% endif %}> Obligatorio</option>
-                            <option value="no obligatorio" {% if item.devolucion == "no obligatorio" %}selected{% endif %}> No obligatorio</option>
+                        <label for="edit_devolucion">Devolución:</label>
+                        <select id="edit_devolucion" name="devolucion" required>
+                            <option value="">Seleccionar opción...</option>
+                            {% for valor, etiqueta in devolucion_choices %}
+                                <option value="{{ valor }}" 
+                                    {% if item.devolucion == valor %}selected{% endif %}>
+                                    {{ etiqueta }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
-                        <a href="/hardware/" class="btn btn-warning"> Cancelar</a>
-                    </div>
-                </form>
-            {% endif %}
-
-            {% if modo == "eliminar" %}
-                <h2>🗑️ Eliminar Artículo</h2>
-                
-                <div class="delete-warning">
-                    <strong>⚠️ ¿Está seguro de eliminar este artículo?</strong>
-                    <p style="margin-top: 5px;">Esta acción no se puede deshacer.</p>
-                </div>
-
-                <p><strong>Artículo:</strong> {{ item.nombre }}</p>
-                <p><strong>Marca/Modelo:</strong> {{ item.marca }} {{ item.modelo }}</p>
-                <p><strong>Serial:</strong> {{ item.serial }}</p>
-
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="accion" value="eliminar">
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-danger"> Confirmar Eliminación</button>
-                        <a href="/hardware/" class="btn btn-secondary">↩ Cancelar</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Actualizar
+                        </button>
+                        <a href="{% url 'inventario_hardware' %}" class="btn btn-warning">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
                     </div>
                 </form>
             {% endif %}
@@ -688,93 +968,288 @@
 
         <!-- ================= TABLA A LA DERECHA ================= -->
         <div class="table-section">
-            <h2> Lista de Artículos de Hardware ({{ datos|length }})</h2>
+            <div class="table-header">
+                <h2><i class="fas fa-desktop"></i> Lista de Artículos de Hardware</h2>
+                <div class="table-actions">
+                    <span class="total-items">{{ datos|length }} artículo(s) encontrado(s)</span>
+                    {% if modo == "editar" %}
+                    <a href="{% url 'inventario_hardware' %}" class="btn btn-outline">
+                        <i class="fas fa-list"></i> Ver todos
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Serial</th>
-                        <th>Cantidad</th>
-                        <th>Estado</th>
-                        <th>Devolución</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for d in datos %}
-                    <tr>
-                        <td><strong>#{{ d.id_hardware }}</strong></td>
-                        <td>{{ d.nombre }}</td>
-                        <td>{{ d.marca }}</td>
-                        <td>{{ d.modelo }}</td>
-                        <td><code>{{ d.serial }}</code></td>
-                        <td><strong>{{ d.cantidad_total }}</strong></td>
-                        <td>
-                            <span class="
-                                {% if d.estado == 'activo' %}estado-activo
-                                {% elif d.estado == 'inactivo' %}estado-inactivo
-                                {% elif d.estado == 'mantenimiento' %}estado-mantenimiento
-                                {% endif %}">
-                                {{ d.estado|title }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="{% if d.devolucion == 'obligatorio' %}devolucion-obligatorio{% else %}devolucion-no-obligatorio{% endif %}">
-                                {{ d.devolucion|title }}
-                            </span>
-                        </td>
-                        <td class="actions-cell">
-                            <a href="/hardware/?modo=editar&id={{ d.id_hardware }}" class="btn btn-warning"> Editar</a>
-                            <a href="/hardware/?modo=eliminar&id={{ d.id_hardware }}" class="btn btn-danger"> Eliminar</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="9" class="empty-state">No hay artículos de hardware registrados</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Serial</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Devolución</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in datos %}
+                        <tr>
+                            <td class="text-center"><strong>#{{ d.id_hardware }}</strong></td>
+                            <td><strong>{{ d.nombre }}</strong></td>
+                            <td>{{ d.marca }}</td>
+                            <td>{{ d.modelo }}</td>
+                            <td><code class="serial-code">{{ d.serial }}</code></td>
+                            <td class="text-center">
+                                <span class="cantidad-badge {% if d.cantidad_total == 0 %}cantidad-cero{% endif %}">
+                                    {{ d.cantidad_total }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="estado-badge estado-{{ d.estado|lower|slugify }}">
+                                    {{ d.estado }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="devolucion-badge devolucion-{{ d.devolucion|lower }}">
+                                    {{ d.devolucion }}
+                                </span>
+                            </td>
+                            <td class="actions-cell">
+                                <div class="action-buttons">
+                                    <a href="?modo=editar&id={{ d.id_hardware }}" 
+                                       class="btn btn-edit" title="Editar hardware">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a href="{% url 'eliminar_hardware' d.id_hardware %}" 
+                                       class="btn btn-delete" 
+                                       onclick="return confirmDeleteHardware('{{ d.nombre|escapejs }}', '{{ d.marca|escapejs }} {{ d.modelo|escapejs }}')"
+                                       title="Eliminar hardware">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="empty-state">
+                                <div class="empty-message">
+                                    <i class="fas fa-desktop"></i>
+                                    <p>No hay artículos de hardware registrados</p>
+                                    <p class="empty-subtext">Comienza agregando un nuevo artículo usando el formulario</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // JavaScript para mejorar la experiencia
-    document.addEventListener("DOMContentLoaded", function () {
-        // Mejorar la experiencia en móviles
-        const sidebar = document.querySelector(".sidebar");
-        const mainContent = document.querySelector(".main-content");
-
-        function adjustLayout() {
-            if (window.innerWidth <= 768) {
-                sidebar.style.position = "relative";
-                mainContent.style.marginLeft = "0";
-            } else {
-                sidebar.style.position = "fixed";
-                mainContent.style.marginLeft = "var(--sidebar-width)";
-            }
+// JavaScript mejorado para la gestión de hardware
+document.addEventListener("DOMContentLoaded", function () {
+    // Mejorar la experiencia en móviles
+    const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.querySelector(".main-content");
+    
+    function adjustLayout() {
+        if (window.innerWidth <= 768) {
+            sidebar.style.position = "relative";
+            mainContent.style.marginLeft = "0";
+        } else {
+            sidebar.style.position = "fixed";
+            mainContent.style.marginLeft = "var(--sidebar-width)";
         }
-
-        // Ajustar layout al cargar y al redimensionar
-        adjustLayout();
-        window.addEventListener("resize", adjustLayout);
-
-        // Confirmación para eliminación
-        const deleteButtons = document.querySelectorAll('.btn-danger[href*="eliminar"]');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (!confirm('¿Está seguro de que desea eliminar este artículo?')) {
-                    e.preventDefault();
+    }
+    
+    // Ajustar layout al cargar y al redimensionar
+    adjustLayout();
+    window.addEventListener("resize", adjustLayout);
+    
+    // Auto-focus en el primer campo del formulario
+    const firstInput = document.querySelector('#nombre') || document.querySelector('#edit_nombre');
+    if (firstInput) firstInput.focus();
+    
+    // Validación de formulario de creación
+    const createForm = document.getElementById('hardwareForm');
+    if (createForm) {
+        createForm.addEventListener('submit', function(e) {
+            const cantidad = document.getElementById('cantidad_total').value;
+            if (parseInt(cantidad) < 0) {
+                e.preventDefault();
+                alert('La cantidad no puede ser negativa');
+                document.getElementById('cantidad_total').focus();
+                return false;
+            }
+            
+            const estado = document.getElementById('estado').value;
+            const devolucion = document.getElementById('devolucion').value;
+            const serial = document.getElementById('serial').value;
+            
+            if (!estado) {
+                e.preventDefault();
+                alert('Por favor seleccione un estado');
+                return false;
+            }
+            
+            if (!devolucion) {
+                e.preventDefault();
+                alert('Por favor seleccione una opción de devolución');
+                return false;
+            }
+            
+            if (!serial.trim()) {
+                e.preventDefault();
+                alert('El número de serie es obligatorio');
+                document.getElementById('serial').focus();
+                return false;
+            }
+            
+            // Mostrar mensaje de confirmación
+            if (!confirm('¿Está seguro de crear este artículo de hardware?')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    
+    // Validación de formulario de edición
+    const editForm = document.getElementById('editHardwareForm');
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            const cantidad = document.getElementById('edit_cantidad').value;
+            if (parseInt(cantidad) < 0) {
+                e.preventDefault();
+                alert('La cantidad no puede ser negativa');
+                document.getElementById('edit_cantidad').focus();
+                return false;
+            }
+            
+            if (!confirm('¿Está seguro de guardar los cambios?')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+    
+    // Función para confirmar eliminación
+    window.confirmDeleteHardware = function(nombre, detalles) {
+        return confirm(`¿Está seguro de eliminar el hardware "${nombre}"?\n${detalles}\n\nEsta acción no se puede deshacer.`);
+    };
+    
+    // Auto-ocultar mensajes después de 5 segundos
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.opacity = '0';
+            alert.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+                if (alert.parentElement) {
+                    alert.style.display = 'none';
                 }
+            }, 500);
+        });
+    }, 5000);
+    
+    // Resaltar fila al pasar el mouse
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fa';
+        });
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+    
+    // Validar serial único (puedes implementar una verificación AJAX aquí)
+    const serialInput = document.getElementById('serial');
+    if (serialInput) {
+        serialInput.addEventListener('blur', function() {
+            // Aquí podrías agregar una verificación AJAX para verificar si el serial ya existe
+            const serial = this.value.trim();
+            if (serial) {
+                console.log('Verificando serial:', serial);
+                // Implementar verificación con AJAX si es necesario
+            }
+        });
+    }
+    
+    // Copiar serial al portapapeles
+    const serialCodes = document.querySelectorAll('.serial-code');
+    serialCodes.forEach(code => {
+        code.style.cursor = 'pointer';
+        code.title = 'Click para copiar serial';
+        code.addEventListener('click', function() {
+            const text = this.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = this.textContent;
+                this.textContent = '¡Copiado!';
+                this.style.color = '#28a745';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
             });
         });
     });
-</script>
+    
+    // Actualizar contador de caracteres para descripción
+    const descTextareas = document.querySelectorAll('textarea[id*="descripcion"]');
+    descTextareas.forEach(textarea => {
+        const charCounter = document.createElement('div');
+        charCounter.className = 'char-counter';
+        charCounter.style.fontSize = '0.85rem';
+        charCounter.style.color = '#666';
+        charCounter.style.marginTop = '5px';
+        textarea.parentNode.insertBefore(charCounter, textarea.nextSibling);
+        
+        function updateCharCounter() {
+            const length = textarea.value.length;
+            charCounter.textContent = `${length} caracteres`;
+            if (length > 500) {
+                charCounter.style.color = '#dc3545';
+            } else if (length > 300) {
+                charCounter.style.color = '#ffc107';
+            } else {
+                charCounter.style.color = '#28a745';
+            }
+        }
+        
+        textarea.addEventListener('input', updateCharCounter);
+        updateCharCounter(); // Inicializar
+    });
+    
+    // Sugerencias para marcas populares
+    const marcaInput = document.getElementById('marca') || document.getElementById('edit_marca');
+    if (marcaInput) {
+        const sugerencias = ['Dell', 'HP', 'Lenovo', 'Apple', 'Asus', 'Acer', 'Microsoft', 'Logitech', 'Cisco', 'Samsung'];
+        marcaInput.addEventListener('input', function() {
+            // Podrías implementar autocompletado aquí
+        });
+    }
+});
 
+// Función para exportar datos a Excel
+function exportHardwareToExcel() {
+    if (confirm('¿Desea exportar la lista de hardware a Excel?')) {
+        // Aquí puedes agregar lógica para exportar
+        alert('Función de exportación en desarrollo');
+    }
+}
+
+// Función para imprimir lista
+function printHardwareTable() {
+    window.print();
+}
+</script>
 </body>
 </html>

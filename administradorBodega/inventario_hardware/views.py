@@ -1,61 +1,95 @@
-from .models import ArticulosHardware
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.contrib import messages
+from .models import ArticulosHardware
 
 def inventario_hardware(request):
+    """
+    Vista para gestionar el inventario de hardware
+    """
+    # Obtener todos los items para la lista
+    datos = ArticulosHardware.objects.all().order_by('id_hardware')
+    
+    # Verificar si estamos en modo edición (GET)
     modo = request.GET.get("modo", "lista")
     id_edit = request.GET.get("id", None)
-
-    # Modo editar (solo para mostrar el formulario)
+    
     item = None
     if modo == "editar" and id_edit:
         item = get_object_or_404(ArticulosHardware, pk=id_edit)
-
-    # Crear / Editar / Eliminar desde POST
+    
+    # Manejar operaciones POST (Crear, Editar, Eliminar)
     if request.method == "POST":
         accion = request.POST.get("accion")
-
-        # --- CARGAR EL ITEM SIEMPRE EN POST SI EXISTE ID ---  
-        if id_edit:
-            item = get_object_or_404(ArticulosHardware, pk=id_edit)
-
-        # Crear
-        if accion == "crear":
-            ArticulosHardware.objects.create(
-                nombre=request.POST['nombre'],
-                descripcion=request.POST['descripcion'],
-                marca=request.POST['marca'],
-                modelo=request.POST['modelo'],
-                serial=request.POST['serial'],
-                cantidad_total=request.POST['cantidad_total'],
-                estado=request.POST['estado'],
-                devolucion=request.POST['devolucion'],
-            )
-            return redirect('/hardware/')
-
-        # Editar
-        if accion == "editar":
-            item.nombre = request.POST['nombre']
-            item.descripcion = request.POST['descripcion']
-            item.marca = request.POST['marca']
-            item.modelo = request.POST['modelo']
-            item.serial = request.POST['serial']
-            item.cantidad_total = request.POST['cantidad_total']
-            item.estado = request.POST['estado']
-            item.devolucion = request.POST['devolucion']
-            item.save()
-            return redirect('/hardware/')
-
-        # Eliminar
-        if accion == "eliminar":
-            item.delete()
-            return redirect('/hardware/')
-
-    # Consultar lista
-    datos = ArticulosHardware.objects.all()
-
-    return render(request, "inventario_hardware.html", {
+        
+        try:
+            # Crear nuevo item
+            if accion == "crear":
+                ArticulosHardware.objects.create(
+                    nombre=request.POST.get('nombre', '').strip(),
+                    descripcion=request.POST.get('descripcion', '').strip(),
+                    marca=request.POST.get('marca', '').strip(),
+                    modelo=request.POST.get('modelo', '').strip(),
+                    serial=request.POST.get('serial', '').strip(),
+                    cantidad_total=request.POST.get('cantidad_total', 0),
+                    estado=request.POST.get('estado', 'DISPONIBLE'),
+                    devolucion=request.POST.get('devolucion', 'NO'),
+                )
+                messages.success(request, "Hardware creado exitosamente")
+                return redirect('inventario_hardware')
+            
+            # Editar item existente
+            elif accion == "editar":
+                id_item = request.POST.get('id_hardware')
+                if id_item:
+                    item = get_object_or_404(ArticulosHardware, pk=id_item)
+                    item.nombre = request.POST.get('nombre', '').strip()
+                    item.descripcion = request.POST.get('descripcion', '').strip()
+                    item.marca = request.POST.get('marca', '').strip()
+                    item.modelo = request.POST.get('modelo', '').strip()
+                    item.serial = request.POST.get('serial', '').strip()
+                    item.cantidad_total = request.POST.get('cantidad_total', 0)
+                    item.estado = request.POST.get('estado', 'DISPONIBLE')
+                    item.devolucion = request.POST.get('devolucion', 'NO')
+                    item.save()
+                    messages.success(request, "Hardware actualizado exitosamente")
+                    return redirect('inventario_hardware')
+            
+            # Eliminar item
+            elif accion == "eliminar":
+                id_item = request.POST.get('id_hardware')
+                if id_item:
+                    item = get_object_or_404(ArticulosHardware, pk=id_item)
+                    nombre_item = item.nombre
+                    item.delete()
+                    messages.success(request, f"Hardware '{nombre_item}' eliminado exitosamente")
+                    return redirect('inventario_hardware')
+        
+        except Exception as e:
+            messages.error(request, f"Error en la operación: {str(e)}")
+    
+    # Contexto para el template
+    context = {
         "modo": modo,
         "item": item,
-        "datos": datos
-    })
+        "datos": datos,
+        "estado_choices": ArticulosHardware.ESTADO_CHOICES,
+        "devolucion_choices": ArticulosHardware.DEVOLUCION_CHOICES,
+    }
+    
+    return render(request, "inventario_hardware.html", context)
+
+
+def eliminar_hardware(request, id):
+    """
+    Vista para eliminar hardware mediante URL (GET)
+    """
+    if request.method == "GET":
+        try:
+            item = get_object_or_404(ArticulosHardware, pk=id)
+            nombre_item = item.nombre
+            item.delete()
+            messages.success(request, f"Hardware '{nombre_item}' eliminado exitosamente")
+        except Exception as e:
+            messages.error(request, f"Error al eliminar: {str(e)}")
+    
+    return redirect('inventario_hardware')
