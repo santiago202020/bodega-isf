@@ -11,7 +11,8 @@ from administradorBodega.gestionPrestamos.models import Prestamo, DetallePrestam
 from administradorBodega.inventario_papeleria.models import ArticuloPapeleria
 from administradorBodega.inventario_hardware.models import ArticulosHardware
 from administradorBodega.inventario_deportivo.models import ArticuloDeportivo
-
+from login.decorators import login_required_custom
+@login_required_custom
 def prestamos_para_devolucion(request):
     """Muestra préstamos APROBADOS que están listos para devolución"""
     if request.session.get("id_rol") != 100:
@@ -79,7 +80,7 @@ def prestamos_para_devolucion(request):
     return render(request, 'devolucion_pendiente.html', {
         'prestamos_con_detalles': prestamos_con_detalles
     })
-
+@login_required_custom
 def registrar_devolucion_parcial(request, id_prestamo):
     """Registra devolución por artículo individual"""
     if request.session.get("id_rol") != 100:
@@ -173,7 +174,7 @@ def registrar_devolucion_parcial(request, id_prestamo):
             messages.error(request, f"❌ Error al registrar devolución: {str(e)}")
     
     return redirect('gestionDevolucion:pendientes')
-
+@login_required_custom
 def registrar_devolucion_completa(request, id_prestamo):
     """Registra devolución completa de todos los artículos"""
     if request.session.get("id_rol") != 100:
@@ -245,7 +246,7 @@ def registrar_devolucion_completa(request, id_prestamo):
             messages.error(request, f"❌ Error al registrar devolución: {str(e)}")
     
     return redirect('gestionDevolucion:pendientes')
-
+@login_required_custom
 def _obtener_info_articulo(tipo_articulo, id_articulo):
     """Obtiene información del artículo - VERSIÓN CORREGIDA"""
     try:
@@ -284,7 +285,7 @@ def _obtener_info_articulo(tipo_articulo, id_articulo):
             'devolucion': 'NO',
             'tipo': 'Error'
         }
-
+@login_required_custom
 def _requiere_devolucion(tipo_articulo, id_articulo):
     """Determina si un artículo requiere devolución"""
     try:
@@ -292,7 +293,7 @@ def _requiere_devolucion(tipo_articulo, id_articulo):
         return info_articulo['devolucion'].upper() == 'SI'
     except:
         return False
-
+@login_required_custom
 def _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
     """Actualiza el stock cuando se devuelve un artículo - USANDO SQL"""
     try:
@@ -317,7 +318,7 @@ def _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
     except Exception as e:
         print(f"❌ Excepción en _actualizar_stock_articulo: {e}")
         return False
-
+@login_required_custom
 def _actualizar_estado_prestamo(id_prestamo):
     """Actualiza el estado del préstamo basado en devoluciones"""
     try:

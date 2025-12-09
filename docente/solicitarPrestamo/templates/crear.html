@@ -1080,6 +1080,7 @@
 </style>
 </head>
 <body>
+ <body>
     <!-- BARRA LATERAL IZQUIERDA -->
     <div class="sidebar">
         <div class="sidebar-header">
@@ -1158,7 +1159,7 @@
 
             <!-- Encabezado -->
             <div class="header">
-                <h1>📝 Crear Nueva Solicitud de Préstamo</h1>
+                <h1>📋 Crear Nueva Solicitud de Préstamo</h1>
                 <p>Selecciona los artículos que necesitas para tu préstamo</p>
                 <div class="header-actions">
                     <span class="badge badge-info">Sesión: {{ request.session.id_usuario }}</span>
@@ -1184,11 +1185,11 @@
                 </div>
                 <div class="user-stats">
                     <div class="stat-item">
-                        <span class="stat-label">Artículos en bolsa:</span>
+                        <span class="stat-label">📦 Artículos en bolsa:</span>
                         <span class="stat-value" id="totalItemsCounter">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Categorías:</span>
+                        <span class="stat-label">🏷️ Categorías:</span>
                         <span class="stat-value">3</span>
                     </div>
                 </div>
@@ -1250,7 +1251,7 @@
                             </div>
                             <div class="article-stock-info">
                                 <div class="stock-indicator {% if art.cantidad_total > 10 %}high-stock{% elif art.cantidad_total > 0 %}medium-stock{% else %}no-stock{% endif %}">
-                                    <div class="stock-bar" ></div>
+                                    <div class="stock-bar"></div>
                                 </div>
                                 <div class="stock-numbers">
                                     <span class="stock-available">Disponible: {{ art.cantidad_total }}</span>
@@ -1259,7 +1260,8 @@
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form" data-article-id="{{ art.id_papeleria }}">
+                        <!-- ✅ CAMBIADO: bolsa_add → add_to_bolsa -->
+                        <form method="post" action="{% url 'solicitarPrestamo:add_to_bolsa' %}" class="article-form" data-article-id="{{ art.id_papeleria }}">
                             {% csrf_token %}
                             <input type="hidden" name="categoria" value="papeleria" />
                             <input type="hidden" name="art_id" value="{{ art.id_papeleria }}" />
@@ -1351,7 +1353,7 @@
                             </div>
                             <div class="article-stock-info">
                                 <div class="stock-indicator {% if art.cantidad_total > 5 %}high-stock{% elif art.cantidad_total > 0 %}medium-stock{% else %}no-stock{% endif %}">
-                                    <div class="stock-bar" </div>
+                                    <div class="stock-bar"></div>
                                 </div>
                                 <div class="stock-numbers">
                                     <span class="stock-available">Disponible: {{ art.cantidad_total }}</span>
@@ -1360,7 +1362,8 @@
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form" data-article-id="{{ art.id_hardware }}">
+                        <!-- ✅ CAMBIADO: bolsa_add → add_to_bolsa -->
+                        <form method="post" action="{% url 'solicitarPrestamo:add_to_bolsa' %}" class="article-form" data-article-id="{{ art.id_hardware }}">
                             {% csrf_token %}
                             <input type="hidden" name="categoria" value="hardware" />
                             <input type="hidden" name="art_id" value="{{ art.id_hardware }}" />
@@ -1450,7 +1453,8 @@
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'solicitarPrestamo:bolsa_add' %}" class="article-form" data-article-id="{{ art.id_deportivo }}">
+                        <!-- ✅ CAMBIADO: bolsa_add → add_to_bolsa -->
+                        <form method="post" action="{% url 'solicitarPrestamo:add_to_bolsa' %}" class="article-form" data-article-id="{{ art.id_deportivo }}">
                             {% csrf_token %}
                             <input type="hidden" name="categoria" value="deportivo" />
                             <input type="hidden" name="art_id" value="{{ art.id_deportivo }}" />
@@ -1503,6 +1507,7 @@
                 <div class="action-bar-content">
                     <div class="bag-summary">
                         <div class="bag-icon">
+                            🛒
                             <span class="bag-count" id="floatingBagCount">0</span>
                         </div>
                         <div class="bag-info">
@@ -1522,6 +1527,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         // Variables globales

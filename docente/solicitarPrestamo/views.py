@@ -8,10 +8,24 @@ from .models import (
     Prestamo, DetallePrestamo
 )
 from administradorBodega.utils.sql_helpers import actualizar_stock_sql
+from login.decorators import login_required_custom
+
 
 # ----- helpers -----
+
 def _es_docente(request):
-    return request.session.get("id_rol") == 200 and request.session.get("id_usuario") is not None
+    """Verifica si el usuario es docente"""
+    # Asegúrate de que request sea un objeto HttpRequest, no un string
+    if not hasattr(request, 'session'):
+        print(f"DEBUG: request NO tiene session. Tipo: {type(request)}")
+        return False
+    
+    id_rol = request.session.get("id_rol")
+    id_usuario = request.session.get("id_usuario")
+    
+    print(f"DEBUG: id_rol={id_rol}, id_usuario={id_usuario}")
+    
+    return id_rol == 200 and id_usuario is not None
 
 def _inicializar_bolsa(request):
     bolsa = request.session.get('bolsa')
@@ -26,11 +40,10 @@ def _get_art_by_cat(cat, aid):
     if cat == 'hardware':
         return ArticuloHardware.objects.filter(pk=aid).first()
     return ArticuloDeportivo.objects.filter(pk=aid).first()
-
-# ----- vistas -----
+@login_required_custom
 def menu_docente(request):
     return redirect(reverse('solicitarPrestamo:seleccionar'))
-
+@login_required_custom
 def seleccionar_articulos(request):
     if not _es_docente(request):
         messages.error(request, "Acceso denegado.")
@@ -48,47 +61,80 @@ def seleccionar_articulos(request):
         "deportivos": deportivos,
         "usuario_id": usuario_id,
     })
-
+@login_required_custom
 def add_to_bolsa(request):
-    if request.method != 'POST' or not _es_docente(request):
+    """Agrega artículo a la bolsa de compras"""
+    print(f"DEBUG add_to_bolsa: Iniciando")
+    
+    # Verificar método y autenticación
+    if request.method != 'POST':
+        print(f"DEBUG: No es POST, es {request.method}")
         return redirect('/login/')
-
+    
+    # Verificar si es docente
+    if not _es_docente(request):
+        print(f"DEBUG: No es docente o no está autenticado")
+        messages.error(request, "Debe iniciar sesión como docente")
+        return redirect('/login/')
+    
+    # Obtener datos del formulario
     categoria = request.POST.get('categoria')
-    try:
-        art_id = int(request.POST.get('art_id'))
-        cantidad = int(request.POST.get('cantidad'))
-    except:
-        messages.error(request, "Datos inválidos.")
-        return redirect(reverse('solicitarPrestamo:seleccionar'))
-
-    if cantidad <= 0:
-        messages.error(request, "Seleccione una cantidad mayor a 0.")
-        return redirect(reverse('solicitarPrestamo:seleccionar'))
-
-    art = _get_art_by_cat(categoria, art_id)
-    if not art:
-        messages.error(request, "Artículo no encontrado.")
+    art_id_str = request.POST.get('art_id')
+    cantidad_str = request.POST.get('cantidad')
+    
+    print(f"DEBUG: Categoría: {categoria}, Art ID: {art_id_str}, Cantidad: {cantidad_str}")
+    
+    # Validar datos
+    if not categoria or not art_id_str or not cantidad_str:
+        messages.error(request, "Datos incompletos")
         return redirect(reverse('solicitarPrestamo:seleccionar'))
     
-    # Verificar que el artículo esté DISPONIBLE
-    if art.estado != 'DISPONIBLE':
-        messages.error(request, f"El artículo {art.nombre} no está disponible.")
+    try:
+        art_id = int(art_id_str)
+        cantidad = int(cantidad_str)
+    except (ValueError, TypeError):
+        messages.error(request, "Datos inválidos")
         return redirect(reverse('solicitarPrestamo:seleccionar'))
-
+    
+    if cantidad <= 0:
+        messages.error(request, "Seleccione una cantidad mayor a 0")
+        return redirect(reverse('solicitarPrestamo:seleccionar'))
+    
+    # Obtener artículo
+    art = _get_art_by_cat(categoria, art_id)
+    if not art:
+        messages.error(request, "Artículo no encontrado")
+        return redirect(reverse('solicitarPrestamo:seleccionar'))
+    
+    # Verificar disponibilidad
+    if art.estado != 'DISPONIBLE':
+        messages.error(request, f"El artículo {art.nombre} no está disponible")
+        return redirect(reverse('solicitarPrestamo:seleccionar'))
+    
+    # Inicializar bolsa
     bolsa = _inicializar_bolsa(request)
+    
+    # Verificar stock
     existente = int(bolsa.get(categoria, {}).get(str(art_id), 0))
     stock_actual = art.cantidad_total or 0
-
+    
     if existente + cantidad > stock_actual:
         messages.error(request, f"No hay suficiente stock de {art.nombre}. Disponible: {stock_actual - existente}")
         return redirect(reverse('solicitarPrestamo:seleccionar'))
-
+    
+    # Agregar a bolsa
+    if categoria not in bolsa:
+        bolsa[categoria] = {}
+    
     bolsa[categoria][str(art_id)] = existente + cantidad
     request.session['bolsa'] = bolsa
-    request.session.modified = True  # Asegurar que se guarde la sesión
-    messages.success(request, f"Añadido {cantidad} x {art.nombre} a la bolsa.")
+    request.session.modified = True
+    
+    print(f"DEBUG: Bolsa actualizada: {bolsa}")
+    messages.success(request, f"Añadido {cantidad} x {art.nombre} a la bolsa")
+    
     return redirect(reverse('solicitarPrestamo:seleccionar'))
-
+@login_required_custom
 def remove_from_bolsa(request):
     if request.method != 'POST' or not _es_docente(request):
         return redirect('/login/')
@@ -107,7 +153,7 @@ def remove_from_bolsa(request):
         messages.success(request, "Eliminado de la bolsa.")
 
     return redirect(reverse('solicitarPrestamo:bolsa_ver'))
-
+@login_required_custom
 def ver_bolsa(request):
     if not _es_docente(request):
         return redirect('/login/')
@@ -134,7 +180,7 @@ def ver_bolsa(request):
         'total_articulos': total_articulos,
         'bolsa_vacia': len(items) == 0
     })
-
+@login_required_custom
 def confirmar_solicitud(request):
     if request.method != 'POST' or not _es_docente(request):
         return redirect('/login/')
@@ -306,6 +352,7 @@ def confirmar_solicitud(request):
             pass
             
         return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+@login_required_custom
 def historial(request):
     if not _es_docente(request):
         return redirect('/login/')
@@ -326,7 +373,7 @@ def historial(request):
         'prestamos': prestamos_con_detalles,
         'hoy': date.today()
     })
-
+@login_required_custom
 def detalle(request, id_prestamo):
     if not _es_docente(request):
         return redirect('/login/')

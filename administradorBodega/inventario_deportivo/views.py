@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import ArticuloDeportivo
-
+from login.decorators import login_required_custom
+@login_required_custom
 def gestion_articulos(request):
     articulos = ArticuloDeportivo.objects.all().order_by('id_deportivo')
     articulo_editar = None
@@ -53,7 +54,7 @@ def gestion_articulos(request):
         'estado_choices': ArticuloDeportivo.ESTADO_CHOICES,
         'devolucion_choices': ArticuloDeportivo.DEVOLUCION_CHOICES
     })
-
+@login_required_custom
 def eliminar_articulo(request, id):
     articulo = get_object_or_404(ArticuloDeportivo, id_deportivo=id)
     try:

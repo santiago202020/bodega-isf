@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Prestamo, DetallePrestamo, ArticuloPapeleria, ArticuloHardware, ArticuloDeportivo
-
+from login.decorators import login_required_custom
+@login_required_custom
 def prestamos_pendientes(request):
     if request.session.get("id_rol") != 100:
         messages.error(request, "Acceso denegado")
@@ -35,7 +36,7 @@ def prestamos_pendientes(request):
     return render(request, 'pendientes.html', {
         'prestamos_con_detalles': prestamos_con_detalles
     })
-
+@login_required_custom
 def _obtener_info_articulo(tipo_articulo, id_articulo):
     """Obtiene la información completa del artículo"""
     try:
@@ -76,7 +77,7 @@ def _obtener_info_articulo(tipo_articulo, id_articulo):
             'estado': 'no_encontrado',
             'tipo': 'Desconocido'
         }
-
+@login_required_custom
 def aprobar_prestamo(request, id_prestamo):
     if request.session.get("id_rol") != 100:
         return redirect('/login/')
@@ -99,7 +100,7 @@ def aprobar_prestamo(request, id_prestamo):
         messages.error(request, "❌ Préstamo no encontrado")
     
     return redirect('gestionPrestamos:pendientes')
-
+@login_required_custom
 def rechazar_prestamo(request, id_prestamo):
     if request.session.get("id_rol") != 100:
         return redirect('/login/')
@@ -139,7 +140,7 @@ def rechazar_prestamo(request, id_prestamo):
         messages.error(request, "Préstamo no encontrado")
     
     return redirect('gestionPrestamos:pendientes')
-
+@login_required_custom
 def _devolver_articulo_inventario(tipo_articulo, id_articulo, cantidad):
     """Devuelve artículos al inventario cuando se rechaza un préstamo"""
     try:

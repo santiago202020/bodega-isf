@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import ArticuloPapeleria
+from login.decorators import login_required_custom
 
+@login_required_custom
 def gestion_articulos_papeleria(request):
     """
     Vista para gestionar el inventario de papelería
@@ -58,7 +60,7 @@ def gestion_articulos_papeleria(request):
         'devolucion_choices': ArticuloPapeleria.DEVOLUCION_CHOICES,
         'unidad_choices': ArticuloPapeleria.UNIDAD_CHOICES
     })
-
+@login_required_custom
 def eliminar_articulo_papeleria(request, id):
     """
     Vista para eliminar artículo de papelería

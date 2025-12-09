@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import ArticulosHardware
+from login.decorators import login_required_custom
 
+@login_required_custom
 def inventario_hardware(request):
     """
     Vista para gestionar el inventario de hardware
@@ -78,7 +80,7 @@ def inventario_hardware(request):
     
     return render(request, "inventario_hardware.html", context)
 
-
+@login_required_custom
 def eliminar_hardware(request, id):
     """
     Vista para eliminar hardware mediante URL (GET)
