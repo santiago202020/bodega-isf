@@ -17,6 +17,9 @@
         --danger-color: #e74c3c;
         --success-color: #27ae60;
         --warning-color: #f39c12;
+        --info-color: #17a2b8;
+        --purple-color: #9b59b6;
+        --gray-color: #6c757d;
 
         --spacing-lg: 24px;
         --spacing-md: 16px;
@@ -45,7 +48,7 @@
         min-height: 100vh;
       }
 
-      /* BARRA LATERAL (MISMA QUE LAS ANTERIORES) */
+      /* BARRA LATERAL IZQUIERDA */
       .sidebar {
         width: var(--sidebar-width);
         background-color: var(--sidebar-bg);
@@ -77,7 +80,7 @@
       }
 
       .sidebar-header p {
-        color: #6c757d;
+        color: var(--gray-color);
         font-size: 0.9rem;
       }
 
@@ -115,8 +118,51 @@
       }
 
       .user-info-sidebar p {
-        color: #6c757d;
+        color: var(--gray-color);
         font-size: 0.85rem;
+      }
+
+      .user-role-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-color), #16a085);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-top: 4px;
+      }
+
+      .session-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: var(--spacing-sm) var(--spacing-md);
+        background-color: rgba(39, 174, 96, 0.1);
+        border-radius: var(--border-radius-sm);
+        margin-top: auto;
+        font-size: 0.85rem;
+        color: var(--success-color);
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        background-color: var(--success-color);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
       }
 
       .nav-links {
@@ -151,6 +197,16 @@
         font-weight: 500;
       }
 
+      .logout-link {
+        margin-top: var(--spacing-md);
+        border-top: 1px solid var(--border-color);
+        padding-top: var(--spacing-md);
+      }
+
+      .logout-link .nav-icon {
+        color: var(--danger-color);
+      }
+
       .nav-icon {
         width: 24px;
         text-align: center;
@@ -171,7 +227,7 @@
 
       .nav-text p {
         font-size: 0.8rem;
-        color: #6c757d;
+        color: var(--gray-color);
       }
 
       /* CONTENIDO PRINCIPAL */
@@ -185,6 +241,72 @@
       .container {
         max-width: 1200px;
         margin: 0 auto;
+      }
+
+      /* MENSAJES DEL SISTEMA */
+      .messages-container {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .alert {
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-sm);
+        border-left: 4px solid;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .alert-success {
+        background-color: rgba(39, 174, 96, 0.1);
+        border-left-color: var(--success-color);
+        color: var(--success-color);
+      }
+
+      .alert-error,
+      .alert-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+        border-left-color: var(--danger-color);
+        color: var(--danger-color);
+      }
+
+      .alert-info {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left-color: var(--secondary-color);
+        color: var(--primary-color);
+      }
+
+      .close-alert {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: inherit;
+        opacity: 0.7;
+        line-height: 1;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .close-alert:hover {
+        opacity: 1;
       }
 
       /* ENCABEZADO */
@@ -206,130 +328,192 @@
       .header p {
         opacity: 0.9;
         font-size: 1rem;
+        margin-bottom: var(--spacing-sm);
       }
 
-      /* TABLA MEJORADA */
-      .history-container {
-        background-color: var(--card-bg);
-        border-radius: var(--border-radius);
-        padding: var(--spacing-lg);
-        box-shadow: var(--shadow);
-        overflow-x: auto;
+      .header-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
       }
 
-      .history-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 600px;
-      }
-
-      .history-table thead {
-        background-color: #f8f9fa;
-      }
-
-      .history-table th {
-        padding: var(--spacing-md);
-        text-align: left;
-        font-weight: 600;
-        color: var(--primary-color);
-        border-bottom: 2px solid var(--border-color);
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .history-table td {
-        padding: var(--spacing-md);
-        border-bottom: 1px solid var(--border-color);
-        vertical-align: middle;
-      }
-
-      .history-table tbody tr {
-        transition: var(--transition);
-      }
-
-      .history-table tbody tr:hover {
-        background-color: var(--hover-color);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow);
-      }
-
-      /* ESTADOS CON COLORES */
-      .status-badge {
+      /* BADGES */
+      .badge {
         display: inline-block;
-        padding: 6px 12px;
+        padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .badge-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .badge-info {
+        background-color: var(--info-color);
+        color: white;
+      }
+
+      .badge-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      /* ESTADÍSTICAS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .stat-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        transition: var(--transition);
+        border-top: 4px solid var(--accent-color);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .stat-icon {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--accent-color), #16a085);
+        color: white;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .stat-content h3 {
+        font-size: 0.9rem;
+        color: var(--gray-color);
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
         font-weight: 600;
-        text-align: center;
-        min-width: 100px;
+        color: var(--primary-color);
       }
 
-      .status-pendiente {
-        background-color: rgba(243, 156, 18, 0.1);
-        color: var(--warning-color);
-        border: 1px solid rgba(243, 156, 18, 0.2);
+      /* FILTROS */
+      .filters-section {
+        display: flex;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-md);
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        flex-wrap: wrap;
       }
 
-      .status-aprobado {
-        background-color: rgba(39, 174, 96, 0.1);
-        color: var(--success-color);
-        border: 1px solid rgba(39, 174, 96, 0.2);
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
       }
 
-      .status-rechazado {
-        background-color: rgba(231, 76, 60, 0.1);
-        color: var(--danger-color);
-        border: 1px solid rgba(231, 76, 60, 0.2);
+      .filter-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-sm);
+        font-size: 0.95rem;
+        transition: var(--transition);
+        background-color: white;
       }
 
-      .status-finalizado {
-        background-color: rgba(52, 152, 219, 0.1);
-        color: var(--secondary-color);
-        border: 1px solid rgba(52, 152, 219, 0.2);
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
       }
 
-      /* BOTÓN VER */
-      .view-btn {
+      /* BOTONES */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background-color: var(--secondary-color);
-        color: white;
-        padding: 8px 16px;
-        border-radius: var(--border-radius-sm);
         text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: var(--transition);
       }
 
-      .view-btn:hover {
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
         background-color: #2980b9;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
       }
 
-      /* MENSAJE SIN DATOS */
-      .empty-message {
-        text-align: center;
-        padding: var(--spacing-lg);
-        color: #6c757d;
-        font-size: 1.1rem;
+      .btn-secondary {
+        background-color: var(--gray-color);
+        color: white;
       }
 
-      /* CONTADOR */
-      .history-count {
+      .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background-color: #e0a800;
+        transform: translateY(-2px);
+      }
+
+      /* CONTENEDOR DE PRÉSTAMOS */
+      .loans-container {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+      }
+
+      .loans-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: var(--spacing-lg);
-        padding-bottom: var(--spacing-sm);
+        padding-bottom: var(--spacing-md);
         border-bottom: 2px solid var(--light-color);
       }
 
-      .history-count h2 {
-        font-size: 1.5rem;
+      .loans-header h2 {
+        font-size: 1.4rem;
         color: var(--primary-color);
         font-weight: 600;
       }
@@ -343,7 +527,233 @@
         font-weight: 600;
       }
 
-      /* RESPONSIVE */
+      /* GRID DE PRÉSTAMOS */
+      .loans-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .loan-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: var(--spacing-md);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loan-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--secondary-color);
+      }
+
+      .loan-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .loan-id {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .loan-number {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .loan-date {
+        font-size: 0.85rem;
+        color: var(--gray-color);
+      }
+
+      /* ESTADOS DE PRÉSTAMO */
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        min-width: 120px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-reserva {
+        background-color: rgba(155, 89, 182, 0.1);
+        color: var(--purple-color);
+        border: 1px solid rgba(155, 89, 182, 0.3);
+      }
+
+      .status-pendiente {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(243, 156, 18, 0.3);
+      }
+
+      .status-aprobado {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(39, 174, 96, 0.3);
+      }
+
+      .status-finalizado {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--secondary-color);
+        border: 1px solid rgba(52, 152, 219, 0.3);
+      }
+
+      /* CUERPO DEL PRÉSTAMO */
+      .loan-body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .loan-details {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+      }
+
+      .detail-label {
+        font-size: 0.9rem;
+        color: var(--gray-color);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .detail-value {
+        font-size: 0.9rem;
+        color: var(--primary-color);
+        font-weight: 500;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-word;
+      }
+
+      .loan-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--border-color);
+      }
+
+      /* ESTADO VACÍO */
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-lg);
+        color: var(--gray-color);
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        margin-bottom: var(--spacing-sm);
+        opacity: 0.5;
+      }
+
+      .empty-state h3 {
+        font-size: 1.2rem;
+        margin-bottom: var(--spacing-xs);
+        color: var(--primary-color);
+      }
+
+      .empty-state p {
+        font-size: 0.95rem;
+        opacity: 0.8;
+        margin-bottom: var(--spacing-md);
+      }
+
+      /* TOAST NOTIFICATIONS */
+      .toast {
+        background-color: white;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-hover);
+        margin-bottom: var(--spacing-sm);
+        border-left: 4px solid;
+        animation: slideInRight 0.3s ease;
+        max-width: 350px;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .toast-success {
+        border-left-color: var(--success-color);
+      }
+
+      .toast-error {
+        border-left-color: var(--danger-color);
+      }
+
+      .toast-warning {
+        border-left-color: var(--warning-color);
+      }
+
+      .toast-info {
+        border-left-color: var(--info-color);
+      }
+
+      .toast-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .toast-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: var(--gray-color);
+        opacity: 0.7;
+      }
+
+      .toast-close:hover {
+        opacity: 1;
+      }
+
+      /* RESPONSIVE DESIGN */
       @media (max-width: 1024px) {
         body {
           flex-direction: column;
@@ -395,39 +805,74 @@
       }
 
       @media (max-width: 768px) {
-        .history-table {
-          min-width: 500px;
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
 
-        .history-table th,
-        .history-table td {
-          padding: var(--spacing-sm);
-          font-size: 0.9rem;
+        .loan-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--spacing-sm);
         }
 
-        .status-badge {
-          min-width: 80px;
-          padding: 4px 8px;
-          font-size: 0.8rem;
+        .loan-actions {
+          flex-direction: column;
         }
 
-        .view-btn {
-          padding: 6px 12px;
-          font-size: 0.85rem;
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .detail-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 2px;
+        }
+
+        .detail-value {
+          max-width: 100%;
+          text-align: left;
+        }
+
+        .filters-section {
+          flex-direction: column;
+        }
+
+        .filter-group {
+          min-width: 100%;
         }
       }
 
       @media (max-width: 480px) {
-        .history-count {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .loans-header {
           flex-direction: column;
           align-items: flex-start;
+          gap: var(--spacing-sm);
+        }
+
+        .count-badge {
+          align-self: flex-start;
+        }
+
+        .status-badge {
+          min-width: 100px;
+          font-size: 0.75rem;
+          padding: 4px 8px;
+        }
+
+        .loan-body {
           gap: var(--spacing-sm);
         }
       }
     </style>
   </head>
   <body>
-    <!-- BARRA LATERAL IZQUIERDA -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-header">
         <h2>Sistema de Préstamos</h2>
@@ -436,29 +881,29 @@
 
       <div class="user-profile">
         <div class="user-avatar">
-          {{ request.session.nombre|default:"D"|first }}
+          {{ request.session.nombre|default:"D"|first|upper }}
         </div>
         <div class="user-info-sidebar">
           <h4>{{ request.session.nombre|default:"Docente" }}</h4>
           <p>ID: {{ request.session.id_usuario|default:"N/A" }}</p>
+          <span class="user-role-badge">Docente</span>
         </div>
       </div>
 
-      <!-- Navegación -->
       <div class="nav-links">
         <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="nav-link">
-          <span class="nav-icon">+</span>
+          <span class="nav-icon">📋</span>
           <div class="nav-text">
             <h4>Solicitar Préstamo</h4>
-            <p>Nuevo préstamo de artículos</p>
+            <p>Nuevo préstamo</p>
           </div>
         </a>
 
         <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="nav-link">
-          <span class="nav-icon">B</span>
+          <span class="nav-icon">🛒</span>
           <div class="nav-text">
             <h4>Mi Bolsa</h4>
-            <p>Artículos seleccionados</p>
+            <p>Artículos</p>
           </div>
         </a>
 
@@ -466,126 +911,203 @@
           href="{% url 'solicitarPrestamo:historial' %}"
           class="nav-link active"
         >
-          <span class="nav-icon">H</span>
+          <span class="nav-icon">📚</span>
           <div class="nav-text">
             <h4>Historial</h4>
             <p>Préstamos anteriores</p>
           </div>
         </a>
 
-        <div
-          style="
-            margin-top: auto;
-            padding-top: var(--spacing-md);
-            border-top: 1px solid var(--border-color);
-          "
-        >
-          <a
-            href="{% url 'logout' %}"
-            class="nav-link"
-            style="color: var(--danger-color)"
-          >
-            <span class="nav-icon">X</span>
-            <div class="nav-text">
-              <h4>Cerrar Sesión</h4>
-              <p>Salir del sistema</p>
-            </div>
-          </a>
-        </div>
+        <a href="{% url 'logout' %}" class="nav-link logout-link">
+          <span class="nav-icon">🚪</span>
+          <div class="nav-text">
+            <h4>Cerrar Sesión</h4>
+            <p>Salir</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="session-status">
+        <div class="status-indicator active"></div>
+        <span>Sesión activa</span>
       </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- MAIN CONTENT -->
     <div class="main-content">
       <div class="container">
-        <!-- Encabezado -->
+        {% if messages %}
+        <div class="messages-container">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button
+              type="button"
+              class="close-alert"
+              onclick="this.parentElement.remove()"
+            >
+              ×
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="header">
-          <h1>Historial de Mis Solicitudes</h1>
-          <p>Consulta todas tus solicitudes de préstamo anteriores</p>
+          <h1>📚 Historial de Mis Solicitudes</h1>
+          <p>Consulta tus solicitudes anteriores</p>
         </div>
 
-        <!-- Contenedor de Historial -->
-        <div class="history-container">
-          <div class="history-count">
-            <h2>Mis Préstamos</h2>
+        <!-- LISTA -->
+        <div class="loans-container">
+          <div class="loans-header">
+            <h2>📋 Mis Préstamos</h2>
             <span class="count-badge">
-              {% if prestamos %}{{ prestamos|length }}{% else %}0{% endif %}
-              solicitud{% if prestamos|length != 1 %}es{% endif %}
+              {{ prestamos|length }} solicitud{{ prestamos|length|pluralize:"es"
+              }}
             </span>
           </div>
 
           {% if prestamos %}
-          <table class="history-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Fecha inicio</th>
-                <th>Hora inicio</th>
-                <th>Estado</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in prestamos %}
-              <tr>
-                <td><strong>#{{ p.id_prestamo }}</strong></td>
-                <td>{{ p.fecha_inicio }}</td>
-                <td>{{ p.hora_inicio }}</td>
-                <td>
-                  {% if p.estado == 'pendiente' %}
-                  <span class="status-badge status-pendiente">Pendiente</span>
-                  {% elif p.estado == 'aprobado' %}
-                  <span class="status-badge status-aprobado">Aprobado</span>
-                  {% elif p.estado == 'rechazado' %}
-                  <span class="status-badge status-rechazado">Rechazado</span>
-                  {% elif p.estado == 'finalizado' %}
-                  <span class="status-badge status-finalizado">Finalizado</span>
-                  {% else %}
-                  <span class="status-badge">{{ p.estado }}</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <a
-                    href="{% url 'solicitarPrestamo:detalle' p.id_prestamo %}"
-                    class="view-btn"
+          <div class="loans-grid">
+            {% for item in prestamos %}
+            <div
+              class="loan-card"
+              data-status="{{ item.prestamo.estado }}"
+              data-date="{{ item.prestamo.fecha_inicio|date:'Y-m-d' }}"
+            >
+              <div class="loan-header">
+                <div class="loan-id">
+                  <span class="loan-number"
+                    >#{{ item.prestamo.id_prestamo }}</span
                   >
-                    <span>Ver Detalle</span>
+                  <span class="loan-date">
+                    {{ item.prestamo.fecha_inicio|date:"d/m/Y" }} {{
+                    item.prestamo.hora_inicio|time:"H:i" }}
+                  </span>
+                </div>
+
+                <div class="loan-status">
+                  {% if item.prestamo.estado == 'RESERVA' %}
+                  <span class="status-badge status-reserva">📅 RESERVA</span>
+                  {% elif item.prestamo.estado == 'PENDIENTE' %}
+                  <span class="status-badge status-pendiente"
+                    >⏳ PENDIENTE</span
+                  >
+                  {% elif item.prestamo.estado == 'APROBADO' %}
+                  <span class="status-badge status-aprobado">✅ APROBADO</span>
+                  {% elif item.prestamo.estado == 'FINALIZADO' %}
+                  <span class="status-badge status-finalizado"
+                    >🏁 FINALIZADO</span
+                  >
+                  {% else %}
+                  <span class="status-badge">{{ item.prestamo.estado }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="loan-body">
+                <div class="loan-details">
+                  <div class="detail-row">
+                    <span class="detail-label">📅 Fecha solicitud:</span>
+                    <span class="detail-value">
+                      {{ item.prestamo.fecha_prestamo|date:"d/m/Y" }} {{
+                      item.prestamo.hora_prestamo|time:"H:i" }}
+                    </span>
+                  </div>
+
+                  <div class="detail-row">
+                    <span class="detail-label">⏰ Horario préstamo:</span>
+                    <span class="detail-value">
+                      {{ item.prestamo.hora_inicio|time:"H:i" }} - {{
+                      item.prestamo.hora_fin|time:"H:i" }}
+                    </span>
+                  </div>
+
+                  <div class="detail-row">
+                    <span class="detail-label">📦 Artículos:</span>
+                    <span class="detail-value">
+                      {{ item.total_articulos }} artículo{{
+                      item.total_articulos|pluralize:"s" }}
+                    </span>
+                  </div>
+
+                  {% if item.prestamo.observaciones %}
+                  <div class="detail-row">
+                    <span class="detail-label">📝 Observaciones:</span>
+                    <span class="detail-value"
+                      >{{ item.prestamo.observaciones }}</span
+                    >
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="loan-actions">
+                  <a
+                    href="{% url 'solicitarPrestamo:detalle' item.prestamo.id_prestamo %}"
+                    class="btn btn-primary"
+                  >
+                    👁️ Ver Detalle
                   </a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+
+                  {% if item.prestamo.estado == 'PENDIENTE' %}
+                  <button
+                    class="btn btn-warning"
+                    onclick="cancelLoan('{{ item.prestamo.id_prestamo }}')"
+                  >
+                    Cancelar
+                  </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
           {% else %}
-          <div class="empty-message">
-            <p>No tienes solicitudes de préstamo en tu historial.</p>
+          <div class="empty-state">
+            <h3>No tienes solicitudes de préstamo</h3>
+            <p>Realiza tu primera solicitud ahora.</p>
+            <a
+              href="{% url 'solicitarPrestamo:seleccionar' %}"
+              class="btn btn-primary"
+            >
+              Crear Nueva Solicitud
+            </a>
           </div>
           {% endif %}
         </div>
       </div>
     </div>
 
+    <!-- JS LIMPIO -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Resaltar filas al pasar el mouse
-        const tableRows = document.querySelectorAll(".history-table tbody tr");
-        tableRows.forEach((row) => {
-          row.addEventListener("mouseenter", function () {
-            this.style.transform = "translateY(-2px)";
-          });
+      document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll(".loan-card");
 
-          row.addEventListener("mouseleave", function () {
-            this.style.transform = "translateY(0)";
-          });
-        });
+        const filterLoans = () => {
+          const status =
+            document.getElementById("filterStatus")?.value || "all";
+          const date = document.getElementById("filterDate")?.value || "";
 
-        // Mensaje de carga si hay datos
-        if (tableRows.length > 0) {
-          console.log(
-            `Mostrando ${tableRows.length} préstamos en el historial`
-          );
-        }
+          cards.forEach((card) => {
+            const matchStatus =
+              status === "all" || card.dataset.status === status;
+            const matchDate = !date || card.dataset.date === date;
+            card.style.display = matchStatus && matchDate ? "block" : "none";
+          });
+        };
+
+        document
+          .getElementById("filterStatus")
+          ?.addEventListener("change", filterLoans);
+        document
+          .getElementById("filterDate")
+          ?.addEventListener("change", filterLoans);
       });
+
+      function cancelLoan(id) {
+        alert("Función de cancelación en desarrollo. ID = " + id);
+      }
     </script>
   </body>
 </html>

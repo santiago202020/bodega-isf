@@ -558,18 +558,28 @@
           </div>
 
           <!-- Botones de acción -->
-          <div class="action-buttons">
-            <button type="submit" class="btn btn-primary">
-              📝 Registrar Devolución Parcial
-            </button>
+<div class="action-buttons">
+  <button type="submit" class="btn btn-primary">
+    📝 Registrar Devolución Parcial
+  </button>
 
-            <a
-              href="{% url 'gestionDevolucion:completa' item.prestamo.id_prestamo %}"
-              class="btn btn-success"
-              onclick="return confirm('¿Está seguro de registrar la devolución COMPLETA de todos los artículos? Se devolverá la cantidad máxima de cada artículo.')"
-            >
-              ✅ Devolución Completa
-            </a>
+  <!-- FORMULARIO para Devolución Completa (antes era un link) -->
+  <form 
+    action="{% url 'gestionDevolucion:completa' item.prestamo.id_prestamo %}" 
+    method="post" 
+    style="display: inline;"
+  >
+    {% csrf_token %}
+    <input type="hidden" name="observaciones" value="">
+    <button 
+      type="submit" 
+      class="btn btn-success"
+      onclick="return confirm('¿Está seguro de registrar la devolución COMPLETA de todos los artículos? Se devolverá la cantidad máxima pendiente de cada artículo.')"
+    >
+      ✅ Devolución Completa
+    </button>
+  </form>
+</div>
           </div>
         </form>
       </div>

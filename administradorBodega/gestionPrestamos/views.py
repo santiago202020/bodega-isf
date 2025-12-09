@@ -1,4 +1,3 @@
-# administradorBodega/gestionPrestamos/views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Prestamo, DetallePrestamo, ArticuloPapeleria, ArticuloHardware, ArticuloDeportivo
@@ -15,32 +14,22 @@ def prestamos_pendientes(request):
         detalles = DetallePrestamo.objects.filter(id_prestamo=prestamo.id_prestamo)
         
         detalles_con_info = []
-        puede_aprobar = True
+        puede_aprobar = True  # Siempre True porque ya se verificó stock al crear
         
         for detalle in detalles:
             # Obtener información completa del artículo
             info_articulo = _obtener_info_articulo(detalle.tipo_articulo, detalle.id_articulo)
             
-            # Verificar disponibilidad
-            disponible = _verificar_disponibilidad_articulo(
-                detalle.tipo_articulo, 
-                detalle.id_articulo, 
-                detalle.cantidad
-            )
-            
-            if not disponible['puede_prestar']:
-                puede_aprobar = False
-            
             detalles_con_info.append({
                 'detalle': detalle,
                 'info_articulo': info_articulo,
-                'disponible': disponible
+                # No verificamos disponibilidad porque ya se hizo al crear
             })
         
         prestamos_con_detalles.append({
             'prestamo': prestamo,
             'detalles': detalles_con_info,
-            'puede_aprobar': puede_aprobar
+            'puede_aprobar': True  # Siempre se puede aprobar (solo revisión administrativa)
         })
     
     return render(request, 'pendientes.html', {
@@ -88,29 +77,6 @@ def _obtener_info_articulo(tipo_articulo, id_articulo):
             'tipo': 'Desconocido'
         }
 
-def _verificar_disponibilidad_articulo(tipo_articulo, id_articulo, cantidad_solicitada):
-    """Verifica disponibilidad del artículo - VERSIÓN CORREGIDA"""
-    info_articulo = _obtener_info_articulo(tipo_articulo, id_articulo)
-    
-    if info_articulo['estado'] == 'no_encontrado':
-        return {'puede_prestar': False, 'razon': 'Artículo no encontrado'}
-    
-    # ✅ CORREGIDO: Normalizar a minúsculas para comparar
-    estado_articulo = info_articulo['estado'].lower().strip()
-    
-    # Verificar estado del artículo
-    if estado_articulo != 'disponible':
-        return {'puede_prestar': False, 'razon': f'Artículo {info_articulo["estado"]}'}
-    
-    # Verificar stock
-    if info_articulo['cantidad_total'] < cantidad_solicitada:
-        return {
-            'puede_prestar': False, 
-            'razon': f'Stock insuficiente. Disponible: {info_articulo["cantidad_total"]}, Solicitado: {cantidad_solicitada}'
-        }
-    
-    return {'puede_prestar': True, 'razon': 'Disponible'}
-
 def aprobar_prestamo(request, id_prestamo):
     if request.session.get("id_rol") != 100:
         return redirect('/login/')
@@ -118,30 +84,19 @@ def aprobar_prestamo(request, id_prestamo):
     try:
         prestamo = Prestamo.objects.get(id_prestamo=id_prestamo)
         
-        # Verificar nuevamente antes de aprobar
-        detalles = DetallePrestamo.objects.filter(id_prestamo=id_prestamo)
-        puede_aprobar = True
+        # Verificar que esté en estado pendiente o reserva
+        if prestamo.estado not in ['PENDIENTE', 'RESERVA']:
+            messages.error(request, f"El préstamo ya está {prestamo.estado}")
+            return redirect('gestionPrestamos:pendientes')
         
-        for detalle in detalles:
-            disponible = _verificar_disponibilidad_articulo(
-                detalle.tipo_articulo, 
-                detalle.id_articulo, 
-                detalle.cantidad
-            )
-            if not disponible['puede_prestar']:
-                puede_aprobar = False
-                messages.error(request, f"No se puede aprobar: {disponible['razon']}")
-                break
+        # Cambiar estado a APROBADO (NO verificar stock - ya se hizo)
+        prestamo.estado = 'APROBADO'
+        prestamo.save()
         
-        if puede_aprobar:
-            prestamo.estado = 'ACEPTADA'
-            prestamo.save()
-            messages.success(request, f"Préstamo #{id_prestamo} aprobado exitosamente")
-        else:
-            messages.error(request, "No se pudo aprobar el préstamo")
+        messages.success(request, f"✅ Préstamo #{id_prestamo} aprobado exitosamente")
             
     except Prestamo.DoesNotExist:
-        messages.error(request, "Préstamo no encontrado")
+        messages.error(request, "❌ Préstamo no encontrado")
     
     return redirect('gestionPrestamos:pendientes')
 
@@ -151,10 +106,54 @@ def rechazar_prestamo(request, id_prestamo):
     
     try:
         prestamo = Prestamo.objects.get(id_prestamo=id_prestamo)
-        prestamo.estado = 'RECHAZADA'
+        
+        if prestamo.estado not in ['PENDIENTE', 'RESERVA']:
+            messages.error(request, f"No se puede rechazar un préstamo {prestamo.estado}")
+            return redirect('gestionPrestamos:pendientes')
+        
+        # Cambiar estado a RECHAZADO
+        prestamo.estado = 'RECHAZADO'
         prestamo.save()
-        messages.success(request, f"Préstamo #{id_prestamo} rechazado")
+        
+        # DEVOLVER ARTÍCULOS AL INVENTARIO
+        detalles = DetallePrestamo.objects.filter(id_prestamo=id_prestamo)
+        devueltos = 0
+        errores = 0
+        
+        for detalle in detalles:
+            if _devolver_articulo_inventario(
+                detalle.tipo_articulo,
+                detalle.id_articulo,
+                detalle.cantidad
+            ):
+                devueltos += 1
+            else:
+                errores += 1
+        
+        if errores == 0:
+            messages.success(request, f"❌ Préstamo #{id_prestamo} rechazado. {devueltos} artículos devueltos al inventario.")
+        else:
+            messages.warning(request, f"❌ Préstamo #{id_prestamo} rechazado. {devueltos} artículos devueltos, {errores} con problemas.")
+        
     except Prestamo.DoesNotExist:
         messages.error(request, "Préstamo no encontrado")
     
     return redirect('gestionPrestamos:pendientes')
+
+def _devolver_articulo_inventario(tipo_articulo, id_articulo, cantidad):
+    """Devuelve artículos al inventario cuando se rechaza un préstamo"""
+    try:
+        # Importar la función de utilidad (puedes mover esta importación al inicio del archivo)
+        from administradorBodega.utils.sql_helpers import actualizar_stock_sql
+        
+        # Usar SQL directo para actualizar el inventario
+        if actualizar_stock_sql(tipo_articulo, id_articulo, cantidad, operacion='SUMAR'):
+            print(f"✅ Artículo {tipo_articulo} ID {id_articulo}: Devueltas {cantidad} unidades")
+            return True
+        else:
+            print(f"❌ Error devolviendo artículo {tipo_articulo} ID {id_articulo}")
+            return False
+            
+    except Exception as e:
+        print(f"Error en _devolver_articulo_inventario: {e}")
+        return False
