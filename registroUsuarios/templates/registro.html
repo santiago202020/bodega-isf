@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instituto San Francisco - Registro de Docente</title>
+    <style>
+      :root {
+        --primary-color: #1a4f72;
+        --secondary-color: #2c7bb6;
+        --accent-color: #f9a826;
+        --light-color: #f5f5f5;
+        --error-color: #e74c3c;
+        --success-color: #2ecc71;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a4f72 0%, #2c7bb6 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .login-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 500px;
+        overflow: hidden;
+      }
+
+      .login-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 25px 20px;
+        text-align: center;
+        position: relative;
+      }
+
+      .login-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-color), #ffcc00);
+      }
+
+      .school-logo {
+        width: 80px;
+        height: 80px;
+        background-color: white;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 40px;
+        color: var(--primary-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .school-name {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .school-motto {
+        font-size: 14px;
+        opacity: 0.9;
+        font-style: italic;
+      }
+
+      .login-form {
+        padding: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .input-field:focus {
+        border-color: var(--secondary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(44, 123, 182, 0.2);
+      }
+
+      .input-field.error {
+        border-color: var(--error-color);
+      }
+
+      .input-field.success {
+        border-color: var(--success-color);
+      }
+
+      .error-message {
+        color: var(--error-color);
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .submit-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .submit-btn:hover {
+        background-color: var(--secondary-color);
+      }
+
+      .messages {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .message-error {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: var(--error-color);
+        border: 1px solid rgba(231, 76, 60, 0.3);
+      }
+
+      .message-success {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(46, 204, 113, 0.3);
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .form-footer a {
+        color: var(--secondary-color);
+        text-decoration: none;
+      }
+
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 15px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .password-requirements {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      @media (max-width: 480px) {
+        .login-container {
+          border-radius: 10px;
+        }
+
+        .login-header {
+          padding: 20px 15px;
+        }
+
+        .login-form {
+          padding: 20px;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <div class="school-logo">
+          <i>ISF</i>
+        </div>
+        <h1 class="school-name">Registro de Docente</h1>
+        <p class="school-motto">Instituto San Francisco</p>
+      </div>
+
+      <form class="login-form" method="POST" id="registroForm">
+        {% csrf_token %} {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <p class="message-{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombres">Nombres:</label>
+            <input
+              type="text"
+              id="nombres"
+              name="nombres"
+              class="input-field"
+              placeholder="Ej: Juan Carlos"
+              required
+            />
+            <div class="error-message" id="nombresError">
+              Los nombres son obligatorios
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="apellidos">Apellidos:</label>
+            <input
+              type="text"
+              id="apellidos"
+              name="apellidos"
+              class="input-field"
+              placeholder="Ej: Pérez López"
+              required
+            />
+            <div class="error-message" id="apellidosError">
+              Los apellidos son obligatorios
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="correo">Correo Electrónico:</label>
+          <input
+            type="email"
+            id="correo"
+            name="correo"
+            class="input-field"
+            placeholder="ejemplo@institutosanfrancisco.edu"
+            required
+          />
+          <div class="error-message" id="correoError">
+            Por favor ingresa un correo electrónico válido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="input-field"
+            placeholder="Mínimo 8 caracteres"
+            required
+          />
+          <div class="password-requirements">
+            La contraseña debe tener al menos 8 caracteres
+          </div>
+          <div class="error-message" id="passwordError">
+            La contraseña debe tener al menos 8 caracteres
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmar_password">Confirmar Contraseña:</label>
+          <input
+            type="password"
+            id="confirmar_password"
+            name="confirmar_password"
+            class="input-field"
+            placeholder="Repite tu contraseña"
+            required
+          />
+          <div class="error-message" id="confirmarPasswordError">
+            Las contraseñas no coinciden
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          Registrarse como Docente
+        </button>
+
+        <div class="form-footer">
+          <p>
+            ¿Ya tienes cuenta?
+            <a href="{% url 'login' %}">Inicia sesión aquí</a>
+          </p>
+          <p style="margin-top: 10px; font-size: 12px; color: #777">
+            * Solo personal docente puede registrarse en esta plataforma
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("registroForm")
+        .addEventListener("submit", function (event) {
+          let isValid = true;
+
+          // Validación de nombres
+          const nombresInput = document.getElementById("nombres");
+          const nombresError = document.getElementById("nombresError");
+          if (nombresInput.value.trim().length < 2) {
+            nombresInput.classList.add("error");
+            nombresInput.classList.remove("success");
+            nombresError.style.display = "block";
+            isValid = false;
+          } else {
+            nombresInput.classList.remove("error");
+            nombresInput.classList.add("success");
+            nombresError.style.display = "none";
+          }
+
+          // Validación de apellidos
+          const apellidosInput = document.getElementById("apellidos");
+          const apellidosError = document.getElementById("apellidosError");
+          if (apellidosInput.value.trim().length < 2) {
+            apellidosInput.classList.add("error");
+            apellidosInput.classList.remove("success");
+            apellidosError.style.display = "block";
+            isValid = false;
+          } else {
+            apellidosInput.classList.remove("error");
+            apellidosInput.classList.add("success");
+            apellidosError.style.display = "none";
+          }
+
+          // Validación de correo
+          const emailInput = document.getElementById("correo");
+          const emailError = document.getElementById("correoError");
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailInput.value)) {
+            emailInput.classList.add("error");
+            emailInput.classList.remove("success");
+            emailError.style.display = "block";
+            isValid = false;
+          } else {
+            emailInput.classList.remove("error");
+            emailInput.classList.add("success");
+            emailError.style.display = "none";
+          }
+
+          // Validación de contraseña
+          const passwordInput = document.getElementById("password");
+          const passwordError = document.getElementById("passwordError");
+          if (passwordInput.value.length < 8) {
+            passwordInput.classList.add("error");
+            passwordInput.classList.remove("success");
+            passwordError.style.display = "block";
+            isValid = false;
+          } else {
+            passwordInput.classList.remove("error");
+            passwordInput.classList.add("success");
+            passwordError.style.display = "none";
+          }
+
+          // Validación de confirmación de contraseña
+          const confirmPasswordInput =
+            document.getElementById("confirmar_password");
+          const confirmPasswordError = document.getElementById(
+            "confirmarPasswordError"
+          );
+          if (confirmPasswordInput.value !== passwordInput.value) {
+            confirmPasswordInput.classList.add("error");
+            confirmPasswordInput.classList.remove("success");
+            confirmPasswordError.style.display = "block";
+            isValid = false;
+          } else {
+            confirmPasswordInput.classList.remove("error");
+            confirmPasswordInput.classList.add("success");
+            confirmPasswordError.style.display = "none";
+          }
+
+          if (!isValid) {
+            event.preventDefault();
+          }
+        });
+
+      // Validación en tiempo real
+      document.getElementById("nombres").addEventListener("input", function () {
+        const error = document.getElementById("nombresError");
+        if (this.value.trim().length >= 2) {
+          this.classList.remove("error");
+          this.classList.add("success");
+          error.style.display = "none";
+        } else {
+          this.classList.remove("success");
+        }
+      });
+
+      document
+        .getElementById("apellidos")
+        .addEventListener("input", function () {
+          const error = document.getElementById("apellidosError");
+          if (this.value.trim().length >= 2) {
+            this.classList.remove("error");
+            this.classList.add("success");
+            error.style.display = "none";
+          } else {
+            this.classList.remove("success");
+          }
+        });
+
+      document.getElementById("correo").addEventListener("input", function () {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const error = document.getElementById("correoError");
+        if (emailRegex.test(this.value)) {
+          this.classList.remove("error");
+          this.classList.add("success");
+          error.style.display = "none";
+        } else {
+          this.classList.remove("success");
+        }
+      });
+
+      document
+        .getElementById("password")
+        .addEventListener("input", function () {
+          const error = document.getElementById("passwordError");
+          if (this.value.length >= 8) {
+            this.classList.remove("error");
+            this.classList.add("success");
+            error.style.display = "none";
+          } else {
+            this.classList.remove("success");
+          }
+
+          // Actualizar confirmación en tiempo real
+          const confirmInput = document.getElementById("confirmar_password");
+          const confirmError = document.getElementById(
+            "confirmarPasswordError"
+          );
+          if (confirmInput.value && confirmInput.value !== this.value) {
+            confirmInput.classList.add("error");
+            confirmError.style.display = "block";
+          } else if (confirmInput.value) {
+            confirmInput.classList.remove("error");
+            confirmInput.classList.add("success");
+            confirmError.style.display = "none";
+          }
+        });
+
+      document
+        .getElementById("confirmar_password")
+        .addEventListener("input", function () {
+          const passwordInput = document.getElementById("password");
+          const error = document.getElementById("confirmarPasswordError");
+          if (this.value === passwordInput.value) {
+            this.classList.remove("error");
+            this.classList.add("success");
+            error.style.display = "none";
+          } else {
+            this.classList.remove("success");
+          }
+        });
+    </script>
+  </body>
+</html>

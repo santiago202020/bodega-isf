@@ -46,8 +46,16 @@ INSTALLED_APPS = [
     'administradorBodega.gestionDevolucion',
     'administradorBodega.gestionPrestamos',
     'docente.solicitarPrestamo',
+    'registroUsuarios',
 ]
-
+# Configuración para Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'bodega.isf.sofware@gmail.com'  # Tu email
+EMAIL_HOST_PASSWORD = 'svjo ijyb zifz ihmg'  # CONTRASEÑA DE APLICACIÓN (no la normal)
+DEFAULT_FROM_EMAIL = 'bodega.isf.sofware@gmail.com'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

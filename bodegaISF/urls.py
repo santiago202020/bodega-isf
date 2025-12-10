@@ -29,6 +29,7 @@ urlpatterns = [
     path('deportivo/', include('administradorBodega.inventario_deportivo.urls')),
     path('papeleria/', include('administradorBodega.inventario_papeleria.urls')),
     path('login/', include('login.urls')),
+    path('registro/', include('registroUsuarios.urls')),
     path('menu/', include('administradorBodega.menu.urls')),
     path('docente/', include('docente.menuDocente.urls')),
     path('docente/solicitar/', include('docente.solicitarPrestamo.urls')), 
