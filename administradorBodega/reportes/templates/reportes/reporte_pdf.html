@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reporte Sistema Bodega</title>
+    <style>
+        @page {
+            size: A4 landscape;  /* Horizontal para más espacio */
+            margin: 1cm;
+        }
+        
+        body { 
+            font-family: 'Arial', sans-serif; 
+            font-size: 9pt;  /* Más pequeño */
+            line-height: 1.2;
+        }
+        
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            font-size: 16pt;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            color: #3498db;
+            text-align: center;
+            font-size: 12pt;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .header-info {
+            background-color: #f8f9fa;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 8pt;
+        }
+        
+        .summary {
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #27ae60;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 7pt;  /* Más pequeño para caber */
+            table-layout: fixed;  /* Forzar ancho fijo */
+            word-wrap: break-word;  /* Romper palabras largas */
+        }
+        
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 5px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        td {
+            padding: 4px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Anchos específicos para columnas comunes */
+        th:nth-child(1), td:nth-child(1) { width: 5%; }   /* ID */
+        th:nth-child(2), td:nth-child(2) { width: 5%; }   /* ID Prestamo */
+        th:nth-child(3), td:nth-child(3) { width: 15%; }  /* Docente */
+        th:nth-child(4), td:nth-child(4) { width: 8%; }   /* Fecha */
+        th:nth-child(5), td:nth-child(5) { width: 8%; }   /* Cantidad */
+        th:nth-child(6), td:nth-child(6) { width: 15%; }  /* Observaciones */
+        th:nth-child(7), td:nth-child(7) { width: 8%; }   /* Estado */
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            font-size: 8pt;
+            color: #7f8c8d;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        /* Para columnas muy largas */
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>REPORTE DEL SISTEMA</h1>
+    <h2>Bodega ISF - Préstamos y Devoluciones</h2>
+    
+    <div class="header-info">
+        <strong>Generado:</strong> {% now "d/m/Y H:i" %} | 
+        <strong>Tipo de reporte:</strong> {{ filtros_aplicados.tipo_reporte }} | 
+        {% if filtros_aplicados.fecha_desde %}
+        <strong>Desde:</strong> {{ filtros_aplicados.fecha_desde }} | 
+        {% endif %}
+        {% if filtros_aplicados.fecha_hasta %}
+        <strong>Hasta:</strong> {{ filtros_aplicados.fecha_hasta }}
+        {% endif %}
+    </div>
+    
+    <div class="summary">
+         Total registros: {{ total_registros }}
+    </div>
+    
+    {% if resultados %}
+    <table>
+        <thead>
+            <tr>
+                {% for columna in resultados.0.keys %}
+                <th>
+                    {% if columna == "id_prestamo" %}ID Préstamo
+                    {% elif columna == "id_usuario" %}ID Usuario
+                    {% elif columna == "id_devolucion" %}ID Devolución
+                    {% elif columna == "fecha_solicitud" %}Fecha Solicitud
+                    {% elif columna == "fecha_devolucion" %}Fecha Devolución
+                    {% elif columna == "fecha_inicio_uso" %}Fecha Inicio
+                    {% elif columna == "hora_solicitud" %}Hora Solicitud
+                    {% elif columna == "hora_fin_estimada" %}Hora Fin
+                    {% elif columna == "total_articulos" %}Total Artículos
+                    {% elif columna == "articulos_devueltos" %}Artículos Devueltos
+                    {% elif columna == "obs_devolucion" %}Observaciones
+                    {% elif columna == "estado_prestamo" %}Estado
+                    {% elif columna == "fecha_prestamo" %}Fecha Préstamo
+                    {% elif columna == "cantidad_devuelta" %}Cantidad Devuelta
+                    {% elif columna == "tipo_rol" %}Tipo de Rol
+                    {% elif columna == "docente" %}Docente
+                    {% elif columna == "estado" %}Estado
+                    {% elif columna == "observaciones" %}Observaciones
+                    {% else %}{{ columna }}{% endif %}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for fila in resultados %}
+            <tr>
+                {% for valor in fila.values %}
+                <td>
+                    {% if valor == None or valor == '' %}
+                    <span style="color: #999;">-</span>
+                    {% else %}
+                        {% if valor|length > 50 %}  <!-- Si es muy largo, truncar -->
+                        <span class="truncate" title="{{ valor }}">{{ valor|slice:":50" }}...</span>
+                        {% else %}
+                        {{ valor }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #999;">
+        No hay datos para mostrar
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        Sistema de Gestión de Bodega ISF | Página <pdf:pagenumber> de <pdf:pagecount> | 
+        Generado por: {{ usuario_generador|default:"Administrador" }}
+    </div>
+</body>
+</html>

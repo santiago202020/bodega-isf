@@ -99,22 +99,53 @@
         border-radius: var(--border-radius);
         margin-bottom: var(--spacing-lg);
         box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
       }
 
-      .nav-header strong {
+      .nav-links {
+        flex: 1;
+      }
+
+      .nav-links strong {
         color: var(--dark-color);
       }
 
-      .nav-header a {
+      .nav-links a {
         color: var(--secondary-color);
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s;
       }
 
-      .nav-header a:hover {
+      .nav-links a:hover {
         text-decoration: underline;
         color: var(--primary-color);
+      }
+
+      /* Información del usuario */
+      .user-info {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        min-width: 200px;
+      }
+
+      .user-info p {
+        margin: 2px 0;
+        font-size: 0.9rem;
+      }
+
+      .user-role {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
       }
 
       /* Panel de título */
@@ -362,13 +393,9 @@
         box-shadow: var(--shadow);
       }
 
-      /* Indicadores de estado */
-      .devolucion-requerida {
-        background-color: #fff3cd;
-      }
-
-      .devolucion-opcional {
-        background-color: #d1ecf1;
+      .empty-state h3 {
+        color: var(--dark-color);
+        margin-bottom: 10px;
       }
 
       /* Responsive */
@@ -387,6 +414,16 @@
         .main-content {
           margin-left: 0;
           padding: var(--spacing-md);
+        }
+
+        .nav-header {
+          flex-direction: column;
+          gap: var(--spacing-md);
+          text-align: center;
+        }
+
+        .user-info {
+          width: 100%;
         }
 
         .prestamo-info {
@@ -411,6 +448,21 @@
           justify-content: center;
         }
       }
+
+      @media (max-width: 576px) {
+        body {
+          font-size: 14px;
+        }
+
+        .main-content {
+          padding: var(--spacing-md);
+        }
+
+        .nav-menu {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
     </style>
   </head>
   <body>
@@ -418,21 +470,24 @@
     <nav class="sidebar">
       <h1>Panel de Bodega</h1>
       <ul class="nav-menu">
-        <li><a href="{% url 'menu' %}">🏠 Inicio</a></li>
-        <li><a href="{% url 'gestion_articulos' %}">🏃‍♂️ Deportivo</a></li>
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
         <li>
-          <a href="{% url 'gestion_articulos_papeleria' %}">📝 Papelería</a>
-        </li>
-        <li><a href="{% url 'inventario_hardware' %}">💻 Hardware</a></li>
-        <li>
-          <a href="{% url 'gestionPrestamos:pendientes' %}">📋 Préstamos</a>
+          <a href="{% url 'gestionPrestamos:pendientes' %}"
+            >Préstamos Pendientes</a
+          >
         </li>
         <li>
           <a href="{% url 'gestionDevolucion:pendientes' %}" class="active"
-            >📦 Devoluciones</a
+            >Gestión Devoluciones</a
           >
         </li>
-        <li><a href="{% url 'logout' %}">🚪 Cerrar sesión</a></li>
+        <li>
+          <a href="{% url 'reportes_principal' %}">Reportes</a>
+        </li>
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
       </ul>
     </nav>
 
@@ -440,19 +495,26 @@
     <main class="main-content">
       <!-- Encabezado de navegación -->
       <div class="nav-header">
-        <strong>Navegación: </strong>
-        <a href="{% url 'menu' %}">Inicio</a> |
-        <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-        <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-        <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-        <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
-        <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
-        <a href="{% url 'logout' %}">Cerrar sesión</a>
+        <div class="nav-links">
+          <strong>Navegación: </strong>
+          <a href="{% url 'menu' %}">Inicio</a> |
+          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+          <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+          <a href="{% url 'logout' %}">Cerrar sesión</a>
+        </div>
+        <div class="user-info">
+          <p><strong>{{ request.session.nombre }}</strong></p>
+          <p>ID: {{ request.session.id_usuario }}</p>
+          <span class="user-role">{{ request.session.rol }}</span>
+        </div>
       </div>
 
       <!-- Panel de título -->
       <section class="title-panel">
-        <h1>📦 Gestión de Devoluciones</h1>
+        <h1>Gestión de Devoluciones</h1>
         <p>Registro y control de devoluciones de artículos prestados</p>
       </section>
 
@@ -470,7 +532,7 @@
       <div class="prestamo-card">
         <div class="prestamo-header">
           <h3>Préstamo #{{ item.prestamo.id_prestamo }}</h3>
-          <span class="badge badge-info"> Pendiente de Devolución </span>
+          <span class="badge badge-info">Pendiente de Devolución</span>
         </div>
 
         <div class="prestamo-info">
@@ -536,9 +598,9 @@
                 </td>
                 <td>
                   {% if detalle_info.ya_devuelto %}
-                  <span class="badge badge-success">✅ Devuelto</span>
+                  <span class="badge badge-success">Devuelto</span>
                   {% else %}
-                  <span class="badge badge-warning">⏳ Pendiente</span>
+                  <span class="badge badge-warning">Pendiente</span>
                   {% endif %}
                 </td>
               </tr>
@@ -558,34 +620,33 @@
           </div>
 
           <!-- Botones de acción -->
-<div class="action-buttons">
-  <button type="submit" class="btn btn-primary">
-    📝 Registrar Devolución Parcial
-  </button>
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-primary">
+              Registrar Devolución Parcial
+            </button>
 
-  <!-- FORMULARIO para Devolución Completa (antes era un link) -->
-  <form 
-    action="{% url 'gestionDevolucion:completa' item.prestamo.id_prestamo %}" 
-    method="post" 
-    style="display: inline;"
-  >
-    {% csrf_token %}
-    <input type="hidden" name="observaciones" value="">
-    <button 
-      type="submit" 
-      class="btn btn-success"
-      onclick="return confirm('¿Está seguro de registrar la devolución COMPLETA de todos los artículos? Se devolverá la cantidad máxima pendiente de cada artículo.')"
-    >
-      ✅ Devolución Completa
-    </button>
-  </form>
-</div>
+            <!-- FORMULARIO para Devolución Completa -->
+            <form
+              action="{% url 'gestionDevolucion:completa' item.prestamo.id_prestamo %}"
+              method="post"
+              style="display: inline"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="observaciones" value="" />
+              <button
+                type="submit"
+                class="btn btn-success"
+                onclick="return confirm('¿Está seguro de registrar la devolución COMPLETA de todos los artículos? Se devolverá la cantidad máxima pendiente de cada artículo.')"
+              >
+                Devolución Completa
+              </button>
+            </form>
           </div>
         </form>
       </div>
       {% empty %}
       <div class="empty-state">
-        <h3>🎉 No hay préstamos pendientes de devolución</h3>
+        <h3>No hay préstamos pendientes de devolución</h3>
         <p>
           Todos los préstamos han sido procesados o no hay préstamos aceptados
           en este momento.
@@ -595,7 +656,6 @@
     </main>
 
     <script>
-      // JavaScript para mejorar la experiencia
       document.addEventListener("DOMContentLoaded", function () {
         // Marcar enlace activo en la barra lateral
         const currentUrl = window.location.href;
@@ -607,31 +667,11 @@
           }
         });
 
-        // Validación de formularios
-        const forms = document.querySelectorAll("form");
-        forms.forEach((form) => {
-          form.addEventListener("submit", function (e) {
-            const cantidadInputs = this.querySelectorAll(".cantidad-input");
-            let algunaCantidadIngresada = false;
+        // Mejorar la experiencia en móviles
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
 
-            cantidadInputs.forEach((input) => {
-              if (parseInt(input.value) > 0) {
-                algunaCantidadIngresada = true;
-              }
-            });
-
-            if (!algunaCantidadIngresada) {
-              e.preventDefault();
-              alert("Por favor, ingrese al menos una cantidad a devolver.");
-            }
-          });
-        });
-
-        // Ajustar layout responsive
         function adjustLayout() {
-          const sidebar = document.querySelector(".sidebar");
-          const mainContent = document.querySelector(".main-content");
-
           if (window.innerWidth <= 768) {
             sidebar.style.position = "relative";
             mainContent.style.marginLeft = "0";

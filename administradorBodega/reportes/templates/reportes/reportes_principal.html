@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reportes - Sistema Bodega</title>
+    <style>
+      /* Variables CSS para colores y dimensiones */
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --sidebar-width: 250px;
+        --header-height: 70px;
+        --spacing-sm: 10px;
+        --spacing-md: 15px;
+        --spacing-lg: 20px;
+        --border-radius: 5px;
+        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Reset y estilos base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f7fa;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Barra lateral de navegación */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+      }
+
+      .sidebar h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-menu li {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .nav-menu a {
+        color: var(--light-color);
+        text-decoration: none;
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        transition: background-color 0.3s;
+      }
+
+      .nav-menu a:hover,
+      .nav-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Contenido principal */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg);
+        min-height: 100vh;
+      }
+
+      /* Encabezado de navegación */
+      .nav-header {
+        background-color: var(--light-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .nav-links {
+        flex: 1;
+      }
+
+      .nav-links strong {
+        color: var(--dark-color);
+      }
+
+      .nav-links a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        text-decoration: underline;
+        color: var(--primary-color);
+      }
+
+      /* Información del usuario en el header */
+      .user-info {
+        background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        min-width: 200px;
+      }
+
+      .user-info p {
+        margin: 2px 0;
+        font-size: 0.9rem;
+      }
+
+      .user-role {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        display: inline-block;
+      }
+
+      /* ESTILOS ESPECÍFICOS PARA REPORTES */
+
+      /* Contenedor principal */
+      .content-container {
+        background-color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      /* Títulos */
+      h1 {
+        color: var(--dark-color);
+        margin-bottom: var(--spacing-md);
+        border-bottom: 3px solid var(--secondary-color);
+        padding-bottom: var(--spacing-sm);
+      }
+
+      h2,
+      h3 {
+        color: var(--dark-color);
+        margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+      }
+
+      /* Formulario */
+      .form-group {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--dark-color);
+      }
+
+      .form-group select,
+      .form-group input {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      .form-group select:focus,
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+      }
+
+      /* Botones */
+      .btn {
+        background-color: var(--secondary-color);
+        color: white;
+        text-decoration: none;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        text-align: center;
+        transition: background-color 0.3s, transform 0.2s;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background-color: #27ae60;
+      }
+
+      .btn-success:hover {
+        background-color: #219653;
+      }
+
+      /* Mensajes */
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin: var(--spacing-md) 0;
+        border-left: 4px solid #dc3545;
+      }
+
+      .info {
+        background-color: #e7f3fe;
+        color: var(--dark-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin: var(--spacing-md) 0;
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      /* Tabla */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: var(--spacing-lg) 0;
+        box-shadow: var(--shadow);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+
+      th {
+        background-color: #34495e;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      td {
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #e3f2fd;
+      }
+
+      /* Sin resultados */
+      .no-results-container {
+        text-align: center;
+        padding: 40px;
+        color: #7f8c8d;
+      }
+
+      .no-results-container h3 {
+        color: #95a5a6;
+        margin-bottom: 10px;
+      }
+
+      /* Pie de página */
+      .footer {
+        margin-top: var(--spacing-lg);
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #ddd;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: var(--spacing-md);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: var(--spacing-md);
+        }
+
+        .nav-menu {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .nav-menu li {
+          margin: 5px;
+        }
+
+        .nav-header {
+          flex-direction: column;
+          gap: var(--spacing-md);
+          text-align: center;
+        }
+
+        .user-info {
+          width: 100%;
+        }
+
+        .form-group select,
+        .form-group input {
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        body {
+          font-size: 14px;
+        }
+
+        .main-content {
+          padding: var(--spacing-md);
+        }
+
+        .nav-menu {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Barra lateral de navegación -->
+    <nav class="sidebar">
+      <h1>Panel de Bodega</h1>
+      <ul class="nav-menu">
+        <li><a href="{% url 'menu' %}">Inicio</a></li>
+        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+        <li>
+          <a href="{% url 'gestionPrestamos:pendientes' %}"
+            >Préstamos Pendientes</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'gestionDevolucion:pendientes' %}"
+            >Gestión Devoluciones</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'reportes_principal' %}" class="active">Reportes</a>
+        </li>
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Encabezado de navegación -->
+      <div class="nav-header">
+        <div class="nav-links">
+          <strong>Navegación: </strong>
+          <a href="{% url 'menu' %}">Inicio</a> |
+          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+          <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+          <a href="{% url 'logout' %}">Cerrar sesión</a>
+        </div>
+        <div class="user-info">
+          <p><strong>{{ request.session.nombre }}</strong></p>
+          <p>ID: {{ request.session.id_usuario }}</p>
+          <span class="user-role">{{ request.session.rol }}</span>
+        </div>
+      </div>
+
+      <!-- Contenido de reportes -->
+      <div class="content-container">
+        <h1>Generador de Reportes</h1>
+        <p>Filtra y genera reportes de préstamos y devoluciones</p>
+
+        <!-- Formulario de filtros -->
+        <form method="get" action="{% url 'reportes_principal' %}">
+          <h3>Filtros:</h3>
+
+          <div class="form-group">
+            <label>Tipo de Reporte:</label>
+            {{ form.tipo_reporte }}
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Desde:</label>
+            {{ form.fecha_desde }}
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Hasta:</label>
+            {{ form.fecha_hasta }}
+          </div>
+
+          <div class="form-group">
+            <label>Estado del Préstamo:</label>
+            {{ form.estado_prestamo }}
+          </div>
+
+          <div class="form-group">
+            <label>ID Docente (opcional):</label>
+            {{ form.id_usuario }}
+          </div>
+
+          <div class="form-group">
+            <button type="submit" name="ver_previa" class="btn">
+              Ver Vista Previa
+            </button>
+            <button type="submit" name="generar_pdf" class="btn btn-success">
+              Generar PDF
+            </button>
+          </div>
+        </form>
+
+        <!-- Mostrar errores -->
+        {% if form.errors %}
+        <div class="error">
+          <strong>Errores:</strong>
+          {% for field in form %} {% if field.errors %}
+          <p>{{ field.label }}: {{ field.errors.0 }}</p>
+          {% endif %} {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Mostrar filtros aplicados -->
+        {% if request.GET.ver_previa or request.GET.generar_pdf %}
+        <div class="info">
+          <strong>Filtros aplicados:</strong><br />
+          Tipo: {{ form.tipo_reporte.value|default:"No especificado" }}<br />
+          {% if form.fecha_desde.value %}Desde: {{ form.fecha_desde.value }}<br />{%
+          endif %} {% if form.fecha_hasta.value %}Hasta: {{
+          form.fecha_hasta.value }}<br />{% endif %} {% if
+          form.estado_prestamo.value %}Estado: {{ form.estado_prestamo.value
+          }}<br />{% endif %} {% if form.id_usuario.value %}ID Docente: {{
+          form.id_usuario.value }}{% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Mostrar resultados -->
+        {% if resultados %}
+        <h3>Resultados ({{ total_registros }} registros)</h3>
+
+        <div style="overflow-x: auto">
+          <table>
+            <thead>
+              <tr>
+                {% for columna in resultados.0.keys %}
+                <th>{{ columna }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for fila in resultados %}
+              <tr>
+                {% for valor in fila.values %}
+                <td>{{ valor|default:"-" }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Botón para descargar PDF -->
+        <div style="margin-top: 20px">
+          <form method="get" style="display: inline">
+            <!-- Pasar todos los parámetros GET excepto 'generar_pdf' -->
+            <input
+              type="hidden"
+              name="tipo_reporte"
+              value="{{ request.GET.tipo_reporte|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="fecha_desde"
+              value="{{ request.GET.fecha_desde|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="fecha_hasta"
+              value="{{ request.GET.fecha_hasta|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="estado_prestamo"
+              value="{{ request.GET.estado_prestamo|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="id_usuario"
+              value="{{ request.GET.id_usuario|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="ver_previa"
+              value="{{ request.GET.ver_previa|default:'' }}"
+            />
+
+            <button type="submit" name="generar_pdf" class="btn btn-success">
+              Descargar PDF
+            </button>
+          </form>
+        </div>
+
+        {% elif request.GET.ver_previa %}
+        <!-- Si no hay resultados -->
+        <div class="no-results-container">
+          <h3>No se encontraron resultados</h3>
+          <p>Intenta con otros filtros</p>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+          <p>Sistema de Gestión de Bodega ISF © {% now "Y" %}</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Script simple -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Marcar enlace activo en la barra lateral
+        const currentUrl = window.location.href;
+        const navLinks = document.querySelectorAll(".nav-menu a");
+
+        navLinks.forEach((link) => {
+          if (link.href === currentUrl) {
+            link.classList.add("active");
+          }
+        });
+
+        // Mejorar la experiencia en móviles
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+
+        function adjustLayout() {
+          if (window.innerWidth <= 768) {
+            sidebar.style.position = "relative";
+            mainContent.style.marginLeft = "0";
+          } else {
+            sidebar.style.position = "fixed";
+            mainContent.style.marginLeft = "var(--sidebar-width)";
+          }
+        }
+
+        // Ajustar layout al cargar y al redimensionar
+        adjustLayout();
+        window.addEventListener("resize", adjustLayout);
+
+        // Confirmación al generar PDF
+        document
+          .querySelector('button[name="generar_pdf"]')
+          ?.addEventListener("click", function (e) {
+            if (!confirm("¿Generar reporte en PDF?")) {
+              e.preventDefault();
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

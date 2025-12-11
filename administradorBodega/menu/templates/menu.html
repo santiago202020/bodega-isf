@@ -295,6 +295,9 @@
             >Gestión Devoluciones</a
           >
         </li>
+        <li>
+          <a href="{% url 'reportes_principal' %}"> Reportes </a>
+        </li>
         <li><a href="{% url 'logout' %}"> Cerrar sesión</a></li>
       </ul>
     </nav>
@@ -311,6 +314,7 @@
           <a href="{% url 'inventario_hardware' %}">Hardware</a> |
           <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
           <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+          <a href="{% url 'reportes_principal' %}"> Reportes </a>|
           <a href="{% url 'logout' %}">Cerrar sesión</a>
         </div>
         <div class="user-info">

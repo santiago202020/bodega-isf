@@ -24,6 +24,7 @@ def redirect_to_login(request):
 
 urlpatterns = [
     path('', redirect_to_login),  
+    
     path('admin/', admin.site.urls),
     path('hardware/', include('administradorBodega.inventario_hardware.urls')),
     path('deportivo/', include('administradorBodega.inventario_deportivo.urls')),
@@ -35,4 +36,5 @@ urlpatterns = [
     path('docente/solicitar/', include('docente.solicitarPrestamo.urls')), 
     path('administradorBodega/prestamos/', include('administradorBodega.gestionPrestamos.urls')),
     path('administradorBodega/devoluciones/', include('administradorBodega.gestionDevolucion.urls')),
+    path('administradorBodega/reportes/', include('administradorBodega.reportes.urls')),
 ]

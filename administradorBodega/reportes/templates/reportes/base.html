@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reportes - Sistema Bodega</title>
+  </head>
+  <body>
+    <h1>Sistema de Reportes</h1>
+    <p>Usuario: Administrador | <a href="/logout/">Salir</a></p>
+    <hr />
+    <!-- Para administradores (rol 100) -->
+    {% if request.session.id_rol == 100 %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'reportes_principal' %}"> Reportes </a>
+    </li>
+    {% endif %} {% block content %} {% endblock %}
+
+    <hr />
+    <p style="text-align: center; color: #666">
+      Sistema de Bodega ISF © {% now "Y" %}
+    </p>
+  </body>
+</html>

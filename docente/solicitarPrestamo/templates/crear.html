@@ -1103,7 +1103,7 @@
         <!-- Navegación -->
         <div class="nav-links">
             <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="nav-link active">
-                <span class="nav-icon">📋</span>
+                <span class="nav-icon"></span>
                 <div class="nav-text">
                     <h4>Solicitar Préstamo</h4>
                     <p>Nuevo préstamo de artículos</p>
@@ -1111,7 +1111,7 @@
             </a>
 
             <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="nav-link" id="bolsaLink">
-                <span class="nav-icon">🛒</span>
+                <span class="nav-icon"></span>
                 <div class="nav-text">
                     <h4>Mi Bolsa</h4>
                     <p id="bolsaCounter">Artículos: 0</p>
@@ -1119,7 +1119,7 @@
             </a>
 
             <a href="{% url 'solicitarPrestamo:historial' %}" class="nav-link">
-                <span class="nav-icon">📚</span>
+                <span class="nav-icon"></span>
                 <div class="nav-text">
                     <h4>Historial</h4>
                     <p>Préstamos anteriores</p>
@@ -1127,7 +1127,7 @@
             </a>
 
             <a href="{% url 'logout' %}" class="nav-link logout-link">
-                <span class="nav-icon">🚪</span>
+                <span class="nav-icon"></span>
                 <div class="nav-text">
                     <h4>Cerrar Sesión</h4>
                     <p>Salir del sistema</p>
@@ -1159,7 +1159,7 @@
 
             <!-- Encabezado -->
             <div class="header">
-                <h1>📋 Crear Nueva Solicitud de Préstamo</h1>
+                <h1> Crear Nueva Solicitud de Préstamo</h1>
                 <p>Selecciona los artículos que necesitas para tu préstamo</p>
                 <div class="header-actions">
                     <span class="badge badge-info">Sesión: {{ request.session.id_usuario }}</span>
@@ -1171,25 +1171,25 @@
             <div class="user-info-card">
                 <div class="user-details">
                     <div class="user-detail-item">
-                        <strong>👤 Docente ID:</strong>
+                        <strong> Docente ID:</strong>
                         <span class="badge badge-primary">{{ usuario_id }}</span>
                     </div>
                     <div class="user-detail-item">
-                        <strong>📅 Fecha actual:</strong>
+                        <strong> Fecha actual:</strong>
                         <span id="currentDate">{{ hoy|date:"d/m/Y" }}</span>
                     </div>
                     <div class="user-detail-item">
-                        <strong>⏰ Hora actual:</strong>
+                        <strong> Hora actual:</strong>
                         <span id="currentTime"></span>
                     </div>
                 </div>
                 <div class="user-stats">
                     <div class="stat-item">
-                        <span class="stat-label">📦 Artículos en bolsa:</span>
+                        <span class="stat-label"> Artículos en bolsa:</span>
                         <span class="stat-value" id="totalItemsCounter">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">🏷️ Categorías:</span>
+                        <span class="stat-label"> Categorías:</span>
                         <span class="stat-value">3</span>
                     </div>
                 </div>
@@ -1198,7 +1198,7 @@
             <!-- Filtros y búsqueda -->
             <div class="filters-section">
                 <div class="filter-group">
-                    <input type="text" id="searchInput" placeholder="🔍 Buscar artículo..." class="search-input">
+                    <input type="text" id="searchInput" placeholder=" Buscar artículo..." class="search-input">
                 </div>
                 <div class="filter-group">
                     <select id="categoryFilter" class="filter-select">
@@ -1221,7 +1221,7 @@
             <div class="category-section" data-category="papeleria">
                 <div class="category-header">
                     <div class="category-title-container">
-                        <h2 class="category-title">📄 Papelería</h2>
+                        <h2 class="category-title"> Papelería</h2>
                         <span class="category-status-badge disponible">DISPONIBLE</span>
                     </div>
                     <div class="category-info">
@@ -1290,9 +1290,9 @@
                                     data-article-id="{{ art.id_papeleria }}"
                                 >
                                     {% if art.cantidad_total == 0 %}
-                                    <span>❌ Sin Stock</span>
+                                    <span> Sin Stock</span>
                                     {% else %}
-                                    <span>➕ Añadir a bolsa</span>
+                                    <span> Añadir a bolsa</span>
                                     {% endif %}
                                 </button>
                             </div>
@@ -1302,7 +1302,7 @@
                 </div>
                 {% else %}
                 <div class="empty-category">
-                    <div class="empty-icon">📄</div>
+                    <div class="empty-icon"></div>
                     <h3>No hay artículos de papelería disponibles</h3>
                     <p>Todos los artículos de papelería están actualmente prestados o en mantenimiento.</p>
                 </div>
@@ -1313,7 +1313,7 @@
             <div class="category-section" data-category="hardware">
                 <div class="category-header">
                     <div class="category-title-container">
-                        <h2 class="category-title">💻 Hardware</h2>
+                        <h2 class="category-title"> Hardware</h2>
                         <span class="category-status-badge disponible">DISPONIBLE</span>
                     </div>
                     <div class="category-info">
@@ -1392,9 +1392,9 @@
                                     data-article-id="{{ art.id_hardware }}"
                                 >
                                     {% if art.cantidad_total == 0 %}
-                                    <span>❌ Sin Stock</span>
+                                    <span> Sin Stock</span>
                                     {% else %}
-                                    <span>➕ Añadir a bolsa</span>
+                                    <span> Añadir a bolsa</span>
                                     {% endif %}
                                 </button>
                             </div>
@@ -1404,7 +1404,7 @@
                 </div>
                 {% else %}
                 <div class="empty-category">
-                    <div class="empty-icon">💻</div>
+                    <div class="empty-icon"></div>
                     <h3>No hay artículos de hardware disponibles</h3>
                     <p>Todos los artículos de hardware están actualmente prestados o en mantenimiento.</p>
                 </div>
@@ -1415,7 +1415,7 @@
             <div class="category-section" data-category="deportivo">
                 <div class="category-header">
                     <div class="category-title-container">
-                        <h2 class="category-title">⚽ Artículos Deportivos</h2>
+                        <h2 class="category-title"> Artículos Deportivos</h2>
                         <span class="category-status-badge disponible">DISPONIBLE</span>
                     </div>
                     <div class="category-info">
@@ -1453,7 +1453,7 @@
                             </div>
                         </div>
                         
-                        <!-- ✅ CAMBIADO: bolsa_add → add_to_bolsa -->
+                       
                         <form method="post" action="{% url 'solicitarPrestamo:add_to_bolsa' %}" class="article-form" data-article-id="{{ art.id_deportivo }}">
                             {% csrf_token %}
                             <input type="hidden" name="categoria" value="deportivo" />
@@ -1483,9 +1483,9 @@
                                     data-article-id="{{ art.id_deportivo }}"
                                 >
                                     {% if art.cantidad_total == 0 %}
-                                    <span>❌ Sin Stock</span>
+                                    <span> Sin Stock</span>
                                     {% else %}
-                                    <span>➕ Añadir a bolsa</span>
+                                    <span> Añadir a bolsa</span>
                                     {% endif %}
                                 </button>
                             </div>
@@ -1495,7 +1495,7 @@
                 </div>
                 {% else %}
                 <div class="empty-category">
-                    <div class="empty-icon">⚽</div>
+                    <div class="empty-icon"></div>
                     <h3>No hay artículos deportivos disponibles</h3>
                     <p>Todos los artículos deportivos están actualmente prestados o en mantenimiento.</p>
                 </div>
@@ -1507,7 +1507,7 @@
                 <div class="action-bar-content">
                     <div class="bag-summary">
                         <div class="bag-icon">
-                            🛒
+                            
                             <span class="bag-count" id="floatingBagCount">0</span>
                         </div>
                         <div class="bag-info">
@@ -1517,10 +1517,10 @@
                     </div>
                     <div class="action-buttons">
                         <button type="button" class="btn btn-secondary" onclick="clearBag()">
-                            🗑️ Vaciar bolsa
+                             Vaciar bolsa
                         </button>
                         <a href="{% url 'solicitarPrestamo:bolsa_ver' %}" class="btn btn-primary" id="viewBagBtn">
-                            👁️ Ver bolsa <span class="btn-badge" id="viewBagCount">0</span>
+                             Ver bolsa <span class="btn-badge" id="viewBagCount">0</span>
                         </a>
                     </div>
                 </div>

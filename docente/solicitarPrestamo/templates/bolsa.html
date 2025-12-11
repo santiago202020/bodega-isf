@@ -549,13 +549,16 @@
         <div class="user-info-sidebar">
           <h4>{{ request.session.nombre|default:"Docente" }}</h4>
           <p>ID: {{ request.session.id_usuario|default:"N/A" }}</p>
+          <span class="user-role-badge"
+            >{{ request.session.rol|default:"Docente" }}</span
+          >
         </div>
       </div>
 
       <!-- Navegación -->
       <div class="nav-links">
         <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="nav-link">
-          <span class="nav-icon">+</span>
+          <span class="nav-icon"></span>
           <div class="nav-text">
             <h4>Solicitar Préstamo</h4>
             <p>Nuevo préstamo de artículos</p>
@@ -566,7 +569,7 @@
           href="{% url 'solicitarPrestamo:bolsa_ver' %}"
           class="nav-link active"
         >
-          <span class="nav-icon">B</span>
+          <span class="nav-icon"></span>
           <div class="nav-text">
             <h4>Mi Bolsa</h4>
             <p>Artículos seleccionados</p>
@@ -574,7 +577,7 @@
         </a>
 
         <a href="{% url 'solicitarPrestamo:historial' %}" class="nav-link">
-          <span class="nav-icon">H</span>
+          <span class="nav-icon"></span>
           <div class="nav-text">
             <h4>Historial</h4>
             <p>Préstamos anteriores</p>
@@ -593,7 +596,7 @@
             class="nav-link"
             style="color: var(--danger-color)"
           >
-            <span class="nav-icon">X</span>
+            <span class="nav-icon"></span>
             <div class="nav-text">
               <h4>Cerrar Sesión</h4>
               <p>Salir del sistema</p>
