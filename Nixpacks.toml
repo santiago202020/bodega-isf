@@ -1,19 +1,12 @@
 [phases.setup]
 nixPkgs = [
-    "gobject-introspection",
-    "harfbuzz",
     "pango",
     "fontconfig",
     "libffi",
     "cairo",
-    "pixman",
-    "libjpeg",
-    "libpng",
-    "libtiff",
-    "freetype",
-    "libxml2",
-    "libxslt",
-    "zlib"
+    "libgobject-2.0",
+    "glib",
+    "harfbuzz"
 ]
 
 [phases.install]
