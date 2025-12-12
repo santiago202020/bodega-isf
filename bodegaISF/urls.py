@@ -19,12 +19,19 @@ from django.urls import path
 from django.urls import include
 from django.urls import include, path
 from django.shortcuts import redirect
+
 def redirect_to_login(request):
     return redirect('/login/')
+from django.http import HttpResponse
+
+def health_check(request):
+    """Ruta simple para health check de Railway"""
+    return HttpResponse("OK", status=200, content_type="text/plain")
 
 urlpatterns = [
     path('', redirect_to_login),  
-    
+    path('', health_check),  # Ruta raíz responde OK
+    path('health/', health_check),  # Ruta alternativa
     path('admin/', admin.site.urls),
     path('hardware/', include('administradorBodega.inventario_hardware.urls')),
     path('deportivo/', include('administradorBodega.inventario_deportivo.urls')),
