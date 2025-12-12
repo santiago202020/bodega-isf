@@ -2,6 +2,7 @@ asgiref==3.11.0
 brotli==1.2.0
 cffi==2.0.0
 cssselect2==0.8.0
+dj-database-url==3.0.1
 Django==6.0
 django-filter==25.2
 fonttools==4.61.0
@@ -17,7 +18,3 @@ tzdata==2025.2
 weasyprint==67.0
 webencodings==0.5.1
 zopfli==0.4.0
-
-# obligatorio para Railway / producción
-gunicorn
-whitenoise
