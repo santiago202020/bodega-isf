@@ -1,1 +1,1 @@
-web: sleep 30 && python manage.py migrate && gunicorn bodegaISF.wsgi:application --bind 0.0.0.0:$PORT --timeout 120
+web: gunicorn bodegaISF.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120
