@@ -1,0 +1,7 @@
+railpack-plan.json
+.railway
+railway.json
+Nixpacks.toml
+Dockerfile
+Procfile
+start.sh
