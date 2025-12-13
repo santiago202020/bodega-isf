@@ -96,28 +96,17 @@ WSGI_APPLICATION = 'bodegaISF.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import os
-import dj_database_url
-
-# Configuración de base de datos para Railway
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
-        )
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bodega-isf',
+        'USER': 'super',
+        'PASSWORD': 'Macerovi1980@',
+        'HOST': 'yehiden-4960.postgres.pythonanywhere-services.com',
+        'PORT': '14960',
     }
-else:
-    # Configuración local (backup)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
+
 # Desactivar sistema de migraciones
 class DisableMigrations:
     def __contains__(self, item):
