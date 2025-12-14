@@ -44,4 +44,5 @@ urlpatterns = [
     path('administradorBodega/prestamos/', include('administradorBodega.gestionPrestamos.urls')),
     path('administradorBodega/devoluciones/', include('administradorBodega.gestionDevolucion.urls')),
     path('administradorBodega/reportes/', include('administradorBodega.reportes.urls')),
+    path('recuperar-password/', include('recuperarPassword.urls')),
 ]

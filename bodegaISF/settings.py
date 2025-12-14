@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'administradorBodega.gestionPrestamos',
     'docente.solicitarPrestamo',
     'registroUsuarios',
-
+    'recuperarPassword',
     'administradorBodega.reportes',  
 ]
 # Configuración para Gmail
@@ -96,6 +96,7 @@ WSGI_APPLICATION = 'bodegaISF.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -106,6 +107,7 @@ DATABASES = {
         'PORT': '14960',
     }
 }
+
 
 # Desactivar sistema de migraciones
 class DisableMigrations:
