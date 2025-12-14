@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Instituto San Francisco - Iniciar Sesión</title>
+    <title>Instituto San Francisco - Verificar Código</title>
     <style>
       :root {
         --primary-color: #1a4f72;
@@ -30,7 +30,7 @@
         padding: 20px;
       }
 
-      .login-container {
+      .recovery-container {
         background-color: white;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -39,7 +39,7 @@
         overflow: hidden;
       }
 
-      .login-header {
+      .recovery-header {
         background-color: var(--primary-color);
         color: white;
         padding: 25px 20px;
@@ -47,7 +47,7 @@
         position: relative;
       }
 
-      .login-header::before {
+      .recovery-header::before {
         content: "";
         position: absolute;
         top: 0;
@@ -77,13 +77,13 @@
         margin-bottom: 5px;
       }
 
-      .school-motto {
-        font-size: 14px;
-        opacity: 0.9;
-        font-style: italic;
+      .recovery-title {
+        font-size: 20px;
+        margin-top: 15px;
+        font-weight: 600;
       }
 
-      .login-form {
+      .recovery-form {
         padding: 30px;
       }
 
@@ -106,6 +106,10 @@
         border-radius: 8px;
         font-size: 16px;
         transition: all 0.3s ease;
+        text-align: center;
+        letter-spacing: 3px;
+        font-weight: bold;
+        font-size: 18px;
       }
 
       .input-field:focus {
@@ -176,79 +180,87 @@
       .form-footer a {
         color: var(--secondary-color);
         text-decoration: none;
+        font-weight: 500;
       }
 
       .form-footer a:hover {
         text-decoration: underline;
       }
 
+      .info-box {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .email-display {
+        background-color: #e8f4fc;
+        padding: 10px;
+        border-radius: 6px;
+        margin: 10px 0;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .attempts-info {
+        background-color: #fff8e6;
+        padding: 10px;
+        border-radius: 6px;
+        margin: 10px 0;
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .code-instructions {
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
       @media (max-width: 480px) {
-        .login-container {
+        .recovery-container {
           border-radius: 10px;
         }
 
-        .login-header {
+        .recovery-header {
           padding: 20px 15px;
         }
 
-        .login-form {
+        .recovery-form {
           padding: 20px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="login-container">
-      <div class="login-header">
+    <div class="recovery-container">
+      <div class="recovery-header">
         <div class="school-logo">
           <i>ISF</i>
         </div>
         <h1 class="school-name">Instituto San Francisco</h1>
-        <p class="school-motto"></p>
+        <div class="recovery-title">Verificar Código</div>
       </div>
 
-      <form class="login-form" method="POST" id="loginForm">
-        {% csrf_token %}
+      <div class="recovery-form">
+        <div class="info-box">
+          <p>📧 Se envió un código de verificación a:</p>
+          <div class="email-display">{{ correo_parcial }}</div>
 
-        <div class="form-group">
-          <label for="correo">Correo Electrónico:</label>
-          <input
-            type="email"
-            id="correo"
-            name="correo"
-            class="input-field"
-            placeholder="usuario@institutosanfrancisco.edu"
-            required
-          />
-          <div class="error-message" id="emailError">
-            Por favor ingresa un correo electrónico válido
+          <div class="attempts-info">
+            <p>
+              ⚠️ Intentos restantes:
+              <strong>{{ intentos_restantes }}</strong> de 3
+            </p>
+            <p style="font-size: 12px; margin-top: 5px">
+              Si superas los 3 intentos, deberás solicitar un nuevo código.
+            </p>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="password">Contraseña:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="input-field"
-            placeholder="Ingresa tu contraseña"
-            required
-          />
-          <div class="error-message" id="passwordError">
-            La contraseña debe tener al menos 6 caracteres
-          </div>
-        </div>
-
-        <button type="submit" class="submit-btn">Ingresar al Sistema</button>
-        <p>
-          ¿Olvidaste tu contraseña? recupérala
-          <a href="/recuperar-password/solicitar/">aqui</a>
-        </p>
-        <p>
-          ¿No tienes cuenta?
-          <a href="{% url 'registro' %}">Regístrate como docente aquí</a>
-        </p>
         {% if messages %}
         <div class="messages">
           {% for message in messages %}
@@ -256,46 +268,68 @@
           {% endfor %}
         </div>
         {% endif %}
-      </form>
 
-      <div class="form-footer"></div>
+        <form method="POST" id="verificationForm">
+          {% csrf_token %}
+
+          <div class="code-instructions">
+            <p>Ingresa el código de 6 dígitos que recibiste en tu correo</p>
+          </div>
+
+          <div class="form-group">
+            <label for="codigo">Código de Verificación:</label>
+            <input
+              type="text"
+              id="codigo"
+              name="codigo"
+              class="input-field"
+              placeholder="ABCDEF"
+              maxlength="6"
+              required
+              pattern="[A-Z0-9]{6}"
+              title="Ingresa exactamente 6 caracteres (letras mayúsculas o números)"
+            />
+            <div class="error-message" id="codeError">
+              El código debe tener 6 caracteres (solo letras mayúsculas y
+              números)
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Verificar Código</button>
+        </form>
+
+        <div class="form-footer">
+          <p>
+            ¿No recibiste el código?
+            <a href="{% url 'solicitar_recuperacion' %}"
+              >Solicitar nuevo código</a
+            >
+          </p>
+          <p><a href="/login/">← Cancelar y volver al Login</a></p>
+        </div>
+      </div>
     </div>
 
     <script>
       document
-        .getElementById("loginForm")
+        .getElementById("verificationForm")
         .addEventListener("submit", function (event) {
           let isValid = true;
 
-          // Validación de correo
-          const emailInput = document.getElementById("correo");
-          const emailError = document.getElementById("emailError");
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          // Validación de código
+          const codeInput = document.getElementById("codigo");
+          const codeError = document.getElementById("codeError");
+          const codeRegex = /^[A-Z0-9]{6}$/;
 
-          if (!emailRegex.test(emailInput.value)) {
-            emailInput.classList.add("error");
-            emailInput.classList.remove("success");
-            emailError.style.display = "block";
+          if (!codeRegex.test(codeInput.value.toUpperCase())) {
+            codeInput.classList.add("error");
+            codeInput.classList.remove("success");
+            codeError.style.display = "block";
             isValid = false;
           } else {
-            emailInput.classList.remove("error");
-            emailInput.classList.add("success");
-            emailError.style.display = "none";
-          }
-
-          // Validación de contraseña
-          const passwordInput = document.getElementById("password");
-          const passwordError = document.getElementById("passwordError");
-
-          if (passwordInput.value.length < 6) {
-            passwordInput.classList.add("error");
-            passwordInput.classList.remove("success");
-            passwordError.style.display = "block";
-            isValid = false;
-          } else {
-            passwordInput.classList.remove("error");
-            passwordInput.classList.add("success");
-            passwordError.style.display = "none";
+            codeInput.classList.remove("error");
+            codeInput.classList.add("success");
+            codeError.style.display = "none";
           }
 
           if (!isValid) {
@@ -303,33 +337,27 @@
           }
         });
 
-      // Validación en tiempo real
-      document.getElementById("correo").addEventListener("input", function () {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const emailError = document.getElementById("emailError");
+      // Validación en tiempo real y auto mayúsculas
+      document.getElementById("codigo").addEventListener("input", function () {
+        // Convertir a mayúsculas
+        this.value = this.value.toUpperCase();
 
-        if (emailRegex.test(this.value)) {
+        const codeRegex = /^[A-Z0-9]{6}$/;
+        const codeError = document.getElementById("codeError");
+
+        if (codeRegex.test(this.value)) {
           this.classList.remove("error");
           this.classList.add("success");
-          emailError.style.display = "none";
+          codeError.style.display = "none";
         } else {
           this.classList.remove("success");
         }
       });
 
-      document
-        .getElementById("password")
-        .addEventListener("input", function () {
-          const passwordError = document.getElementById("passwordError");
-
-          if (this.value.length >= 6) {
-            this.classList.remove("error");
-            this.classList.add("success");
-            passwordError.style.display = "none";
-          } else {
-            this.classList.remove("success");
-          }
-        });
+      // Auto-enfocar el campo de código
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("codigo").focus();
+      });
     </script>
   </body>
 </html>

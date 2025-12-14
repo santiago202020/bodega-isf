@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'administradorBodega.gestionPrestamos',
     'docente.solicitarPrestamo',
     'registroUsuarios',
-
+    'recuperarPassword',
     'administradorBodega.reportes',
 ]
 # Configuración para Gmail
