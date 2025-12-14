@@ -9,8 +9,17 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
+import os
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +34,10 @@ SECRET_KEY = 'django-insecure-^1d8jnj=t*7f(1ts6+%3s63!b-x6f5i%plg7953$l^c*og5k88
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'yehiden.pythonanywhere.com',
+]
+
 
 
 # Application definition
@@ -48,15 +60,15 @@ INSTALLED_APPS = [
     'docente.solicitarPrestamo',
     'registroUsuarios',
 
-    'administradorBodega.reportes',  
+    'administradorBodega.reportes',
 ]
 # Configuración para Gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'bodega.isf.sofware@gmail.com'  
-EMAIL_HOST_PASSWORD = 'svjo ijyb zifz ihmg'  
+EMAIL_HOST_USER = 'bodega.isf.sofware@gmail.com'
+EMAIL_HOST_PASSWORD = 'svjo ijyb zifz ihmg'
 DEFAULT_FROM_EMAIL = 'bodega.isf.sofware@gmail.com'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,7 +111,7 @@ WSGI_APPLICATION = 'bodegaISF.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bodega-isf',
+        'NAME': 'bodegaisf',
         'USER': 'super',
         'PASSWORD': 'Macerovi1980@',
         'HOST': 'yehiden-4960.postgres.pythonanywhere-services.com',
@@ -111,7 +123,7 @@ DATABASES = {
 class DisableMigrations:
     def __contains__(self, item):
         return True
-    
+
     def __getitem__(self, item):
         return None
 
