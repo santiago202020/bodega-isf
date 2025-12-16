@@ -142,7 +142,7 @@ def rechazar_prestamo(request, id_prestamo):
         messages.error(request, "Préstamo no encontrado")
     
     return redirect('gestionPrestamos:pendientes')
-@login_required_custom(redirect_url='/login/') 
+
 def _devolver_articulo_inventario(tipo_articulo, id_articulo, cantidad):
     """Devuelve artículos al inventario cuando se rechaza un préstamo"""
     try:

@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'yehiden.pythonanywhere.com',
+    '127.0.0.1',
+    'localhost',
 ]
 
 
@@ -111,13 +113,14 @@ WSGI_APPLICATION = 'bodegaISF.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bodegaisf',
+        'NAME': 'bodega-isf',
         'USER': 'super',
         'PASSWORD': 'Macerovi1980@',
         'HOST': 'yehiden-4960.postgres.pythonanywhere-services.com',
         'PORT': '14960',
     }
 }
+
 
 # Desactivar sistema de migraciones
 class DisableMigrations:

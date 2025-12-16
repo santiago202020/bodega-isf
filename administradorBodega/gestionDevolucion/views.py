@@ -81,6 +81,7 @@ def prestamos_para_devolucion(request):
         'prestamos_con_detalles': prestamos_con_detalles
     })
 @login_required_custom
+@login_required_custom
 def registrar_devolucion_parcial(request, id_prestamo):
     """Registra devolución por artículo individual"""
     if request.session.get("id_rol") != 100:
@@ -102,78 +103,93 @@ def registrar_devolucion_parcial(request, id_prestamo):
                     }
                 )
                 
-                # 2. Obtener todas las devoluciones anteriores para calcular cantidades
+                # 2. Obtener todas las devoluciones anteriores
                 devoluciones_anteriores = Devolucion.objects.filter(id_prestamo=id_prestamo)
                 todas_devoluciones_ids = [dev.id_devolucion for dev in devoluciones_anteriores]
                 
-                # 3. Procesar cada artículo del formulario
                 items_procesados = 0
+
+                # 3. Procesar artículos del formulario
                 for key, value in request.POST.items():
-                    if key.startswith('cantidad_devuelta_'):
-                        partes = key.split('_')
-                        tipo_articulo = partes[2]
-                        id_articulo = int(partes[3])
-                        cantidad_devuelta = int(value)
-                        
-                        if cantidad_devuelta > 0:
-                            try:
-                                # Buscar el detalle del préstamo
-                                detalle_prestamo = DetallePrestamo.objects.get(
-                                    id_prestamo=id_prestamo,
-                                    tipo_articulo=tipo_articulo,
-                                    id_articulo=id_articulo
-                                )
-                                
-                                # Calcular cantidad ya devuelta en todas las devoluciones
-                                cantidad_ya_devuelta = 0
-                                if todas_devoluciones_ids:
-                                    cantidad_ya_devuelta = DetalleDevolucion.objects.filter(
-                                        id_devolucion__in=todas_devoluciones_ids,
-                                        tipo_articulo=tipo_articulo,
-                                        id_articulo=id_articulo
-                                    ).aggregate(total=Sum('cantidad'))['total'] or 0
-                                
-                                # Verificar que no se devuelva más de lo prestado
-                                max_posible = detalle_prestamo.cantidad - cantidad_ya_devuelta
-                                if max_posible <= 0:
-                                    continue  # Ya está completamente devuelto
-                                
-                                cantidad_devuelta = min(cantidad_devuelta, max_posible)
-                                
-                                if cantidad_devuelta > 0:
-                                    # Registrar en detalle_devolucion
-                                    DetalleDevolucion.objects.create(
-                                        id_devolucion=devolucion.id_devolucion,
-                                        tipo_articulo=tipo_articulo,
-                                        id_articulo=id_articulo,
-                                        cantidad=cantidad_devuelta,
-                                        estado_devolucion='DEVUELTO'
-                                    )
-                                    
-                                    # Actualizar stock del artículo
-                                    if _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
-                                        # Actualizar cantidad total devuelta en la devolución
-                                        devolucion.cantidad_devuelta = (devolucion.cantidad_devuelta or 0) + cantidad_devuelta
-                                        items_procesados += 1
-                                    
-                            except DetallePrestamo.DoesNotExist:
-                                messages.warning(request, f"Artículo no encontrado en el préstamo #{id_prestamo}")
-                                continue
-                
+                    if not key.startswith('cantidad_devuelta_'):
+                        continue
+
+                    value = value.strip()
+
+                    if value == '':
+                        continue  # evita int('')
+
+                    if not value.isdigit():
+                        continue  # seguridad extra
+
+                    partes = key.split('_')
+                    tipo_articulo = partes[2]
+                    id_articulo = int(partes[3])
+                    cantidad_devuelta = int(value)
+
+                    if cantidad_devuelta <= 0:
+                        continue
+
+                    try:
+                        detalle_prestamo = DetallePrestamo.objects.get(
+                            id_prestamo=id_prestamo,
+                            tipo_articulo=tipo_articulo,
+                            id_articulo=id_articulo
+                        )
+
+                        cantidad_ya_devuelta = 0
+                        if todas_devoluciones_ids:
+                            cantidad_ya_devuelta = DetalleDevolucion.objects.filter(
+                                id_devolucion__in=todas_devoluciones_ids,
+                                tipo_articulo=tipo_articulo,
+                                id_articulo=id_articulo
+                            ).aggregate(total=Sum('cantidad'))['total'] or 0
+
+                        max_posible = detalle_prestamo.cantidad - cantidad_ya_devuelta
+                        if max_posible <= 0:
+                            continue
+
+                        cantidad_devuelta = min(cantidad_devuelta, max_posible)
+
+                        DetalleDevolucion.objects.create(
+                            id_devolucion=devolucion.id_devolucion,
+                            tipo_articulo=tipo_articulo,
+                            id_articulo=id_articulo,
+                            cantidad=cantidad_devuelta,
+                            estado_devolucion='DEVUELTO'
+                        )
+
+                        if _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
+                            devolucion.cantidad_devuelta += cantidad_devuelta
+                            items_procesados += 1
+
+                    except DetallePrestamo.DoesNotExist:
+                        messages.warning(
+                            request,
+                            f"Artículo no encontrado en el préstamo #{id_prestamo}"
+                        )
+
                 if items_procesados > 0:
                     devolucion.save()
-                    
-                    # 4. Actualizar estado del préstamo
                     nuevo_estado = _actualizar_estado_prestamo(id_prestamo)
-                    
-                    messages.success(request, f"✅ Devolución parcial registrada. {items_procesados} artículos procesados. Estado actual: {nuevo_estado}")
+                    messages.success(
+                        request,
+                        f"✅ Devolución parcial registrada. {items_procesados} artículos procesados. Estado actual: {nuevo_estado}"
+                    )
                 else:
-                    messages.warning(request, "⚠️ No se procesaron artículos para devolución")
-                
+                    messages.warning(
+                        request,
+                        "⚠️ No se procesaron artículos para devolución"
+                    )
+
         except Exception as e:
-            messages.error(request, f"❌ Error al registrar devolución: {str(e)}")
+            messages.error(
+                request,
+                f"❌ Error al registrar devolución: {str(e)}"
+            )
     
     return redirect('gestionDevolucion:pendientes')
+
 @login_required_custom
 def registrar_devolucion_completa(request, id_prestamo):
     """Registra devolución completa de todos los artículos"""
@@ -246,7 +262,7 @@ def registrar_devolucion_completa(request, id_prestamo):
             messages.error(request, f"❌ Error al registrar devolución: {str(e)}")
     
     return redirect('gestionDevolucion:pendientes')
-@login_required_custom
+
 def _obtener_info_articulo(tipo_articulo, id_articulo):
     """Obtiene información del artículo - VERSIÓN CORREGIDA"""
     try:
@@ -285,7 +301,7 @@ def _obtener_info_articulo(tipo_articulo, id_articulo):
             'devolucion': 'NO',
             'tipo': 'Error'
         }
-@login_required_custom
+
 def _requiere_devolucion(tipo_articulo, id_articulo):
     """Determina si un artículo requiere devolución"""
     try:
@@ -293,7 +309,7 @@ def _requiere_devolucion(tipo_articulo, id_articulo):
         return info_articulo['devolucion'].upper() == 'SI'
     except:
         return False
-@login_required_custom
+
 def _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
     """Actualiza el stock cuando se devuelve un artículo - USANDO SQL"""
     try:
@@ -318,7 +334,7 @@ def _actualizar_stock_articulo(tipo_articulo, id_articulo, cantidad_devuelta):
     except Exception as e:
         print(f"❌ Excepción en _actualizar_stock_articulo: {e}")
         return False
-@login_required_custom
+
 def _actualizar_estado_prestamo(id_prestamo):
     """Actualiza el estado del préstamo basado en devoluciones"""
     try:
