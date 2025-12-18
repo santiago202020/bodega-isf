@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reportes - Sistema Bodega</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Sistema Bodega ISF</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
       /* Variables CSS para colores y dimensiones */
       :root {
         --primary-color: #2c3e50;
         --secondary-color: #3498db;
         --accent-color: #e74c3c;
+        --success-color: #27ae60;
         --light-color: #ecf0f1;
         --dark-color: #2c3e50;
         --sidebar-width: 250px;
@@ -57,6 +60,7 @@
         margin-bottom: var(--spacing-lg);
         padding-bottom: var(--spacing-md);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: white !important; /* Asegurar que sea blanco */
       }
 
       .nav-menu {
@@ -135,6 +139,7 @@
       .user-info p {
         margin: 2px 0;
         font-size: 0.9rem;
+        color: white;
       }
 
       .user-role {
@@ -143,6 +148,7 @@
         border-radius: 12px;
         font-size: 0.8rem;
         display: inline-block;
+        color: white;
       }
 
       /* ESTILOS ESPECÍFICOS PARA REPORTES */
@@ -163,8 +169,7 @@
         padding-bottom: var(--spacing-sm);
       }
 
-      h2,
-      h3 {
+      h2, h3 {
         color: var(--dark-color);
         margin: var(--spacing-md) 0 var(--spacing-sm) 0;
       }
@@ -203,7 +208,7 @@
         background-color: var(--secondary-color);
         color: white;
         text-decoration: none;
-        padding: var(--spacing-md);
+        padding: 10px 20px;
         border-radius: var(--border-radius);
         text-align: center;
         transition: background-color 0.3s, transform 0.2s;
@@ -221,11 +226,49 @@
       }
 
       .btn-success {
-        background-color: #27ae60;
+        background-color: var(--success-color);
       }
 
       .btn-success:hover {
         background-color: #219653;
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+      }
+
+      .btn-secondary:hover {
+        background-color: #5a6268;
+      }
+
+      /* Card para formulario */
+      .card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+        border: none;
+      }
+
+      .card-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: var(--spacing-md) var(--spacing-lg);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .card-body {
+        padding: var(--spacing-lg);
+      }
+
+      /* Grid para formulario */
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
       }
 
       /* Mensajes */
@@ -247,27 +290,46 @@
         border-left: 4px solid var(--secondary-color);
       }
 
+      /* Filtros aplicados */
+      .filter-summary {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: var(--border-radius);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .filter-summary h6 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+      }
+
       /* Tabla */
+      .table-responsive {
+        overflow-x: auto;
+        margin: var(--spacing-lg) 0;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin: var(--spacing-lg) 0;
-        box-shadow: var(--shadow);
-        border-radius: var(--border-radius);
-        overflow: hidden;
+        background-color: white;
       }
 
       th {
-        background-color: #34495e;
+        background-color: var(--primary-color);
         color: white;
         padding: 12px;
         text-align: left;
         font-weight: 600;
+        border: none;
       }
 
       td {
         padding: 10px;
-        border: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
       }
 
       tr:nth-child(even) {
@@ -277,6 +339,38 @@
       tr:hover {
         background-color: #e3f2fd;
       }
+
+      /* Badges */
+      .badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .badge-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      /* Estados */
+      .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
+      }
+
+      .status-pendiente { background-color: #f39c12; color: white; }
+      .status-aceptada { background-color: #27ae60; color: white; }
+      .status-rechazada { background-color: #e74c3c; color: white; }
+      .status-devuelto { background-color: #3498db; color: white; }
 
       /* Sin resultados */
       .no-results-container {
@@ -288,6 +382,18 @@
       .no-results-container h3 {
         color: #95a5a6;
         margin-bottom: 10px;
+      }
+
+      /* Botón PDF flotante */
+      .pdf-btn-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: white;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       }
 
       /* Pie de página */
@@ -311,6 +417,11 @@
           height: auto;
           position: relative;
           padding: var(--spacing-md);
+        }
+
+        .sidebar h1 {
+          color: white !important;
+          text-align: center;
         }
 
         .main-content {
@@ -342,6 +453,17 @@
         .form-group input {
           max-width: 100%;
         }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .pdf-btn-container {
+          position: static;
+          margin-top: var(--spacing-lg);
+          box-shadow: none;
+          border: 1px solid #ddd;
+        }
       }
 
       @media (max-width: 576px) {
@@ -368,242 +490,410 @@
         }
       }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <!-- Barra lateral de navegación -->
     <nav class="sidebar">
-      <h1>Panel de Bodega</h1>
-      <ul class="nav-menu">
-        <li><a href="{% url 'menu' %}">Inicio</a></li>
-        <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
-        <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
-        <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
-        <li>
-          <a href="{% url 'gestionPrestamos:pendientes' %}"
-            >Préstamos Pendientes</a
-          >
-        </li>
-        <li>
-          <a href="{% url 'gestionDevolucion:pendientes' %}"
-            >Gestión Devoluciones</a
-          >
-        </li>
-        <li>
-          <a href="{% url 'reportes_principal' %}" class="active">Reportes</a>
-        </li>
-        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
-      </ul>
+        <h1 style="color: white !important;">Panel de Bodega</h1>
+        <ul class="nav-menu">
+            <li><a href="{% url 'menu' %}">Inicio</a></li>
+            <li><a href="{% url 'gestion_articulos' %}">Deportivo</a></li>
+            <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
+            <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
+            <li><a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos Pendientes</a></li>
+            <li><a href="{% url 'gestionDevolucion:pendientes' %}">Gestión Devoluciones</a></li>
+            <li><a href="{% url 'reportes_principal' %}" class="active">Reportes</a></li>
+            <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+        </ul>
     </nav>
 
     <!-- Contenido principal -->
     <main class="main-content">
-      <!-- Encabezado de navegación -->
-      <div class="nav-header">
-        <div class="nav-links">
-          <strong>Navegación: </strong>
-          <a href="{% url 'menu' %}">Inicio</a> |
-          <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
-          <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
-          <a href="{% url 'inventario_hardware' %}">Hardware</a> |
-          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
-          <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
-          <a href="{% url 'logout' %}">Cerrar sesión</a>
-        </div>
-        <div class="user-info">
-          <p><strong>{{ request.session.nombre }}</strong></p>
-          <p>ID: {{ request.session.id_usuario }}</p>
-          <span class="user-role">{{ request.session.rol }}</span>
-        </div>
-      </div>
-
-      <!-- Contenido de reportes -->
-      <div class="content-container">
-        <h1>Generador de Reportes</h1>
-        <p>Filtra y genera reportes de préstamos y devoluciones</p>
-
-        <!-- Formulario de filtros -->
-        <form method="get" action="{% url 'reportes_principal' %}">
-          <h3>Filtros:</h3>
-
-          <div class="form-group">
-            <label>Tipo de Reporte:</label>
-            {{ form.tipo_reporte }}
-          </div>
-
-          <div class="form-group">
-            <label>Fecha Desde:</label>
-            {{ form.fecha_desde }}
-          </div>
-
-          <div class="form-group">
-            <label>Fecha Hasta:</label>
-            {{ form.fecha_hasta }}
-          </div>
-
-          <div class="form-group">
-            <label>Estado del Préstamo:</label>
-            {{ form.estado_prestamo }}
-          </div>
-
-          <div class="form-group">
-            <label>ID Docente (opcional):</label>
-            {{ form.id_usuario }}
-          </div>
-
-          <div class="form-group">
-            <button type="submit" name="ver_previa" class="btn">
-              Ver Vista Previa
-            </button>
-            <button type="submit" name="generar_pdf" class="btn btn-success">
-              Generar PDF
-            </button>
-          </div>
-        </form>
-
-        <!-- Mostrar errores -->
-        {% if form.errors %}
-        <div class="error">
-          <strong>Errores:</strong>
-          {% for field in form %} {% if field.errors %}
-          <p>{{ field.label }}: {{ field.errors.0 }}</p>
-          {% endif %} {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Mostrar filtros aplicados -->
-        {% if request.GET.ver_previa or request.GET.generar_pdf %}
-        <div class="info">
-          <strong>Filtros aplicados:</strong><br />
-          Tipo: {{ form.tipo_reporte.value|default:"No especificado" }}<br />
-          {% if form.fecha_desde.value %}Desde: {{ form.fecha_desde.value }}<br />{%
-          endif %} {% if form.fecha_hasta.value %}Hasta: {{
-          form.fecha_hasta.value }}<br />{% endif %} {% if
-          form.estado_prestamo.value %}Estado: {{ form.estado_prestamo.value
-          }}<br />{% endif %} {% if form.id_usuario.value %}ID Docente: {{
-          form.id_usuario.value }}{% endif %}
-        </div>
-        {% endif %}
-
-        <!-- Mostrar resultados -->
-        {% if resultados %}
-        <h3>Resultados ({{ total_registros }} registros)</h3>
-
-        <div style="overflow-x: auto">
-          <table>
-            <thead>
-              <tr>
-                {% for columna in resultados.0.keys %}
-                <th>{{ columna }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for fila in resultados %}
-              <tr>
-                {% for valor in fila.values %}
-                <td>{{ valor|default:"-" }}</td>
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        <!-- Encabezado de navegación -->
+        <div class="nav-header">
+            <div class="nav-links">
+                <strong>Navegación: </strong>
+                <a href="{% url 'menu' %}">Inicio</a> |
+                <a href="{% url 'gestion_articulos' %}">Deportivo</a> |
+                <a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a> |
+                <a href="{% url 'inventario_hardware' %}">Hardware</a> |
+                <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
+                <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
+                <a href="{% url 'reportes_principal' %}">Reportes</a> |
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+            </div>
+            <div class="user-info">
+                <p><strong>{{ request.session.nombre }}</strong></p>
+                <p>ID: {{ request.session.id_usuario }}</p>
+                <span class="user-role">{{ request.session.rol }}</span>
+            </div>
         </div>
 
-        <!-- Botón para descargar PDF -->
-        <div style="margin-top: 20px">
-          <form method="get" style="display: inline">
-            <!-- Pasar todos los parámetros GET excepto 'generar_pdf' -->
-            <input
-              type="hidden"
-              name="tipo_reporte"
-              value="{{ request.GET.tipo_reporte|default:'' }}"
-            />
-            <input
-              type="hidden"
-              name="fecha_desde"
-              value="{{ request.GET.fecha_desde|default:'' }}"
-            />
-            <input
-              type="hidden"
-              name="fecha_hasta"
-              value="{{ request.GET.fecha_hasta|default:'' }}"
-            />
-            <input
-              type="hidden"
-              name="estado_prestamo"
-              value="{{ request.GET.estado_prestamo|default:'' }}"
-            />
-            <input
-              type="hidden"
-              name="id_usuario"
-              value="{{ request.GET.id_usuario|default:'' }}"
-            />
-            <input
-              type="hidden"
-              name="ver_previa"
-              value="{{ request.GET.ver_previa|default:'' }}"
-            />
+        <!-- Contenido de reportes -->
+        <div class="content-container">
+            <h1><i class="bi bi-file-earmark-text"></i> Generador de Reportes</h1>
+            <p class="text-muted">Filtra y genera reportes de préstamos y devoluciones del sistema</p>
 
-            <button type="submit" name="generar_pdf" class="btn btn-success">
-              Descargar PDF
-            </button>
-          </form>
-        </div>
+            <!-- Formulario de filtros -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-funnel"></i> Filtros del Reporte
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{% url 'reportes_principal' %}" id="filtrosForm">
+                        <div class="form-grid">
+                            <!-- Tipo de Reporte -->
+                            <div class="form-group">
+                                <label for="id_tipo_reporte">
+                                    <i class="bi bi-card-checklist"></i> Tipo de Reporte *
+                                </label>
+                                <select name="tipo_reporte" id="id_tipo_reporte" class="form-control" required>
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="prestamos" {% if form.tipo_reporte.value == 'prestamos' %}selected{% endif %}>Préstamos</option>
+                                    <option value="devoluciones" {% if form.tipo_reporte.value == 'devoluciones' %}selected{% endif %}>Devoluciones</option>
+                                    <option value="combinado" {% if form.tipo_reporte.value == 'combinado' %}selected{% endif %}>Combinado</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Fecha Desde -->
+                            <div class="form-group">
+                                <label for="id_fecha_desde">
+                                    <i class="bi bi-calendar-date"></i> Fecha Desde
+                                </label>
+                                <input type="date" name="fecha_desde" id="id_fecha_desde" 
+                                       class="form-control" value="{{ form.fecha_desde.value|default:'' }}">
+                            </div>
+                            
+                            <!-- Fecha Hasta -->
+                            <div class="form-group">
+                                <label for="id_fecha_hasta">
+                                    <i class="bi bi-calendar-date-fill"></i> Fecha Hasta
+                                </label>
+                                <input type="date" name="fecha_hasta" id="id_fecha_hasta" 
+                                       class="form-control" value="{{ form.fecha_hasta.value|default:'' }}">
+                            </div>
+                            
+                            <!-- Estado Préstamo -->
+                            <div class="form-group">
+                                <label for="id_estado_prestamo">
+                                    <i class="bi bi-info-circle"></i> Estado Préstamo
+                                </label>
+                                <select name="estado_prestamo" id="id_estado_prestamo" class="form-control">
+                                    <option value="">Todos los estados</option>
+                                    <option value="PENDIENTE" {% if form.estado_prestamo.value == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                                    <option value="ACEPTADA" {% if form.estado_prestamo.value == 'ACEPTADA' %}selected{% endif %}>Aceptada</option>
+                                    <option value="RECHAZADA" {% if form.estado_prestamo.value == 'RECHAZADA' %}selected{% endif %}>Rechazada</option>
+                                    <option value="DEVUELTO_COMPLETO" {% if form.estado_prestamo.value == 'DEVUELTO_COMPLETO' %}selected{% endif %}>Devuelto completo</option>
+                                </select>
+                            </div>
+                            
+                            <!-- ID Usuario -->
+                            <div class="form-group">
+                                <label for="id_id_usuario">
+                                    <i class="bi bi-person-badge"></i> ID Docente (opcional)
+                                </label>
+                                <input type="number" name="id_usuario" id="id_id_usuario" 
+                                       class="form-control" placeholder="Ej: 123"
+                                       value="{{ form.id_usuario.value|default:'' }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Botones de acción -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Buscar Reporte
+                            </button>
+                            <button type="button" onclick="limpiarFiltros()" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Limpiar Filtros
+                            </button>
+                            {% if mostrar_resultados %}
+                            <button type="submit" name="generar_pdf" value="1" class="btn btn-success">
+                                <i class="bi bi-file-pdf"></i> Descargar PDF
+                            </button>
+                            {% endif %}
+                        </div>
+                    </form>
+                    
+                    <!-- Errores del formulario -->
+                    {% if form.errors %}
+                    <div class="error">
+                        <strong><i class="bi bi-exclamation-triangle"></i> Errores en el formulario:</strong>
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                <li>{{ field }}: {{ errors.0 }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
 
-        {% elif request.GET.ver_previa %}
-        <!-- Si no hay resultados -->
-        <div class="no-results-container">
-          <h3>No se encontraron resultados</h3>
-          <p>Intenta con otros filtros</p>
-        </div>
-        {% endif %}
+            <!-- Resultados del reporte -->
+            {% if mostrar_resultados %}
+            <div class="card">
+                <div class="card-header" style="background-color: var(--success-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <i class="bi bi-table"></i> Resultados del Reporte
+                            <span class="badge" style="background-color: white; color: var(--success-color); margin-left: 10px;">
+                                {{ total_registros }} registros
+                            </span>
+                        </div>
+                        {% if resultados %}
+                        <form method="get" style="margin: 0;">
+                            {% for key, value in request.GET.items %}
+                                {% if key != 'generar_pdf' %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" name="generar_pdf" value="1" class="btn" style="background-color: white; color: var(--success-color);">
+                                <i class="bi bi-file-pdf"></i> Descargar PDF
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Resumen de filtros aplicados -->
+                    {% if filtros_aplicados %}
+                    <div class="filter-summary">
+                        <h6><i class="bi bi-filter"></i> Filtros aplicados:</h6>
+                        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+                            <div>
+                                <strong>Tipo:</strong> 
+                                <span class="badge badge-primary">{{ filtros_aplicados.tipo_reporte|upper }}</span>
+                            </div>
+                            {% if filtros_aplicados.fecha_desde %}
+                            <div>
+                                <strong>Desde:</strong> {{ filtros_aplicados.fecha_desde }}
+                            </div>
+                            {% endif %}
+                            {% if filtros_aplicados.fecha_hasta %}
+                            <div>
+                                <strong>Hasta:</strong> {{ filtros_aplicados.fecha_hasta }}
+                            </div>
+                            {% endif %}
+                            {% if filtros_aplicados.estado_prestamo %}
+                            <div>
+                                <strong>Estado:</strong> 
+                                <span class="status-badge status-{{ filtros_aplicados.estado_prestamo|lower }}">
+                                    {{ filtros_aplicados.estado_prestamo }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
 
-        <div class="footer">
-          <p>Sistema de Gestión de Bodega ISF © {% now "Y" %}</p>
+                    <!-- Tabla de resultados -->
+                    {% if resultados %}
+                    <div class="table-responsive">
+                        {% if filtros_aplicados.tipo_reporte == 'prestamos' %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Docente</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Estado</th>
+                                        <th>Artículos</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in resultados %}
+                                    <tr>
+                                        <td><strong>#{{ item.id_prestamo }}</strong></td>
+                                        <td>{{ item.docente }}</td>
+                                        <td>{{ item.fecha_prestamo }}</td>
+                                        <td>{{ item.hora_prestamo }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ item.estado|lower }}">
+                                                {{ item.estado }}
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="badge badge-secondary">{{ item.total_articulos }}</span>
+                                        </td>
+                                        <td>
+                                            {% if item.observaciones %}
+                                            <small class="text-muted">{{ item.observaciones|truncatechars:60 }}</small>
+                                            {% else %}-{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif filtros_aplicados.tipo_reporte == 'devoluciones' %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Dev</th>
+                                        <th>ID Prést</th>
+                                        <th>Docente</th>
+                                        <th>Fecha Dev</th>
+                                        <th>Cantidad</th>
+                                        <th>Artículos</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in resultados %}
+                                    <tr>
+                                        <td><strong>#{{ item.id_devolucion }}</strong></td>
+                                        <td>{{ item.id_prestamo }}</td>
+                                        <td>{{ item.docente }}</td>
+                                        <td>{{ item.fecha_devolucion }}</td>
+                                        <td style="text-align: center;">
+                                            <span class="badge badge-primary">{{ item.cantidad_devuelta }}</span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="badge badge-secondary">{{ item.articulos_devueltos }}</span>
+                                        </td>
+                                        <td>
+                                            {% if item.obs_devolucion %}
+                                            <small class="text-muted">{{ item.obs_devolucion|truncatechars:60 }}</small>
+                                            {% else %}-{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>ID</th>
+                                        <th>Docente</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Artículos</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in resultados %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge {% if item.tipo_operacion == 'PRÉSTAMO' %}badge-primary{% else %}badge-success{% endif %}">
+                                                {{ item.tipo_operacion }}
+                                            </span>
+                                        </td>
+                                        <td><strong>#{{ item.id_operacion }}</strong></td>
+                                        <td>{{ item.docente }}</td>
+                                        <td>{{ item.fecha }}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-badge status-{{ item.estado|lower }}">
+                                                {{ item.estado }}
+                                            </span>
+                                            {% else %}-{% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="badge badge-secondary">{{ item.total_articulos }}</span>
+                                        </td>
+                                        <td>
+                                            {% if item.observaciones %}
+                                            <small class="text-muted">{{ item.observaciones|truncatechars:60 }}</small>
+                                            {% else %}-{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="no-results-container">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        <h3>No se encontraron resultados</h3>
+                        <p>Intenta con otros filtros de búsqueda</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Pie de página -->
+            <div class="footer">
+                <p>Sistema de Gestión de Bodega ISF © {% now "Y" %}</p>
+            </div>
         </div>
-      </div>
     </main>
 
-    <!-- Script simple -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Marcar enlace activo en la barra lateral
-        const currentUrl = window.location.href;
-        const navLinks = document.querySelectorAll(".nav-menu a");
-
-        navLinks.forEach((link) => {
-          if (link.href === currentUrl) {
-            link.classList.add("active");
-          }
-        });
-
-        // Mejorar la experiencia en móviles
-        const sidebar = document.querySelector(".sidebar");
-        const mainContent = document.querySelector(".main-content");
-
-        function adjustLayout() {
-          if (window.innerWidth <= 768) {
-            sidebar.style.position = "relative";
-            mainContent.style.marginLeft = "0";
-          } else {
-            sidebar.style.position = "fixed";
-            mainContent.style.marginLeft = "var(--sidebar-width)";
-          }
-        }
-
-        // Ajustar layout al cargar y al redimensionar
-        adjustLayout();
-        window.addEventListener("resize", adjustLayout);
-
-        // Confirmación al generar PDF
-        document
-          .querySelector('button[name="generar_pdf"]')
-          ?.addEventListener("click", function (e) {
-            if (!confirm("¿Generar reporte en PDF?")) {
-              e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fechas por defecto si están vacías
+            const fechaDesde = document.getElementById('id_fecha_desde');
+            const fechaHasta = document.getElementById('id_fecha_hasta');
+            
+            if (!fechaDesde.value) {
+                const today = new Date();
+                const firstDay = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                fechaDesde.valueAsDate = firstDay;
             }
-          });
-      });
+            
+            if (!fechaHasta.value) {
+                const today = new Date();
+                fechaHasta.valueAsDate = today;
+            }
+            
+            // Confirmación al generar PDF
+            document.querySelectorAll('button[name="generar_pdf"]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (!confirm('¿Está seguro que desea generar el reporte en PDF? Esta acción descargará un archivo.')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+            
+            // Validar que fecha desde no sea mayor que fecha hasta
+            const form = document.getElementById('filtrosForm');
+            form.addEventListener('submit', function(e) {
+                if (fechaDesde.value && fechaHasta.value) {
+                    const desde = new Date(fechaDesde.value);
+                    const hasta = new Date(fechaHasta.value);
+                    
+                    if (desde > hasta) {
+                        alert('La fecha "Desde" no puede ser mayor que la fecha "Hasta"');
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+
+            // Ajustar layout responsive
+            function adjustLayout() {
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.querySelector('.main-content');
+                
+                if (window.innerWidth <= 768) {
+                    sidebar.style.position = 'relative';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.style.position = 'fixed';
+                    mainContent.style.marginLeft = 'var(--sidebar-width)';
+                }
+            }
+
+            adjustLayout();
+            window.addEventListener('resize', adjustLayout);
+        });
+        
+        function limpiarFiltros() {
+            // Limpiar campos del formulario
+            document.getElementById('id_tipo_reporte').value = '';
+            document.getElementById('id_fecha_desde').value = '';
+            document.getElementById('id_fecha_hasta').value = '';
+            document.getElementById('id_estado_prestamo').value = '';
+            document.getElementById('id_id_usuario').value = '';
+            
+            // Redirigir sin parámetros
+            window.location.href = "{% url 'reportes_principal' %}";
+        }
     </script>
-  </body>
+</body>
 </html>

@@ -2,189 +2,304 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Reporte Sistema Bodega</title>
+    <title>Reporte Sistema Bodega ISF</title>
     <style>
-        @page {
-            size: A4 landscape;  /* Horizontal para más espacio */
-            margin: 1cm;
-        }
-        
-        body { 
-            font-family: 'Arial', sans-serif; 
-            font-size: 9pt;  /* Más pequeño */
-            line-height: 1.2;
-        }
-        
-        h1 { 
-            color: #2c3e50; 
-            text-align: center; 
-            font-size: 16pt;
-            margin-bottom: 5px;
-        }
-        
-        h2 {
-            color: #3498db;
-            text-align: center;
-            font-size: 12pt;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .header-info {
-            background-color: #f8f9fa;
-            padding: 8px;
-            margin: 10px 0;
-            border-radius: 3px;
-            font-size: 8pt;
-        }
-        
-        .summary {
-            text-align: center;
-            font-weight: bold;
-            margin: 15px 0;
-            color: #27ae60;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 7pt;  /* Más pequeño para caber */
-            table-layout: fixed;  /* Forzar ancho fijo */
-            word-wrap: break-word;  /* Romper palabras largas */
-        }
-        
-        th {
-            background-color: #2c3e50;
-            color: white;
-            padding: 5px;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        td {
-            padding: 4px;
-            border: 1px solid #ddd;
-            vertical-align: top;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        /* Anchos específicos para columnas comunes */
-        th:nth-child(1), td:nth-child(1) { width: 5%; }   /* ID */
-        th:nth-child(2), td:nth-child(2) { width: 5%; }   /* ID Prestamo */
-        th:nth-child(3), td:nth-child(3) { width: 15%; }  /* Docente */
-        th:nth-child(4), td:nth-child(4) { width: 8%; }   /* Fecha */
-        th:nth-child(5), td:nth-child(5) { width: 8%; }   /* Cantidad */
-        th:nth-child(6), td:nth-child(6) { width: 15%; }  /* Observaciones */
-        th:nth-child(7), td:nth-child(7) { width: 8%; }   /* Estado */
-        
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .footer {
-            margin-top: 20px;
-            font-size: 8pt;
-            color: #7f8c8d;
-            text-align: center;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
-        
-        .page-break {
-            page-break-before: always;
-        }
-        
-        /* Para columnas muy largas */
-        .truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 150px;
-        }
+      @page {
+        size: A4 landscape;
+        margin: 1cm;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        font-size: 9pt;
+        line-height: 1.3;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Encabezado */
+      .header {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #2c3e50;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        font-size: 18pt;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header h2 {
+        color: #3498db;
+        font-size: 12pt;
+        margin: 5px 0 0 0;
+        font-weight: normal;
+      }
+
+      /* Información del reporte */
+      .report-info {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 8pt;
+      }
+
+      .report-info table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .report-info td {
+        padding: 3px 0;
+        vertical-align: top;
+      }
+
+      .report-info strong {
+        color: #2c3e50;
+      }
+
+      /* Resumen */
+      .summary {
+        text-align: center;
+        background-color: #e8f4fc;
+        padding: 8px;
+        margin: 10px 0;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #2c3e50;
+        border: 1px solid #3498db;
+      }
+
+      /* Tabla de resultados */
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 7.5pt;
+      }
+
+      .results-table th {
+        background-color: #2c3e50;
+        color: white;
+        padding: 6px 4px;
+        text-align: left;
+        font-weight: bold;
+        border: 1px solid #1a252f;
+        vertical-align: middle;
+      }
+
+      .results-table td {
+        padding: 4px;
+        border: 1px solid #ddd;
+        vertical-align: top;
+      }
+
+      /* Colores para filas alternas */
+      .results-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      /* Estilos específicos para columnas */
+      .col-id { width: 5%; }
+      .col-usuario { width: 15%; }
+      .col-fecha { width: 8%; }
+      .col-hora { width: 7%; }
+      .col-estado { width: 10%; }
+      .col-cantidad { width: 7%; }
+      .col-observaciones { width: 20%; }
+      .col-accion { width: 10%; }
+
+      /* Estados */
+      .estado-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 7pt;
+        font-weight: bold;
+        text-align: center;
+        min-width: 70px;
+      }
+
+      .estado-pendiente { background-color: #f39c12; color: white; }
+      .estado-aceptada { background-color: #27ae60; color: white; }
+      .estado-rechazada { background-color: #e74c3c; color: white; }
+      .estado-devuelto { background-color: #3498db; color: white; }
+
+      /* Tipo de operación */
+      .tipo-badge {
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 7pt;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .tipo-prestamo { background-color: #9b59b6; color: white; }
+      .tipo-devolucion { background-color: #e67e22; color: white; }
+
+      /* Pie de página */
+      .footer {
+        margin-top: 20px;
+        font-size: 8pt;
+        color: #7f8c8d;
+        text-align: center;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+      }
+
+      /* Observaciones truncadas */
+      .observaciones-truncada {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+
+      /* Sin resultados */
+      .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #95a5a6;
+        font-style: italic;
+      }
     </style>
 </head>
 <body>
-    <h1>REPORTE DEL SISTEMA</h1>
-    <h2>Bodega ISF - Préstamos y Devoluciones</h2>
-    
-    <div class="header-info">
-        <strong>Generado:</strong> {% now "d/m/Y H:i" %} | 
-        <strong>Tipo de reporte:</strong> {{ filtros_aplicados.tipo_reporte }} | 
-        {% if filtros_aplicados.fecha_desde %}
-        <strong>Desde:</strong> {{ filtros_aplicados.fecha_desde }} | 
-        {% endif %}
-        {% if filtros_aplicados.fecha_hasta %}
-        <strong>Hasta:</strong> {{ filtros_aplicados.fecha_hasta }}
-        {% endif %}
+    <!-- Encabezado -->
+    <div class="header">
+        <h1>REPORTE DEL SISTEMA DE BODEGA ISF</h1>
+        <h2>{% if filtros_aplicados.tipo_reporte == 'prestamos' %}Reporte de Préstamos{% elif filtros_aplicados.tipo_reporte == 'devoluciones' %}Reporte de Devoluciones{% else %}Reporte Combinado (Préstamos y Devoluciones){% endif %}</h2>
     </div>
-    
-    <div class="summary">
-         Total registros: {{ total_registros }}
-    </div>
-    
-    {% if resultados %}
-    <table>
-        <thead>
+
+    <!-- Información del reporte -->
+    <div class="report-info">
+        <table>
             <tr>
-                {% for columna in resultados.0.keys %}
-                <th>
-                    {% if columna == "id_prestamo" %}ID Préstamo
-                    {% elif columna == "id_usuario" %}ID Usuario
-                    {% elif columna == "id_devolucion" %}ID Devolución
-                    {% elif columna == "fecha_solicitud" %}Fecha Solicitud
-                    {% elif columna == "fecha_devolucion" %}Fecha Devolución
-                    {% elif columna == "fecha_inicio_uso" %}Fecha Inicio
-                    {% elif columna == "hora_solicitud" %}Hora Solicitud
-                    {% elif columna == "hora_fin_estimada" %}Hora Fin
-                    {% elif columna == "total_articulos" %}Total Artículos
-                    {% elif columna == "articulos_devueltos" %}Artículos Devueltos
-                    {% elif columna == "obs_devolucion" %}Observaciones
-                    {% elif columna == "estado_prestamo" %}Estado
-                    {% elif columna == "fecha_prestamo" %}Fecha Préstamo
-                    {% elif columna == "cantidad_devuelta" %}Cantidad Devuelta
-                    {% elif columna == "tipo_rol" %}Tipo de Rol
-                    {% elif columna == "docente" %}Docente
-                    {% elif columna == "estado" %}Estado
-                    {% elif columna == "observaciones" %}Observaciones
-                    {% else %}{{ columna }}{% endif %}
-                </th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for fila in resultados %}
-            <tr>
-                {% for valor in fila.values %}
-                <td>
-                    {% if valor == None or valor == '' %}
-                    <span style="color: #999;">-</span>
-                    {% else %}
-                        {% if valor|length > 50 %}  <!-- Si es muy largo, truncar -->
-                        <span class="truncate" title="{{ valor }}">{{ valor|slice:":50" }}...</span>
-                        {% else %}
-                        {{ valor }}
-                        {% endif %}
-                    {% endif %}
+                <td style="width: 50%">
+                    <strong>Generado por:</strong> {{ usuario_generador|default:"Administrador" }}<br>
+                    <strong>Rol:</strong> {{ rol_generador|default:"Administrador" }}<br>
+                    <strong>Fecha generación:</strong> {{ fecha_generacion }}
                 </td>
-                {% endfor %}
+                <td style="width: 50%">
+                    <strong>Tipo de reporte:</strong> {{ filtros_aplicados.tipo_reporte|upper }}<br>
+                    {% if filtros_aplicados.fecha_desde %}<strong>Fecha desde:</strong> {{ filtros_aplicados.fecha_desde }}<br>{% endif %}
+                    {% if filtros_aplicados.fecha_hasta %}<strong>Fecha hasta:</strong> {{ filtros_aplicados.fecha_hasta }}<br>{% endif %}
+                    {% if filtros_aplicados.estado_prestamo %}<strong>Estado filtrado:</strong> {{ filtros_aplicados.estado_prestamo }}{% endif %}
+                </td>
             </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        </table>
+    </div>
+
+    <!-- Resumen -->
+    <div class="summary">
+        Total de registros encontrados: {{ total_registros }}
+    </div>
+
+    <!-- Tabla de resultados -->
+    {% if resultados %}
+        {% if filtros_aplicados.tipo_reporte == 'prestamos' %}
+        <!-- Tabla para préstamos -->
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th class="col-usuario">Docente</th>
+                    <th class="col-fecha">Fecha</th>
+                    <th class="col-hora">Hora</th>
+                    <th class="col-estado">Estado</th>
+                    <th class="col-cantidad">Artículos</th>
+                    <th class="col-observaciones">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in resultados %}
+                <tr>
+                    <td>{{ item.id_prestamo }}</td>
+                    <td>{{ item.docente }}</td>
+                    <td>{{ item.fecha_prestamo }}</td>
+                    <td>{{ item.hora_prestamo }}</td>
+                    <td><span class="estado-badge estado-{{ item.estado|lower|slice:':10' }}">{{ item.estado }}</span></td>
+                    <td style="text-align: center">{{ item.total_articulos }}</td>
+                    <td>{% if item.observaciones and item.observaciones != '' %}<span class="observaciones-truncada" title="{{ item.observaciones }}">{{ item.observaciones|truncatechars:50 }}</span>{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% elif filtros_aplicados.tipo_reporte == 'devoluciones' %}
+        <!-- Tabla para devoluciones -->
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID Dev</th>
+                    <th class="col-id">ID Prést</th>
+                    <th class="col-usuario">Docente</th>
+                    <th class="col-fecha">Fecha Dev</th>
+                    <th class="col-cantidad">Cantidad</th>
+                    <th class="col-cantidad">Artículos</th>
+                    <th class="col-observaciones">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in resultados %}
+                <tr>
+                    <td>{{ item.id_devolucion }}</td>
+                    <td>{{ item.id_prestamo }}</td>
+                    <td>{{ item.docente }}</td>
+                    <td>{{ item.fecha_devolucion }}</td>
+                    <td style="text-align: center">{{ item.cantidad_devuelta }}</td>
+                    <td style="text-align: center">{{ item.articulos_devueltos }}</td>
+                    <td>{% if item.obs_devolucion and item.obs_devolucion != '' %}<span class="observaciones-truncada" title="{{ item.obs_devolucion }}">{{ item.obs_devolucion|truncatechars:50 }}</span>{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <!-- Tabla combinada -->
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th class="col-accion">Tipo</th>
+                    <th class="col-id">ID</th>
+                    <th class="col-usuario">Docente</th>
+                    <th class="col-fecha">Fecha</th>
+                    <th class="col-estado">Estado</th>
+                    <th class="col-cantidad">Artículos</th>
+                    <th class="col-observaciones">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in resultados %}
+                <tr>
+                    <td><span class="tipo-badge {% if item.tipo_operacion == 'PRÉSTAMO' %}tipo-prestamo{% else %}tipo-devolucion{% endif %}">{{ item.tipo_operacion }}</span></td>
+                    <td>{{ item.id_operacion }}</td>
+                    <td>{{ item.docente }}</td>
+                    <td>{{ item.fecha }}</td>
+                    <td>{% if item.estado %}<span class="estado-badge estado-{{ item.estado|lower|slice:':10' }}">{{ item.estado }}</span>{% else %}-{% endif %}</td>
+                    <td style="text-align: center">{{ item.total_articulos }}</td>
+                    <td>{% if item.observaciones and item.observaciones != '' %}<span class="observaciones-truncada" title="{{ item.observaciones }}">{{ item.observaciones|truncatechars:50 }}</span>{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     {% else %}
-    <div style="text-align: center; padding: 40px; color: #999;">
-        No hay datos para mostrar
+    <div class="no-results">
+        <h3>No hay datos para mostrar</h3>
+        <p>No se encontraron registros con los filtros aplicados</p>
     </div>
     {% endif %}
-    
+
+    <!-- Pie de página -->
     <div class="footer">
-        Sistema de Gestión de Bodega ISF | Página <pdf:pagenumber> de <pdf:pagecount> | 
-        Generado por: {{ usuario_generador|default:"Administrador" }}
+        Sistema de Gestión de Bodega ISF - Documento generado automáticamente {% if usuario_generador %}por {{ usuario_generador }}{% endif %}
     </div>
 </body>
 </html>

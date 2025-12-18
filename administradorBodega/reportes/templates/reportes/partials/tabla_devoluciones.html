@@ -1,0 +1,36 @@
+<table class="table table-hover table-striped">
+  <thead class="table-dark">
+    <tr>
+      <th>ID Dev</th>
+      <th>ID Prést</th>
+      <th>Docente</th>
+      <th>Fecha Dev</th>
+      <th>Cantidad</th>
+      <th>Artículos</th>
+      <th>Observaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in resultados %}
+    <tr>
+      <td><strong>#{{ item.id_devolucion }}</strong></td>
+      <td>{{ item.id_prestamo }}</td>
+      <td>{{ item.docente }}</td>
+      <td>{{ item.fecha_devolucion }}</td>
+      <td class="text-center">
+        <span class="badge bg-info">{{ item.cantidad_devuelta }}</span>
+      </td>
+      <td class="text-center">
+        <span class="badge bg-secondary">{{ item.articulos_devueltos }}</span>
+      </td>
+      <td>
+        {% if item.obs_devolucion %}
+        <small class="text-muted"
+          >{{ item.obs_devolucion|truncatechars:60 }}</small
+        >
+        {% else %}-{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -1,0 +1,38 @@
+<table class="table table-hover table-striped">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Docente</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Estado</th>
+      <th>Artículos</th>
+      <th>Observaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in resultados %}
+    <tr>
+      <td><strong>#{{ item.id_prestamo }}</strong></td>
+      <td>{{ item.docente }}</td>
+      <td>{{ item.fecha_prestamo }}</td>
+      <td>{{ item.hora_prestamo }}</td>
+      <td>
+        <span class="status-badge status-{{ item.estado|lower }}">
+          {{ item.estado }}
+        </span>
+      </td>
+      <td class="text-center">
+        <span class="badge bg-secondary">{{ item.total_articulos }}</span>
+      </td>
+      <td>
+        {% if item.observaciones %}
+        <small class="text-muted"
+          >{{ item.observaciones|truncatechars:60 }}</small
+        >
+        {% else %}-{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

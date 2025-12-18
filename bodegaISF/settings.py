@@ -113,11 +113,11 @@ WSGI_APPLICATION = 'bodegaISF.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bodega-isf',
-        'USER': 'super',
-        'PASSWORD': 'Macerovi1980@',
-        'HOST': 'yehiden-4960.postgres.pythonanywhere-services.com',
-        'PORT': '14960',
+        'NAME': 'bodega isf',
+        'USER': 'postgres',
+        'PASSWORD': '123456789',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
