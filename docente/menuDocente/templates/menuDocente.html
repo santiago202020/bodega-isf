@@ -500,6 +500,17 @@
       <!-- Navegación -->
       <div class="nav-links">
         <a
+          href="{% url 'menu_docente' %}"
+          class="nav-link"
+          id="nav-prestamo"
+        >
+          <div class="nav-icon"></div>
+          <div class="nav-text">
+            <h4>Menu</h4>
+            <p>Pagina principal.</p>
+          </div>
+        </a>
+        <a
           href="{% url 'solicitarPrestamo:seleccionar' %}"
           class="nav-link"
           id="nav-prestamo"
@@ -606,6 +617,16 @@
 
         <!-- Acciones principales -->
         <div class="action-grid">
+          <a
+            href="{% url 'menu_docente' %}"
+            class="action-card"
+          >
+            <div class="action-icon"></div>
+            <h3>Menu</h3>
+            <p>
+              Pagina principal para navegar dentro de la pagina de docente.
+            </p>
+          </a>
           <a
             href="{% url 'solicitarPrestamo:seleccionar' %}"
             class="action-card"
