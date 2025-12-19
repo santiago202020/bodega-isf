@@ -122,7 +122,6 @@ DATABASES = {
 }
 
 
-
 # Desactivar sistema de migraciones
 class DisableMigrations:
     def __contains__(self, item):

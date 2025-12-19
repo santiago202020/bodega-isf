@@ -10,6 +10,8 @@
         --primary-color: #2c3e50;
         --secondary-color: #3498db;
         --accent-color: #e74c3c;
+        --warning-color: #f39c12;
+        --success-color: #27ae60;
         --light-color: #ecf0f1;
         --dark-color: #2c3e50;
         --sidebar-width: 250px;
@@ -166,6 +168,111 @@
         opacity: 0.9;
       }
 
+      /* Panel de estadísticas */
+      .stats-panel {
+        background-color: white;
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .stats-panel h2 {
+        color: var(--dark-color);
+        margin-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: var(--spacing-sm);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius);
+        text-align: center;
+        border: 1px solid #dee2e6;
+        transition: transform 0.3s;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--secondary-color);
+        margin-bottom: 5px;
+      }
+
+      .stat-card p {
+        color: var(--primary-color);
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+
+      .stat-detail {
+        font-size: 0.85rem;
+        color: #666;
+      }
+
+      /* Alertas */
+      .alert-box {
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-md);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .alert-warning {
+        background-color: rgba(243, 156, 18, 0.1);
+        border-left: 4px solid var(--warning-color);
+        color: #856404;
+      }
+
+      .alert-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+        border-left: 4px solid var(--danger-color);
+        color: #721c24;
+      }
+
+      /* Lista de solicitudes */
+      .requests-list {
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #dee2e6;
+      }
+
+      .requests-list h3 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .request-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-sm);
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        margin-bottom: 5px;
+        border: 1px solid #e9ecef;
+      }
+
+      .request-item:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+      }
+
       /* Acciones rápidas */
       .quick-actions {
         background-color: white;
@@ -212,6 +319,26 @@
         font-size: 1.5rem;
       }
 
+      /* Badges para conteos */
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        border-radius: 10px;
+        margin-left: 5px;
+      }
+
+      .badge-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .badge-danger {
+        background-color: var(--danger-color);
+        color: white;
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         body {
@@ -253,6 +380,10 @@
         .user-info {
           width: 100%;
         }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       @media (max-width: 576px) {
@@ -264,6 +395,7 @@
           padding: var(--spacing-md);
         }
 
+        .stats-grid,
         .action-buttons {
           grid-template-columns: 1fr;
         }
@@ -277,7 +409,6 @@
   </head>
   <body>
     <!-- Barra lateral de navegación -->
-
     <nav class="sidebar">
       <h1>Panel de Bodega</h1>
       <ul class="nav-menu">
@@ -286,19 +417,15 @@
         <li><a href="{% url 'gestion_articulos_papeleria' %}">Papelería</a></li>
         <li><a href="{% url 'inventario_hardware' %}">Hardware</a></li>
         <li>
-          <a href="{% url 'gestionPrestamos:pendientes' %}"
-            >Préstamos Pendientes</a
-          >
+          <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos Pendientes</a>
         </li>
         <li>
-          <a href="{% url 'gestionDevolucion:pendientes' %}"
-            >Gestión Devoluciones</a
-          >
+          <a href="{% url 'gestionDevolucion:pendientes' %}">Gestión Devoluciones</a>
         </li>
         <li>
-          <a href="{% url 'reportes_principal' %}"> Reportes </a>
+          <a href="{% url 'reportes_principal' %}">Reportes</a>
         </li>
-        <li><a href="{% url 'logout' %}"> Cerrar sesión</a></li>
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
       </ul>
     </nav>
 
@@ -314,13 +441,13 @@
           <a href="{% url 'inventario_hardware' %}">Hardware</a> |
           <a href="{% url 'gestionPrestamos:pendientes' %}">Préstamos</a> |
           <a href="{% url 'gestionDevolucion:pendientes' %}">Devoluciones</a> |
-          <a href="{% url 'reportes_principal' %}"> Reportes </a>|
+          <a href="{% url 'reportes_principal' %}">Reportes</a> |
           <a href="{% url 'logout' %}">Cerrar sesión</a>
         </div>
         <div class="user-info">
-          <p><strong>{{ request.session.nombre }}</strong></p>
-          <p>ID: {{ request.session.id_usuario }}</p>
-          <span class="user-role">{{ request.session.rol }}</span>
+          <p><strong>{{ usuario_nombre }}</strong></p>
+          <p>ID: {{ usuario_id }}</p>
+          <span class="user-role">{{ usuario_rol }}</span>
         </div>
       </div>
 
@@ -330,30 +457,95 @@
         <p>Bienvenido al sistema de gestión de inventarios</p>
       </section>
 
+      <!-- Panel de estadísticas -->
+      <section class="stats-panel">
+        <h2>Estadísticas del Sistema</h2>
+        
+        {% if tiene_solicitudes_pendientes %}
+        <div class="alert-box alert-warning">
+          <strong>Atención:</strong> Tienes {{ solicitudes_pendientes }} solicitud(es) pendiente(s) de revisión.
+        </div>
+        {% endif %}
+        
+        {% if devoluciones_pendientes > 0 %}
+        <div class="alert-box alert-danger">
+          <strong>Importante:</strong> Hay {{ devoluciones_pendientes }} devolucion(es) pendiente(s).
+        </div>
+        {% endif %}
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="pendientes-count">{{ solicitudes_pendientes }}</div>
+            <p>Solicitudes Pendientes</p>
+            <div class="stat-detail">Esperando revisión</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="curso-count">{{ prestamos_en_curso }}</div>
+            <p>Préstamos en Curso</p>
+            <div class="stat-detail">Activos actualmente</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="mes-count">{{ total_mes }}</div>
+            <p>Total del Mes</p>
+            <div class="stat-detail">Préstamos este mes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="total-count">{{ total_prestamos }}</div>
+            <p>Total General</p>
+            <div class="stat-detail">Todos los préstamos</div>
+          </div>
+        </div>
+        
+        <!-- Lista de solicitudes recientes -->
+        {% if ultimas_solicitudes %}
+        <div class="requests-list">
+          <h3>Solicitudes Recientes Pendientes</h3>
+          {% for solicitud in ultimas_solicitudes %}
+          <div class="request-item">
+            <div>
+              <strong>Solicitud #{{ solicitud.id_prestamo }}</strong>
+              <div style="font-size: 0.85rem; color: #666;">{{ solicitud.usuario }}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.85rem;">{{ solicitud.fecha }}</div>
+              <span >
+                {{ solicitud.estado }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
       <!-- Acciones rápidas -->
       <section class="quick-actions">
         <h2>Acciones Rápidas</h2>
         <div class="action-buttons">
           <a href="{% url 'gestion_articulos' %}" class="action-btn">
-            <span></span>
             <span>Gestión Deportivo</span>
           </a>
           <a href="{% url 'gestion_articulos_papeleria' %}" class="action-btn">
-            <span></span>
             <span>Gestión Papelería</span>
           </a>
           <a href="{% url 'inventario_hardware' %}" class="action-btn">
-            <span></span>
             <span>Gestión Hardware</span>
           </a>
-
           <a href="{% url 'gestionPrestamos:pendientes' %}" class="action-btn">
-            <span></span>
-            <span>Préstamos Pendientes</span>
+            <span>
+              Préstamos Pendientes
+              {% if solicitudes_pendientes > 0 %}
+              <span class="badge badge-warning">{{ solicitudes_pendientes }}</span>
+              {% endif %}
+            </span>
           </a>
           <a href="{% url 'gestionDevolucion:pendientes' %}" class="action-btn">
-            <span></span>
-            <span>Gestión Devoluciones</span>
+            <span>
+              Gestión Devoluciones
+              {% if devoluciones_pendientes > 0 %}
+              <span class="badge badge-danger">{{ devoluciones_pendientes }}</span>
+              {% endif %}
+            </span>
           </a>
         </div>
       </section>
@@ -370,6 +562,32 @@
           if (link.href === currentUrl) {
             link.classList.add("active");
           }
+        });
+
+        // Animación para números de estadísticas
+        function animateCounter(element, finalValue) {
+          if (finalValue > 0) {
+            let startValue = 0;
+            const duration = 1000;
+            const increment = finalValue / (duration / 16);
+            
+            const timer = setInterval(() => {
+              startValue += increment;
+              if (startValue >= finalValue) {
+                element.textContent = finalValue;
+                clearInterval(timer);
+              } else {
+                element.textContent = Math.floor(startValue);
+              }
+            }, 16);
+          }
+        }
+
+        // Aplicar animación a los números
+        const statNumbers = document.querySelectorAll(".stat-number");
+        statNumbers.forEach(stat => {
+          const finalValue = parseInt(stat.textContent);
+          animateCounter(stat, finalValue);
         });
 
         // Mejorar la experiencia en móviles
@@ -389,6 +607,11 @@
         // Ajustar layout al cargar y al redimensionar
         adjustLayout();
         window.addEventListener("resize", adjustLayout);
+
+        // Auto-refrescar página cada 60 segundos para estadísticas actualizadas
+        setTimeout(() => {
+          window.location.reload();
+        }, 60000);
       });
     </script>
   </body>
