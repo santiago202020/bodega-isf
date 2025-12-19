@@ -11,7 +11,6 @@ from administradorBodega.utils.sql_helpers import actualizar_stock_sql
 from login.decorators import login_required_custom
 
 
-# ----- helpers -----
 
 def _es_docente(request):
     """Verifica si el usuario es docente"""
@@ -40,9 +39,13 @@ def _get_art_by_cat(cat, aid):
     if cat == 'hardware':
         return ArticuloHardware.objects.filter(pk=aid).first()
     return ArticuloDeportivo.objects.filter(pk=aid).first()
+
+
 @login_required_custom
 def menu_docente(request):
     return redirect(reverse('solicitarPrestamo:seleccionar'))
+
+
 @login_required_custom
 def seleccionar_articulos(request):
     if not _es_docente(request):
@@ -61,6 +64,8 @@ def seleccionar_articulos(request):
         "deportivos": deportivos,
         "usuario_id": usuario_id,
     })
+
+
 @login_required_custom
 def add_to_bolsa(request):
     """Agrega artículo a la bolsa de compras"""
@@ -134,8 +139,11 @@ def add_to_bolsa(request):
     messages.success(request, f"Añadido {cantidad} x {art.nombre} a la bolsa")
     
     return redirect(reverse('solicitarPrestamo:seleccionar'))
+
+
 @login_required_custom
 def remove_from_bolsa(request):
+    """Elimina completamente un artículo de la bolsa"""
     if request.method != 'POST' or not _es_docente(request):
         return redirect('/login/')
 
@@ -147,12 +155,94 @@ def remove_from_bolsa(request):
 
     bolsa = _inicializar_bolsa(request)
     if categoria in bolsa and art_id in bolsa[categoria]:
+        # Obtener información del artículo para el mensaje
+        art = _get_art_by_cat(categoria, int(art_id))
+        nombre_art = art.nombre if art else "Artículo"
+        
         del bolsa[categoria][art_id]
         request.session['bolsa'] = bolsa
         request.session.modified = True
-        messages.success(request, "Eliminado de la bolsa.")
+        messages.success(request, f"{nombre_art} eliminado de la bolsa.")
 
     return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+
+
+@login_required_custom
+def modificar_cantidad_bolsa(request):
+    """Aumenta o disminuye la cantidad de un artículo en la bolsa"""
+    if request.method != 'POST' or not _es_docente(request):
+        return redirect('/login/')
+    
+    categoria = request.POST.get('categoria')
+    art_id_str = request.POST.get('art_id')
+    accion = request.POST.get('accion')  # 'aumentar' o 'disminuir'
+    
+    if not categoria or not art_id_str or not accion:
+        messages.error(request, "Datos incompletos")
+        return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+    
+    try:
+        art_id = int(art_id_str)
+    except (ValueError, TypeError):
+        messages.error(request, "ID de artículo inválido")
+        return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+    
+    # Obtener artículo y verificar existencia
+    art = _get_art_by_cat(categoria, art_id)
+    if not art:
+        messages.error(request, "Artículo no encontrado")
+        return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+    
+    # Inicializar bolsa
+    bolsa = _inicializar_bolsa(request)
+    
+    # Verificar que el artículo esté en la bolsa
+    if categoria not in bolsa or str(art_id) not in bolsa[categoria]:
+        messages.error(request, "El artículo no está en la bolsa")
+        return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+    
+    cantidad_actual = bolsa[categoria][str(art_id)]
+    
+    if accion == 'aumentar':
+        # AUMENTAR: Verificar que no supere el stock disponible
+        stock_disponible = art.cantidad_total or 0
+        
+        # Calcular stock ya reservado en otras bolsas (simplificado)
+        # En un sistema real, deberías verificar préstamos activos/reservas
+        if cantidad_actual + 1 > stock_disponible:
+            messages.error(request, 
+                f"No hay más stock disponible de {art.nombre}. "
+                f"Máximo disponible: {stock_disponible}")
+            return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+        
+        # Incrementar cantidad
+        bolsa[categoria][str(art_id)] = cantidad_actual + 1
+        request.session['bolsa'] = bolsa
+        request.session.modified = True
+        messages.success(request, f"Aumentado {art.nombre} a {cantidad_actual + 1} unidades")
+    
+    elif accion == 'disminuir':
+        # DISMINUIR: Verificar que no sea menor a 1
+        if cantidad_actual <= 1:
+            # Si es 1 o menos, eliminar el artículo completamente
+            if categoria in bolsa and str(art_id) in bolsa[categoria]:
+                del bolsa[categoria][str(art_id)]
+                request.session['bolsa'] = bolsa
+                request.session.modified = True
+                messages.success(request, f"{art.nombre} eliminado de la bolsa")
+        else:
+            # Disminuir en 1
+            bolsa[categoria][str(art_id)] = cantidad_actual - 1
+            request.session['bolsa'] = bolsa
+            request.session.modified = True
+            messages.success(request, f"Disminuido {art.nombre} a {cantidad_actual - 1} unidades")
+    
+    else:
+        messages.error(request, "Acción no válida")
+    
+    return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+
+
 @login_required_custom
 def ver_bolsa(request):
     if not _es_docente(request):
@@ -171,7 +261,8 @@ def ver_bolsa(request):
                     'categoria': cat, 
                     'art': art, 
                     'cantidad': qty,
-                    'subtotal': qty
+                    'subtotal': qty,
+                    'stock_disponible': art.cantidad_total or 0
                 })
                 total_articulos += qty
 
@@ -180,6 +271,8 @@ def ver_bolsa(request):
         'total_articulos': total_articulos,
         'bolsa_vacia': len(items) == 0
     })
+
+
 @login_required_custom
 def confirmar_solicitud(request):
     if request.method != 'POST' or not _es_docente(request):
@@ -352,6 +445,8 @@ def confirmar_solicitud(request):
             pass
             
         return redirect(reverse('solicitarPrestamo:bolsa_ver'))
+
+
 @login_required_custom
 def historial(request):
     if not _es_docente(request):
@@ -373,6 +468,8 @@ def historial(request):
         'prestamos': prestamos_con_detalles,
         'hoy': date.today()
     })
+
+
 @login_required_custom
 def detalle(request, id_prestamo):
     if not _es_docente(request):

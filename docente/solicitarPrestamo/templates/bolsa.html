@@ -299,17 +299,68 @@
         font-weight: 600;
         color: var(--primary-color);
         font-size: 1.1rem;
+        flex: 1;
+        min-width: 200px;
       }
 
-      .item-quantity {
+      .item-quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         background-color: white;
-        color: var(--dark-color);
-        padding: 4px 12px;
+        padding: 4px;
         border-radius: var(--border-radius-sm);
-        font-weight: 600;
         border: 1px solid var(--border-color);
-        min-width: 50px;
+      }
+
+      .quantity-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 4px;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .quantity-btn:hover {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .quantity-btn:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+        cursor: not-allowed;
+      }
+
+      .quantity-value {
+        min-width: 40px;
         text-align: center;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .item-stock-info {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 4px;
+      }
+
+      .stock-warning {
+        color: var(--warning-color);
+        font-weight: 500;
+      }
+
+      .stock-max {
+        color: var(--danger-color);
+        font-weight: 500;
       }
 
       .item-actions {
@@ -515,6 +566,12 @@
           align-items: flex-start;
         }
 
+        .quantity-controls {
+          width: 100%;
+          justify-content: center;
+          margin: var(--spacing-sm) 0;
+        }
+
         .item-actions {
           width: 100%;
           justify-content: flex-end;
@@ -630,7 +687,8 @@
           <div class="items-header">
             <h2>Artículos agregados</h2>
             <span class="items-count">
-              {{ items|length }} artículo{% if items|length != 1 %}s{% endif %}
+              {{ total_articulos }} artículo{% if total_articulos != 1 %}s{% endif %}
+              en total
             </span>
           </div>
 
@@ -641,7 +699,58 @@
               <div class="item-card">
                 <div class="item-info">
                   <span class="item-name">{{ it.art.nombre }}</span>
-                  <span class="item-quantity">{{ it.cantidad }}</span>
+                  
+                  <!-- CONTROLES DE CANTIDAD +/- -->
+                  <div class="item-quantity-controls">
+                    <form method="post" action="{% url 'solicitarPrestamo:modificar_cantidad' %}" style="display: inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="categoria" value="{{ it.categoria }}">
+                      {% if it.categoria == 'papeleria' %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_papeleria }}">
+                      {% elif it.categoria == 'hardware' %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_hardware }}">
+                      {% else %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_deportivo }}">
+                      {% endif %}
+                      <input type="hidden" name="accion" value="disminuir">
+                      <button type="submit" class="quantity-btn" 
+                              title="Disminuir cantidad">
+                        −
+                      </button>
+                    </form>
+                    
+                    <span class="quantity-value">{{ it.cantidad }}</span>
+                    
+                    <form method="post" action="{% url 'solicitarPrestamo:modificar_cantidad' %}" style="display: inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="categoria" value="{{ it.categoria }}">
+                      {% if it.categoria == 'papeleria' %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_papeleria }}">
+                      {% elif it.categoria == 'hardware' %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_hardware }}">
+                      {% else %}
+                      <input type="hidden" name="art_id" value="{{ it.art.id_deportivo }}">
+                      {% endif %}
+                      <input type="hidden" name="accion" value="aumentar">
+                      <button type="submit" class="quantity-btn" 
+                              {% if it.cantidad >= it.stock_disponible %}disabled{% endif %}
+                              title="{% if it.cantidad >= it.stock_disponible %}Stock máximo alcanzado{% else %}Aumentar cantidad{% endif %}">
+                        +
+                      </button>
+                    </form>
+                  </div>
+                  
+                  <!-- INFO DE STOCK -->
+                  <div class="item-stock-info">
+                    {% if it.cantidad >= it.stock_disponible %}
+                      <span class="stock-max">Stock máximo: {{ it.stock_disponible }}</span>
+                    {% elif it.stock_disponible <= 5 %}
+                      <span class="stock-warning">Stock bajo: {{ it.stock_disponible }} disponibles</span>
+                    {% else %}
+                      <span>Stock disponible: {{ it.stock_disponible }}</span>
+                    {% endif %}
+                  </div>
+                  
                   <span class="item-category category-{{ it.categoria }}">
                     {{ it.categoria|capfirst }}
                   </span>
@@ -687,6 +796,9 @@
           {% else %}
           <div class="empty-state">
             <p>No hay artículos en tu bolsa de préstamos.</p>
+            <a href="{% url 'solicitarPrestamo:seleccionar' %}" class="continue-btn" style="margin-top: 20px;">
+              Agregar artículos
+            </a>
           </div>
           {% endif %}
         </div>
@@ -694,6 +806,7 @@
         <hr />
 
         <!-- FORMULARIO PRINCIPAL para CONFIRMAR la reserva -->
+        {% if not bolsa_vacia %}
         <div class="confirmation-form">
           <form method="post" action="{% url 'solicitarPrestamo:confirmar' %}">
             {% csrf_token %}
@@ -749,6 +862,7 @@
             </div>
           </form>
         </div>
+        {% endif %}
       </div>
     </div>
 
@@ -812,6 +926,49 @@
               e.preventDefault();
             }
           });
+        });
+
+        // Mostrar tooltip en botones deshabilitados
+        const disabledButtons = document.querySelectorAll(".quantity-btn:disabled");
+        disabledButtons.forEach(button => {
+          button.addEventListener("mouseenter", function(e) {
+            const title = this.getAttribute("title");
+            if (title) {
+              // Crear tooltip simple
+              const tooltip = document.createElement("div");
+              tooltip.textContent = title;
+              tooltip.style.position = "absolute";
+              tooltip.style.background = "#333";
+              tooltip.style.color = "white";
+              tooltip.style.padding = "5px 10px";
+              tooltip.style.borderRadius = "4px";
+              tooltip.style.fontSize = "12px";
+              tooltip.style.zIndex = "1000";
+              tooltip.style.transform = "translateY(-100%)";
+              tooltip.style.marginTop = "-10px";
+              
+              this.appendChild(tooltip);
+              
+              this.addEventListener("mouseleave", function() {
+                if (this.contains(tooltip)) {
+                  this.removeChild(tooltip);
+                }
+              });
+            }
+          });
+        });
+
+        // Validar formularios de cantidad
+        const quantityForms = document.querySelectorAll("form[action*='modificar_cantidad']");
+        quantityForms.forEach(form => {
+          const submitBtn = form.querySelector("button[type='submit']");
+          if (submitBtn) {
+            form.addEventListener("submit", function(e) {
+              submitBtn.disabled = true;
+              submitBtn.style.opacity = "0.7";
+              submitBtn.style.cursor = "wait";
+            });
+          }
         });
       });
     </script>

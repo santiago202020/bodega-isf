@@ -18,6 +18,7 @@
         --border-color: #eaeaea; /* Bordes sutiles */
         --danger-color: #e74c3c; /* Rojo para acciones críticas */
         --success-color: #27ae60; /* Verde para confirmaciones */
+        --warning-color: #f39c12; /* Naranja para advertencias */
 
         /* Variables de diseño */
         --spacing-lg: 24px;
@@ -338,6 +339,79 @@
         font-size: 1rem;
       }
 
+      .stat-detail {
+        margin-top: 5px;
+        font-size: 0.8rem;
+        color: #6c757d;
+      }
+
+      .stats-detailed {
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .distribution-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+      }
+
+      .distribution-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--border-color);
+      }
+
+      .color-indicator {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+      }
+
+      .indicator-papeleria {
+        background-color: var(--secondary-color);
+      }
+
+      .indicator-hardware {
+        background-color: var(--warning-color);
+      }
+
+      .indicator-deportivo {
+        background-color: var(--success-color);
+      }
+
+      /* ALERTAS */
+      .alert {
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-top: var(--spacing-sm);
+        border-left: 4px solid;
+      }
+
+      .alert-info {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left-color: var(--secondary-color);
+        color: var(--primary-color);
+      }
+
+      .alert-warning {
+        background-color: rgba(243, 156, 18, 0.1);
+        border-left-color: var(--warning-color);
+        color: #856404;
+      }
+
+      .alert-danger {
+        background-color: rgba(231, 76, 60, 0.1);
+        border-left-color: var(--danger-color);
+        color: var(--danger-color);
+      }
+
       /* BOTÓN CERRAR SESIÓN */
       .logout-section {
         text-align: center;
@@ -429,6 +503,10 @@
           grid-template-columns: 1fr;
         }
 
+        .distribution-grid {
+          grid-template-columns: 1fr;
+        }
+
         .nav-links {
           flex-direction: column;
         }
@@ -501,13 +579,13 @@
       <div class="nav-links">
         <a
           href="{% url 'menu_docente' %}"
-          class="nav-link"
-          id="nav-prestamo"
+          class="nav-link active"
+          id="nav-menu"
         >
           <div class="nav-icon"></div>
           <div class="nav-text">
-            <h4>Menu</h4>
-            <p>Pagina principal.</p>
+            <h4>Menú Principal</h4>
+            <p>Página de inicio</p>
           </div>
         </a>
         <a
@@ -543,18 +621,6 @@
           <div class="nav-text">
             <h4>Historial</h4>
             <p>Préstamos anteriores</p>
-          </div>
-        </a>
-
-        <a
-          href="{% url 'solicitarPrestamo:confirmar' %}"
-          class="nav-link"
-          id="nav-confirmar"
-        >
-          <div class="nav-icon"></div>
-          <div class="nav-text">
-            <h4>Confirmar</h4>
-            <p>Enviar solicitud</p>
           </div>
         </a>
       </div>
@@ -612,21 +678,20 @@
                 ></span
               >
             </div>
+            <div class="user-detail-item">
+              <span class="icon"></span>
+              <span
+                >Fecha:
+                <strong
+                  >{{ fecha_actual }}</strong
+                ></span
+              >
+            </div>
           </div>
         </div>
 
         <!-- Acciones principales -->
         <div class="action-grid">
-          <a
-            href="{% url 'menu_docente' %}"
-            class="action-card"
-          >
-            <div class="action-icon"></div>
-            <h3>Menu</h3>
-            <p>
-              Pagina principal para navegar dentro de la pagina de docente.
-            </p>
-          </a>
           <a
             href="{% url 'solicitarPrestamo:seleccionar' %}"
             class="action-card"
@@ -657,37 +722,141 @@
             </p>
           </a>
 
-          <a href="{% url 'solicitarPrestamo:confirmar' %}" class="action-card">
+          <a href="{% url 'menu_docente' %}" class="action-card">
             <div class="action-icon"></div>
-            <h3>Confirmar Solicitud</h3>
+            <h3>Mis Estadísticas</h3>
             <p>
-              Finaliza y envía tu solicitud de préstamo para revisión del
-              administrador. Verifica todos los detalles antes de enviar.
+              Visualiza tus estadísticas personales de préstamos, estado de solicitudes
+              y actividad en el sistema.
             </p>
           </a>
         </div>
 
         <!-- Estadísticas rápidas -->
         <div class="stats-container">
-          <h3>Mis Estadísticas</h3>
+          <h3>Mis Estadísticas de Préstamos</h3>
           <div class="quick-stats">
             <div class="stat-card">
-              <div class="stat-number" id="pendientes-count">0</div>
+              <div class="stat-number" id="pendientes-count">{{ prestamos_pendientes }}</div>
               <p>Préstamos Pendientes</p>
+              {% if prestamos_pendientes > 0 %}
+              <div class="stat-detail">En espera de aprobación</div>
+              {% else %}
+              <div class="stat-detail">Sin pendientes</div>
+              {% endif %}
             </div>
             <div class="stat-card">
-              <div class="stat-number" id="aceptados-count">0</div>
+              <div class="stat-number" id="aceptados-count">{{ prestamos_aceptados }}</div>
               <p>Préstamos Aceptados</p>
+              {% if prestamos_aceptados > 0 %}
+              <div class="stat-detail">Activos o en curso</div>
+              {% else %}
+              <div class="stat-detail">Sin préstamos activos</div>
+              {% endif %}
             </div>
             <div class="stat-card">
-              <div class="stat-number" id="finalizados-count">0</div>
+              <div class="stat-number" id="finalizados-count">{{ prestamos_finalizados }}</div>
               <p>Préstamos Finalizados</p>
+              {% if prestamos_finalizados > 0 %}
+              <div class="stat-detail">Completados exitosamente</div>
+              {% else %}
+              <div class="stat-detail">Aún sin completar</div>
+              {% endif %}
             </div>
             <div class="stat-card">
-              <div class="stat-number" id="total-count">0</div>
+              <div class="stat-number" id="total-count">{{ total_prestamos }}</div>
               <p>Total de Préstamos</p>
+              {% if total_articulos_prestados > 0 %}
+              <div class="stat-detail">{{ total_articulos_prestados }} artículos total</div>
+              {% else %}
+              <div class="stat-detail">Sin artículos prestados</div>
+              {% endif %}
             </div>
           </div>
+
+          <!-- Distribución por tipo de artículo -->
+          {% if papeleria_count > 0 or hardware_count > 0 or deportivo_count > 0 %}
+          <div class="stats-detailed">
+            <h4>Distribución de Artículos Prestados</h4>
+            <div class="distribution-grid">
+              {% if papeleria_count > 0 %}
+              <div class="distribution-item">
+                <div class="color-indicator indicator-papeleria"></div>
+                <div>
+                  <div style="font-weight: 600;">Papelería</div>
+                  <div style="font-size: 0.9rem; color: #666;">{{ papeleria_count }} unidades</div>
+                </div>
+              </div>
+              {% endif %}
+              
+              {% if hardware_count > 0 %}
+              <div class="distribution-item">
+                <div class="color-indicator indicator-hardware"></div>
+                <div>
+                  <div style="font-weight: 600;">Hardware</div>
+                  <div style="font-size: 0.9rem; color: #666;">{{ hardware_count }} unidades</div>
+                </div>
+              </div>
+              {% endif %}
+              
+              {% if deportivo_count > 0 %}
+              <div class="distribution-item">
+                <div class="color-indicator indicator-deportivo"></div>
+                <div>
+                  <div style="font-weight: 600;">Deportivos</div>
+                  <div style="font-size: 0.9rem; color: #666;">{{ deportivo_count }} unidades</div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Alertas importantes -->
+          {% if tiene_prestamos_activos %}
+          <div class="alert alert-info">
+            <strong>¡Tienes préstamos activos!</strong> 
+            Revisa el estado de tus solicitudes en el historial.
+          </div>
+          {% endif %}
+          
+          {% if prestamos_por_devolver > 0 %}
+          <div class="alert alert-danger">
+            <strong>Atención:</strong> 
+            Tienes {{ prestamos_por_devolver }} préstamo(s) pendiente(s) de devolución.
+          </div>
+          {% endif %}
+
+          <!-- Últimos préstamos si existen -->
+          {% if ultimos_prestamos %}
+          <div style="margin-top: var(--spacing-lg);">
+            <h4 style="margin-bottom: var(--spacing-sm); color: var(--primary-color);">
+              Últimos Préstamos
+            </h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              {% for prestamo in ultimos_prestamos %}
+              <div style="display: flex; justify-content: space-between; align-items: center; 
+                          padding: 10px; background-color: #f8f9fa; border-radius: var(--border-radius-sm);">
+                <div>
+                  <span style="font-weight: 600;">#{{ prestamo.id_prestamo }}</span>
+                  <span style="margin-left: 10px; color: #666;">{{ prestamo.fecha_prestamo }}</span>
+                </div>
+                <div>
+                  {% if prestamo.estado == 'PENDIENTE' or prestamo.estado == 'RESERVA' %}
+                  <span style="color: var(--warning-color); font-weight: 600;">{{ prestamo.estado }}</span>
+                  {% elif prestamo.estado == 'APROBADO' or prestamo.estado == 'EN CURSO' %}
+                  <span style="color: var(--success-color); font-weight: 600;">{{ prestamo.estado }}</span>
+                  {% elif prestamo.estado == 'FINALIZADO' or prestamo.estado == 'COMPLETADO' %}
+                  <span style="color: var(--secondary-color); font-weight: 600;">{{ prestamo.estado }}</span>
+                  {% else %}
+                  <span style="color: #666; font-weight: 600;">{{ prestamo.estado }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
         </div>
 
         <!-- Cerrar sesión -->
@@ -713,17 +882,17 @@
     <script>
       // Detectar y resaltar página activa
       document.addEventListener("DOMContentLoaded", function () {
-        // URLs de las páginas (simuladas para ejemplo)
+        // URLs de las páginas
         const currentPath = window.location.pathname;
         const pageMap = {
-          seleccionar: "nav-prestamo",
-          bolsa_ver: "nav-bolsa",
-          historial: "nav-historial",
-          confirmar: "nav-confirmar",
+          'menu_docente': 'nav-menu',
+          'seleccionar': 'nav-prestamo',
+          'bolsa_ver': 'nav-bolsa',
+          'historial': 'nav-historial',
         };
 
-        // Detectar página actual (simplificado)
-        let activePage = "seleccionar"; // Por defecto
+        // Detectar página actual
+        let activePage = "nav-menu"; // Por defecto
         for (const [key, value] of Object.entries(pageMap)) {
           if (currentPath.includes(key)) {
             activePage = value;
@@ -741,32 +910,15 @@
           activeLink.querySelector(".nav-text h4").appendChild(indicator);
         }
 
-        // Cargar estadísticas (simuladas)
-        setTimeout(() => {
-          // Datos de ejemplo - en producción vendrían de una API
-          const stats = {
-            pendientes: Math.floor(Math.random() * 5) + 1,
-            aceptados: Math.floor(Math.random() * 15) + 5,
-            finalizados: Math.floor(Math.random() * 30) + 10,
-          };
-
-          document.getElementById("pendientes-count").textContent =
-            stats.pendientes;
-          document.getElementById("aceptados-count").textContent =
-            stats.aceptados;
-          document.getElementById("finalizados-count").textContent =
-            stats.finalizados;
-          document.getElementById("total-count").textContent =
-            stats.pendientes + stats.aceptados + stats.finalizados;
-
-          // Simular última hora de acceso
-          const now = new Date();
-          const lastAccess = document.getElementById("last-access");
+        // Actualizar último acceso
+        const now = new Date();
+        const lastAccess = document.getElementById("last-access");
+        if (lastAccess) {
           lastAccess.textContent = `Hoy, ${now
             .getHours()
             .toString()
             .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-        }, 800);
+        }
 
         // Animación suave para las tarjetas al cargar
         const cards = document.querySelectorAll(".action-card");
@@ -780,6 +932,35 @@
             card.style.transform = "translateY(0)";
           }, 100 * index);
         });
+
+        // Animación para estadísticas (contador)
+        function animateCount(element, finalValue) {
+          if (finalValue > 0) {
+            let startValue = 0;
+            const duration = 1500;
+            const increment = finalValue / (duration / 16);
+            
+            const timer = setInterval(() => {
+              startValue += increment;
+              if (startValue >= finalValue) {
+                element.textContent = finalValue;
+                clearInterval(timer);
+              } else {
+                element.textContent = Math.floor(startValue);
+              }
+            }, 16);
+          }
+        }
+
+        // Aplicar animación a todos los números de estadísticas
+        const statNumbers = document.querySelectorAll(".stat-number");
+        statNumbers.forEach(stat => {
+          const finalValue = parseInt(stat.textContent);
+          animateCount(stat, finalValue);
+        });
+
+        // Mostrar mensaje si hay error en estadísticas
+        
       });
     </script>
   </body>
